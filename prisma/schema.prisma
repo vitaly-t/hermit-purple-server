@@ -1,0 +1,60 @@
+datasource db {
+  provider = "sqlite"
+  url      = "file:dev.db"
+  default  = true
+}
+
+generator photon {
+  provider = "photonjs"
+}
+
+model Epoch {
+  id                Int           @default(autoincrement()) @id
+  epochId           Int           @unique
+  transactionsCount Int
+  transactions      Transaction[]
+  preHash           String
+  timestamp         DateTime
+  orderRoot         String
+  // confirmRoot      String[]
+  // receiptRoot      String[]
+  // cyclesUsed       String[]
+  stateRoot         String
+  proposer          String
+  proof             Proof
+  validatorVersion  String
+  validators        Validator[]
+}
+
+model Validator {
+  id            Int     @default(autoincrement()) @id
+  address       String  @unique
+  proposeWeight Int
+  voteWeight    Int
+  epoches       Epoch[]
+}
+
+model Transaction {
+  id          Int    @default(autoincrement()) @id
+  txHash      String @unique
+  epoch       Epoch
+  serviceName String
+  method      String
+  payload     String
+  cyclesPrice String
+  cyclesLimit String
+  nonce       String
+  pubkey      String
+  signature   String
+  chainId     String
+  timeout     String
+}
+
+model Proof {
+  id        Int    @default(autoincrement()) @id
+  epochId   Int
+  round     Int
+  epochHash String
+  signature String
+  bitmap    String
+}

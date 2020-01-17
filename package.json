@@ -1,0 +1,45 @@
+{
+  "name": "hermit-purple-server",
+  "author": "homura.dev@gmail.com",
+  "license": "MIT",
+  "description": "A Muta GraphQL APIs server",
+  "keywords": [
+    "muta"
+  ],
+  "version": "0.0.1",
+  "scripts": {
+    "start": "node dist/index",
+    "clean": "rm -rf dist",
+    "build": "npm -s run clean && npm -s run generate && tsc",
+    "generate": "npm -s run generate:prisma && npm -s run generate:nexus",
+    "generate:prisma": "prisma2 generate",
+    "generate:nexus": "ts-node --transpile-only src/schema",
+    "postinstall": "npm -s run generate",
+    "dev": "ts-node-dev --no-notify --respawn --transpileOnly src/index",
+    "sync": "ts-node src/sync"
+  },
+  "dependencies": {
+    "@prisma/photon": "2.0.0-preview019",
+    "@types/bluebird": "^3.5.29",
+    "@types/http-proxy-middleware": "^0.19.3",
+    "bluebird": "^3.7.2",
+    "cors": "^2.8.5",
+    "graphql": "14.5.8",
+    "graphql-yoga": "1.18.3",
+    "http-proxy-middleware": "^0.20.0",
+    "muta-sdk": "next",
+    "nexus": "0.12.0-rc.5",
+    "nexus-prisma": "0.6.1",
+    "prisma-binding": "^2.3.16"
+  },
+  "devDependencies": {
+    "@prisma/sdk": "0.0.133",
+    "@types/node": "12.12.24",
+    "@types/ws": "6.0.4",
+    "cross-env": "^6.0.3",
+    "prisma2": "2.0.0-preview019",
+    "ts-node": "8.6.2",
+    "ts-node-dev": "1.0.0-pre.44",
+    "typescript": "3.7.4"
+  }
+}
