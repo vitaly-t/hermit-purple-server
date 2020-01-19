@@ -43,6 +43,34 @@ const Transaction = objectType({
     t.model.nonce();
     t.model.pubkey();
     t.model.signature();
+    t.model.receipt();
+  },
+});
+
+const Receipt = objectType({
+  name: 'Receipt',
+  definition(t) {
+    t.model.epoch();
+    t.model.transaction();
+    t.model.cyclesUsed();
+    t.model.events();
+    t.model.response();
+  },
+});
+
+const Event = objectType({
+  name: 'Event',
+  definition(t) {
+    t.model.data();
+    t.model.receipt();
+  },
+});
+
+const ReceiptResponse = objectType({
+  name: 'ReceiptResponse',
+  definition(t) {
+    t.model.isError();
+    t.model.ret();
   },
 });
 
@@ -61,8 +89,10 @@ const Query = queryType({
     t.crud.epoch();
     t.crud.transaction();
     t.crud.validator();
+    t.crud.receipt();
     t.crud.epoches({ ordering: true, filtering: true, pagination: true });
     t.crud.transactions({ ordering: true, filtering: true, pagination: true });
+    t.crud.receipts({ ordering: true, filtering: true, pagination: true });
   },
 });
 
@@ -76,7 +106,17 @@ const Mutation = objectType({
 });
 
 export const schema = makeSchema({
-  types: [Proof, Validator, Transaction, Epoch, Query, Mutation],
+  types: [
+    Receipt,
+    ReceiptResponse,
+    Event,
+    Proof,
+    Validator,
+    Transaction,
+    Epoch,
+    Query,
+    Mutation,
+  ],
   plugins: [nexusPrismaPlugin()],
   outputs: {
     schema: __dirname + '/generated/schema.graphql',

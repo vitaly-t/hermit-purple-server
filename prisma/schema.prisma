@@ -35,8 +35,9 @@ model Validator {
 }
 
 model Transaction {
-  id          Int    @default(autoincrement()) @id
-  txHash      String @unique
+  id          Int      @default(autoincrement()) @id
+  txHash      String   @unique
+  receipt     Receipt?
   epoch       Epoch
   serviceName String
   method      String
@@ -48,6 +49,29 @@ model Transaction {
   signature   String
   chainId     String
   timeout     String
+}
+
+model Receipt {
+  id          Int             @default(autoincrement()) @id
+  epoch       Epoch
+  transaction Transaction
+  cyclesUsed  String
+  events      Event[]
+  response    ReceiptResponse
+}
+
+model ReceiptResponse {
+  id      Int     @default(autoincrement()) @id
+  receipt Receipt
+  ret     String
+  isError Boolean
+}
+
+model Event {
+  id      Int     @default(autoincrement()) @id
+  receipt Receipt
+  service String
+  data    String
 }
 
 model Proof {

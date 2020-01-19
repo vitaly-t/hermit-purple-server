@@ -4,27 +4,100 @@ import {
   TransactionCreateWithoutEpochInput,
   ValidatorCreateWithoutEpochesInput,
 } from '@prisma/photon';
-import { Muta, utils } from 'muta-sdk';
+import { utils } from 'muta-sdk';
 import { Promise as Bluebird } from 'bluebird';
+import { debug } from 'debug';
 import { MUTA_CHAINID, MUTA_ENDPOINT, SYNC_CONCURRENCY } from '../config';
+import { muta } from '../muta';
+
+const debugEpoch = debug('sync:epoch');
+const debugReceipt = debug('sync:receipt');
+
+const rawClient = muta.client.getRawClient();
+const photon = new Photon();
 
 interface SyncOptions {
   endpoint: string;
   chainId: string;
 }
 
+export async function syncReceipt() {
+  const receipt = await photon.receipts.findMany({
+    orderBy: {
+      id: 'desc',
+    },
+    include: {
+      epoch: true,
+    },
+    first: 1,
+  });
+
+  const executedEpochId = receipt[0]?.epoch?.epochId ?? 1;
+
+  const target = await photon.epoches.findMany({
+    where: {
+      epochId: {
+        gt: executedEpochId,
+      },
+      transactionsCount: {
+        gt: 0,
+      },
+    },
+    include: {
+      transactions: true,
+    },
+  });
+
+  debugReceipt(`last sync receipt epoch ${executedEpochId}`);
+
+  const epoch = target[0];
+  if (!epoch) return;
+
+  const txHashs = epoch.transactions.map(x => x.txHash);
+  debugReceipt(` now sync ${epoch.epochId} with ${txHashs.length} txs`);
+
+  await Bluebird.all(txHashs).map(
+    async txHash => {
+      const chainReceipt = await rawClient.getReceipt({
+        txHash,
+      });
+      const r = chainReceipt.getReceipt;
+      await photon.receipts.create({
+        data: {
+          epoch: {
+            connect: {
+              epochId: epoch.epochId,
+            },
+          },
+          transaction: {
+            connect: {
+              txHash,
+            },
+          },
+          cyclesUsed: r.cyclesUsed,
+          events: {
+            create: r.events.map(x => ({
+              data: x.data,
+              service: x.service,
+            })),
+          },
+          response: {
+            create: {
+              isError: r.response.isError,
+              ret: r.response.ret,
+            },
+          },
+        },
+      });
+    },
+    { concurrency: 1 },
+  );
+}
+
 export async function sync(options: SyncOptions) {
   try {
-    const photon = new Photon();
-
-    const muta = new Muta({
-      endpoint: options.endpoint,
-      chainId: options.chainId,
-    });
-    const rawClient = muta.client.getRawClient();
-
     const chainLatestEpoch = await rawClient.getEpoch();
-    const targetEpochId = chainLatestEpoch.getEpoch.header.epochId;
+    const latestEpochId = chainLatestEpoch.getEpoch.header.epochId;
 
     const apiLatestEpoch = await photon.epoches.findMany({
       first: 1,
@@ -34,8 +107,12 @@ export async function sync(options: SyncOptions) {
     });
 
     let syncEpochId = (apiLatestEpoch[0]?.epochId ?? 0) + 1;
-    while (syncEpochId < utils.hexToNum(targetEpochId)) {
-      console.log(`start: ${syncEpochId}, end: ${targetEpochId} `);
+
+    // HACK: backward 15 epoch to ensure epochs are executed
+    let targetEpochId = utils.hexToNum(latestEpochId) - 15;
+    if (targetEpochId < 1) targetEpochId = 1;
+    while (syncEpochId < targetEpochId) {
+      debugEpoch(`start: ${syncEpochId}, end: ${targetEpochId} `);
 
       const epoch = await rawClient.getEpoch({
         epochId: utils.toHex(syncEpochId),
@@ -99,6 +176,8 @@ export async function sync(options: SyncOptions) {
           },
         },
       });
+
+      await syncReceipt();
 
       syncEpochId++;
     }
