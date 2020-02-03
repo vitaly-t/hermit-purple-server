@@ -29,6 +29,14 @@ const Epoch = objectType({
   },
 });
 
+const Account = objectType({
+  name: 'Account',
+  definition(t) {
+    t.model.address();
+    t.model.transactions();
+  },
+});
+
 const Transaction = objectType({
   name: 'Transaction',
   definition(t) {
@@ -110,6 +118,7 @@ const Query = queryType({
 
 export const schema = makeSchema({
   types: [
+    Account,
     Receipt,
     ReceiptResponse,
     Event,
