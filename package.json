@@ -19,26 +19,24 @@
     "sync": "ts-node src/sync"
   },
   "dependencies": {
-    "@prisma/photon": "2.0.0-preview019",
+    "@prisma/client": "^2.0.0-preview021",
     "@types/bluebird": "^3.5.29",
     "@types/http-proxy-middleware": "^0.19.3",
     "bluebird": "^3.7.2",
     "cors": "^2.8.5",
     "debug": "^4.1.1",
-    "graphql": "14.5.8",
+    "graphql": "14.6.0",
     "graphql-yoga": "1.18.3",
     "http-proxy-middleware": "^0.20.0",
-    "muta-sdk": "next",
-    "nexus": "0.12.0-rc.5",
-    "nexus-prisma": "0.6.1",
-    "prisma-binding": "^2.3.16"
+    "muta-sdk": "^0.5.0",
+    "nexus": "^0.12.0-rc.9",
+    "nexus-prisma": "^0.9.0",
+    "prisma2": "^2.0.0-preview021"
   },
   "devDependencies": {
-    "@prisma/sdk": "0.0.133",
     "@types/node": "12.12.24",
     "@types/ws": "6.0.4",
     "cross-env": "^6.0.3",
-    "prisma2": "2.0.0-preview019",
     "ts-node": "8.6.2",
     "ts-node-dev": "1.0.0-pre.44",
     "typescript": "3.7.4"

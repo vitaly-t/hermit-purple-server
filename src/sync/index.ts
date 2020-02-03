@@ -1,141 +1,99 @@
 import {
-  Photon,
-  ProofCreateWithoutEpochesInput,
-  TransactionCreateWithoutEpochInput,
-  ValidatorCreateWithoutEpochesInput,
-} from '@prisma/photon';
-import { utils } from 'muta-sdk';
+  PrismaClient,
+  ProofCreateWithoutBlocksInput,
+  TransactionCreateWithoutBlockInput,
+  ValidatorCreateWithoutBlocksInput,
+} from '@prisma/client';
+import { utils, addressFromPublicKey } from 'muta-sdk';
 import { Promise as Bluebird } from 'bluebird';
 import { debug } from 'debug';
 import { MUTA_CHAINID, MUTA_ENDPOINT, SYNC_CONCURRENCY } from '../config';
 import { muta } from '../muta';
+import { syncReceipt } from './receipt';
+import { toBuffer } from 'muta-sdk/build/main/utils';
 
-const debugEpoch = debug('sync:epoch');
-const debugReceipt = debug('sync:receipt');
+const debugBlock = debug('sync:block');
 
-const rawClient = muta.client.getRawClient();
-const photon = new Photon();
+export const rawClient = muta.client.getRawClient();
+export const prisma = new PrismaClient();
+
+/**
+ * convert public key to address hex string without 0x
+ * @param pubkey
+ */
+function addressFromPubkey(pubkey: string) {
+  return addressFromPublicKey(toBuffer(pubkey)).toString('hex');
+}
 
 interface SyncOptions {
   endpoint: string;
   chainId: string;
 }
 
-export async function syncReceipt() {
-  const receipt = await photon.receipts.findMany({
-    orderBy: {
-      id: 'desc',
-    },
-    include: {
-      epoch: true,
-    },
-    first: 1,
-  });
-
-  const executedEpochId = receipt[0]?.epoch?.epochId ?? 1;
-
-  const target = await photon.epoches.findMany({
-    where: {
-      epochId: {
-        gt: executedEpochId,
-      },
-      transactionsCount: {
-        gt: 0,
-      },
-    },
-    include: {
-      transactions: true,
-    },
-  });
-
-  debugReceipt(`last sync receipt epoch ${executedEpochId}`);
-
-  const epoch = target[0];
-  if (!epoch) return;
-
-  const txHashs = epoch.transactions.map(x => x.txHash);
-  debugReceipt(` now sync ${epoch.epochId} with ${txHashs.length} txs`);
-
-  await Bluebird.all(txHashs).map(
-    async txHash => {
-      const chainReceipt = await rawClient.getReceipt({
-        txHash,
-      });
-      const r = chainReceipt.getReceipt;
-      await photon.receipts.create({
-        data: {
-          epoch: {
-            connect: {
-              epochId: epoch.epochId,
-            },
-          },
-          transaction: {
-            connect: {
-              txHash,
-            },
-          },
-          cyclesUsed: r.cyclesUsed,
-          events: {
-            create: r.events.map(x => ({
-              data: x.data,
-              service: x.service,
-            })),
-          },
-          response: {
-            create: {
-              isError: r.response.isError,
-              ret: r.response.ret,
-            },
-          },
-        },
-      });
-    },
-    { concurrency: 1 },
-  );
-}
-
 export async function sync(options: SyncOptions) {
   try {
-    const chainLatestEpoch = await rawClient.getEpoch();
-    const latestEpochId = chainLatestEpoch.getEpoch.header.epochId;
+    const chainLatestBlock = await rawClient.getBlock();
+    const latestBlockHeight = chainLatestBlock.getBlock.header.height;
 
-    const apiLatestEpoch = await photon.epoches.findMany({
+    const apiLatestBlock = await prisma.block.findMany({
       first: 1,
       orderBy: {
-        epochId: 'desc',
+        height: 'desc',
       },
     });
 
-    let syncEpochId = (apiLatestEpoch[0]?.epochId ?? 0) + 1;
+    let syncBlockHeight = (apiLatestBlock[0]?.height ?? 0) + 1;
 
-    // HACK: backward 15 epoch to ensure epochs are executed
-    let targetEpochId = utils.hexToNum(latestEpochId) - 15;
-    if (targetEpochId < 1) targetEpochId = 1;
-    while (syncEpochId < targetEpochId) {
-      debugEpoch(`start: ${syncEpochId}, end: ${targetEpochId} `);
+    // TODO
+    //  HACK: backward 15 block to ensure blocks are executed
+    let targetBlockHeight = utils.hexToNum(latestBlockHeight) - 15;
+    if (targetBlockHeight < 1) targetBlockHeight = 1;
+    while (syncBlockHeight < targetBlockHeight) {
+      debugBlock(`start: ${syncBlockHeight}, end: ${targetBlockHeight} `);
 
-      const epoch = await rawClient.getEpoch({
-        epochId: utils.toHex(syncEpochId),
+      const block = await rawClient.getBlock({
+        height: utils.toHex(syncBlockHeight),
       });
-      const header = epoch.getEpoch.header;
-      const orderedTxHashes = epoch.getEpoch.orderedTxHashes;
+      const header = block.getBlock.header;
+      const orderedTxHashes = block.getBlock.orderedTxHashes;
 
       const txs = await Bluebird.all(orderedTxHashes).map(
         txHash => rawClient.getTransaction({ txHash }),
         { concurrency: SYNC_CONCURRENCY },
       );
 
-      const transactions: TransactionCreateWithoutEpochInput[] = txs.map(
-        tx => ({ ...tx.getTransaction }),
+      await Bluebird.all<string>(
+        new Set(txs.map(tx => addressFromPubkey(tx.getTransaction.pubkey))),
+      ).map(
+        address =>
+          prisma.account.upsert({
+            where: { address },
+            create: { address },
+            update: {},
+          }),
+        { concurrency: SYNC_CONCURRENCY },
       );
 
-      const validators: ValidatorCreateWithoutEpochesInput[] = header.validators.map(
+      const transactions: TransactionCreateWithoutBlockInput[] = txs.map(
+        tx => ({
+          ...tx.getTransaction,
+          account: {
+            connect: {
+              address: addressFromPublicKey(
+                toBuffer(tx.getTransaction.pubkey),
+              ).toString('hex'),
+            },
+          },
+        }),
+      );
+
+      const validators: ValidatorCreateWithoutBlocksInput[] = header.validators.map(
         v => ({ ...v }),
       );
 
       await Promise.all(
         validators.map(v =>
-          photon.validators.upsert({
+          prisma.validator.upsert({
             where: {
               address: v.address,
             },
@@ -149,15 +107,15 @@ export async function sync(options: SyncOptions) {
         ),
       );
 
-      const proof: ProofCreateWithoutEpochesInput = {
+      const proof: ProofCreateWithoutBlocksInput = {
         ...header.proof,
-        epochId: utils.hexToNum(header.proof.epochId),
+        height: utils.hexToNum(header.proof.height),
         round: utils.hexToNum(header.proof.round),
       };
 
-      await photon.epoches.create({
+      await prisma.block.create({
         data: {
-          epochId: utils.hexToNum(header.epochId),
+          height: utils.hexToNum(header.height),
           transactionsCount: orderedTxHashes.length,
           transactions: {
             create: transactions,
@@ -179,10 +137,11 @@ export async function sync(options: SyncOptions) {
 
       await syncReceipt();
 
-      syncEpochId++;
+      syncBlockHeight++;
     }
   } catch (e) {
     console.error(e);
+    await Bluebird.delay(500);
     await sync(options);
   }
 

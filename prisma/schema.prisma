@@ -1,24 +1,21 @@
-datasource db {
-  provider = "sqlite"
-  url      = "file:dev.db"
+datasource postgres {
+  provider = "postgres"
+  url      = env("POSTGRESQL_URL")
   default  = true
 }
 
-generator photon {
-  provider = "photonjs"
+generator client {
+  provider = "prisma-client-js"
 }
 
-model Epoch {
+model Block {
   id                Int           @default(autoincrement()) @id
-  epochId           Int           @unique
+  height            Int           @unique
   transactionsCount Int
   transactions      Transaction[]
   preHash           String
   timestamp         DateTime
   orderRoot         String
-  // confirmRoot      String[]
-  // receiptRoot      String[]
-  // cyclesUsed       String[]
   stateRoot         String
   proposer          String
   proof             Proof
@@ -31,14 +28,14 @@ model Validator {
   address       String  @unique
   proposeWeight Int
   voteWeight    Int
-  epoches       Epoch[]
+  blocks        Block[]
 }
 
 model Transaction {
   id          Int      @default(autoincrement()) @id
   txHash      String   @unique
   receipt     Receipt?
-  epoch       Epoch
+  block       Block
   serviceName String
   method      String
   payload     String
@@ -49,11 +46,12 @@ model Transaction {
   signature   String
   chainId     String
   timeout     String
+  account     Account
 }
 
 model Receipt {
   id          Int             @default(autoincrement()) @id
-  epoch       Epoch
+  block       Block
   transaction Transaction
   cyclesUsed  String
   events      Event[]
@@ -76,9 +74,15 @@ model Event {
 
 model Proof {
   id        Int    @default(autoincrement()) @id
-  epochId   Int
+  height    Int
   round     Int
-  epochHash String
+  blockHash String
   signature String
   bitmap    String
+}
+
+model Account {
+  id           Int           @default(autoincrement()) @id
+  address      String        @unique
+  transactions Transaction[]
 }
