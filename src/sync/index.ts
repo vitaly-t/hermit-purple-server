@@ -1,20 +1,24 @@
 import {
+  AssetCreateWithoutCreationTransactionInput,
+  AssetTransferCreateWithoutTransactionInput,
   PrismaClient,
   ProofCreateWithoutBlocksInput,
   TransactionCreateWithoutBlockInput,
   ValidatorCreateWithoutBlocksInput,
 } from '@prisma/client';
-import { utils, addressFromPublicKey } from 'muta-sdk';
+import { utils } from 'muta-sdk';
 import { Promise as Bluebird } from 'bluebird';
 import { debug } from 'debug';
+import { BigNumber } from 'bignumber.js';
 import { MUTA_CHAINID, MUTA_ENDPOINT, SYNC_CONCURRENCY } from '../config';
 import { muta } from '../muta';
-import { syncReceipt } from './receipt';
-import { toBuffer } from 'muta-sdk/build/main/utils';
+// import { syncReceipt } from './receipt';
+import { safeJSONParse } from './parse';
 
-const debugBlock = debug('sync:block');
+const { toBuffer, addressFromPublicKey } = utils;
+const trace = debug('sync:block');
 
-export const rawClient = muta.client.getRawClient();
+export const rawClient = muta.client().getRawClient();
 export const prisma = new PrismaClient();
 
 /**
@@ -33,7 +37,7 @@ interface SyncOptions {
 export async function sync(options: SyncOptions) {
   try {
     const chainLatestBlock = await rawClient.getBlock();
-    const latestBlockHeight = chainLatestBlock.getBlock.header.height;
+    const latestBlockHeight = chainLatestBlock.getBlock.header.execHeight;
 
     const apiLatestBlock = await prisma.block.findMany({
       first: 1,
@@ -45,11 +49,11 @@ export async function sync(options: SyncOptions) {
     let syncBlockHeight = (apiLatestBlock[0]?.height ?? 0) + 1;
 
     // TODO
-    //  HACK: backward 15 block to ensure blocks are executed
-    let targetBlockHeight = utils.hexToNum(latestBlockHeight) - 15;
+    //  HACK: now only sync the executed block, need sync the newest block
+    let targetBlockHeight = utils.hexToNum(latestBlockHeight);
     if (targetBlockHeight < 1) targetBlockHeight = 1;
     while (syncBlockHeight < targetBlockHeight) {
-      debugBlock(`start: ${syncBlockHeight}, end: ${targetBlockHeight} `);
+      trace(`start: ${syncBlockHeight}, end: ${targetBlockHeight} `);
 
       const block = await rawClient.getBlock({
         height: utils.toHex(syncBlockHeight),
@@ -62,9 +66,96 @@ export async function sync(options: SyncOptions) {
         { concurrency: SYNC_CONCURRENCY },
       );
 
-      await Bluebird.all<string>(
-        new Set(txs.map(tx => addressFromPubkey(tx.getTransaction.pubkey))),
-      ).map(
+      const receipts = await Bluebird.all(orderedTxHashes).map(
+        txHash => rawClient.getReceipt({ txHash }),
+        { concurrency: SYNC_CONCURRENCY },
+      );
+      trace(`fetched ${txs.length} txs and ${receipts.length} receipts`);
+
+      const addresses = new Set<string>();
+      const transactions: TransactionCreateWithoutBlockInput[] = txs.map(
+        (tx, i) => {
+          const {
+            serviceName,
+            method,
+            payload: payloadStr,
+            pubkey,
+          } = tx.getTransaction;
+          const caller = addressFromPubkey(pubkey);
+          const receipt = receipts[i]?.getReceipt;
+
+          addresses.add(caller);
+
+          let transfer: AssetTransferCreateWithoutTransactionInput | null = null;
+          if (serviceName === 'asset' && method === 'transfer') {
+            const payload = safeJSONParse<{
+              asset_id: string;
+              to: string;
+              value: BigNumber;
+            }>(payloadStr);
+
+            addresses.add(payload.to);
+
+            transfer = {
+              asset: { connect: { assetId: payload.asset_id } },
+              value: payload.value.toString(16),
+              from: { connect: { address: caller } },
+              to: { connect: { address: payload.to } },
+            };
+          }
+
+          let asset: AssetCreateWithoutCreationTransactionInput | null = null;
+          if (
+            receipt &&
+            !receipt.response.isError &&
+            serviceName === 'asset' &&
+            method === 'create_asset'
+          ) {
+            const payload = safeJSONParse<{
+              supply: BigNumber;
+              symbol: string;
+              name: string;
+              id: string;
+            }>(receipt.response.ret);
+
+            asset = {
+              account: { connect: { address: caller } },
+              assetId: payload.id,
+              name: payload.name,
+              symbol: payload.symbol,
+              supply: payload.supply.toString(16),
+            };
+          }
+
+          return {
+            ...tx.getTransaction,
+            ...(transfer ? { transfer: { create: transfer } } : {}),
+            ...(asset ? { createdAsset: { create: asset } } : {}),
+            account: {
+              connect: { address: addressFromPubkey(tx.getTransaction.pubkey) },
+            },
+            receipt: {
+              create: {
+                cyclesUsed: receipt.cyclesUsed,
+                events: {
+                  create: receipt.events.map(x => ({
+                    data: x.data,
+                    service: x.service,
+                  })),
+                },
+                response: {
+                  create: {
+                    isError: receipt.response.isError,
+                    ret: receipt.response.ret,
+                  },
+                },
+              },
+            },
+          };
+        },
+      );
+
+      await Bluebird.all<string>(addresses).map(
         address =>
           prisma.account.upsert({
             where: { address },
@@ -72,19 +163,6 @@ export async function sync(options: SyncOptions) {
             update: {},
           }),
         { concurrency: SYNC_CONCURRENCY },
-      );
-
-      const transactions: TransactionCreateWithoutBlockInput[] = txs.map(
-        tx => ({
-          ...tx.getTransaction,
-          account: {
-            connect: {
-              address: addressFromPublicKey(
-                toBuffer(tx.getTransaction.pubkey),
-              ).toString('hex'),
-            },
-          },
-        }),
       );
 
       const validators: ValidatorCreateWithoutBlocksInput[] = header.validators.map(
@@ -134,8 +212,6 @@ export async function sync(options: SyncOptions) {
           },
         },
       });
-
-      await syncReceipt();
 
       syncBlockHeight++;
     }

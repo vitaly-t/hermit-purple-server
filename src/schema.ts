@@ -58,7 +58,6 @@ const Transaction = objectType({
 const Receipt = objectType({
   name: 'Receipt',
   definition(t) {
-    t.model.block();
     t.model.transaction();
     t.model.cyclesUsed();
     t.model.events();
@@ -92,6 +91,29 @@ const Proof = objectType({
   },
 });
 
+const Asset = objectType({
+  name: 'Asset',
+  definition(t) {
+    t.model.assetId();
+    t.model.account();
+    t.model.name();
+    t.model.supply();
+    t.model.symbol();
+    t.model.creationTransaction();
+    t.model.assetTransfers();
+  },
+});
+
+const AssetTransfer = objectType({
+  name: 'AssetTransfer',
+  definition(t) {
+    t.model.from();
+    t.model.to();
+    t.model.value();
+    t.model.transaction();
+  },
+});
+
 const Query = queryType({
   definition(t) {
     t.crud.block();
@@ -99,22 +121,21 @@ const Query = queryType({
     t.crud.validator();
     t.crud.receipt();
     t.crud.account();
+    t.crud.asset();
+    t.crud.assetTransfer();
 
     t.crud.accounts({ ordering: true, filtering: true, pagination: true });
     t.crud.blocks({ ordering: true, filtering: true, pagination: true });
     t.crud.transactions({ ordering: true, filtering: true, pagination: true });
     t.crud.receipts({ ordering: true, filtering: true, pagination: true });
+    t.crud.assets({ ordering: true, filtering: true, pagination: true });
+    t.crud.assetTransfers({
+      ordering: true,
+      filtering: true,
+      pagination: true,
+    });
   },
 });
-
-// const Mutation = objectType({
-//   name: 'Mutation',
-//   definition(t) {
-//     t.crud.createOneBlock();
-//     t.crud.createOneTransaction();
-//     t.crud.createOneValidator();
-//   },
-// });
 
 export const schema = makeSchema({
   types: [
@@ -127,7 +148,8 @@ export const schema = makeSchema({
     Transaction,
     Epoch,
     Query,
-    // Mutation,
+    Asset,
+    AssetTransfer,
   ],
   plugins: [nexusPrismaPlugin()],
   outputs: {
