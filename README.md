@@ -8,6 +8,7 @@ GraphQL APIs for [Muta][muta] framework.
 | ------------- | ------ | ------------------------------------------------------------ |
 | MUTA_ENDPOINT | String | The Mute framework GraphQL RPC endpoint, e.g. *http://127.0.0.1:8000/graphql* |
 | MUTA_CHAINID  | String | The ChainID                                                  |
+| POSTGRESQL_URL| String | The PostgreSQL URL for connect the database for syncing or fetching data  |
 
 ## Deployment
 
