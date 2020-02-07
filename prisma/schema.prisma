@@ -32,26 +32,27 @@ model Validator {
 }
 
 model Transaction {
-  id          Int      @default(autoincrement()) @id
-  txHash      String   @unique
-  receipt     Receipt?
-  block       Block
-  serviceName String
-  method      String
-  payload     String
-  cyclesPrice String
-  cyclesLimit String
-  nonce       String
-  pubkey      String
-  signature   String
-  chainId     String
-  timeout     String
-  account     Account
+  id           Int            @default(autoincrement()) @id
+  txHash       String         @unique
+  receipt      Receipt?
+  block        Block
+  serviceName  String
+  method       String
+  payload      String
+  cyclesPrice  String
+  cyclesLimit  String
+  nonce        String
+  pubkey       String
+  signature    String
+  chainId      String
+  timeout      String
+  account      Account
+  createdAsset Asset?
+  transfer     AssetTransfer?
 }
 
 model Receipt {
   id          Int             @default(autoincrement()) @id
-  block       Block
   transaction Transaction
   cyclesUsed  String
   events      Event[]
@@ -82,7 +83,33 @@ model Proof {
 }
 
 model Account {
-  id           Int           @default(autoincrement()) @id
-  address      String        @unique
+  id           Int             @default(autoincrement()) @id
+  address      String          @unique
   transactions Transaction[]
+  assets       Asset[]
+  transferFrom AssetTransfer[] @relation(name: "TransferFrom")
+  transferTo   AssetTransfer[] @relation(name: "TransferTo")
+}
+
+model Asset {
+  id                  Int         @default(autoincrement()) @id
+  assetId             String      @unique
+  name                String
+  symbol              String
+  creationTransaction Transaction @unique
+  // hex, differents with AssetService 
+  supply              String
+  account             Account
+}
+
+model AssetTransfer {
+  id          Int         @default(autoincrement()) @id
+  asset       Asset
+  transaction Transaction @unique
+  // the account of transfer from in the transfer
+  from        Account     @relation(name: "TransferFrom")
+  // the account of transfer in the transfer
+  to          Account     @relation(name: "TransferTo")
+  // hex, differents with AssetService
+  value       String
 }
