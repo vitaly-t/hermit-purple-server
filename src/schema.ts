@@ -95,7 +95,7 @@ const Asset = objectType({
   name: 'Asset',
   definition(t) {
     t.model.assetId();
-    t.model.account();
+    t.model.issuer();
     t.model.name();
     t.model.supply();
     t.model.symbol();
