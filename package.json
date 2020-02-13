@@ -16,7 +16,8 @@
     "generate:nexus": "ts-node --transpile-only src/schema",
     "postinstall": "npm -s run generate",
     "dev": "ts-node-dev --no-notify --respawn --transpileOnly src/index",
-    "sync": "ts-node src/sync"
+    "dev:sync": "cross-env DEBUG=sync:* ts-node src/sync",
+    "sync": "node dist/sync"
   },
   "dependencies": {
     "@prisma/client": "^2.0.0-preview021",
@@ -36,7 +37,6 @@
     "prisma2": "^2.0.0-preview021"
   },
   "devDependencies": {
-    "@types/node": "12.12.24",
     "@types/ws": "6.0.4",
     "cross-env": "^6.0.3",
     "ts-node": "8.6.2",
