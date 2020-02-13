@@ -1,200 +1,85 @@
 import {
-  AssetCreateWithoutCreationTransactionInput,
-  AssetTransferCreateWithoutTransactionInput,
   PrismaClient,
   ProofCreateWithoutBlocksInput,
-  TransactionCreateWithoutBlockInput,
   ValidatorCreateWithoutBlocksInput,
 } from '@prisma/client';
-import { utils } from 'muta-sdk';
+import { Client, utils } from 'muta-sdk';
 import { Promise as Bluebird } from 'bluebird';
 import { debug } from 'debug';
-import { BigNumber } from 'bignumber.js';
-import { MUTA_CHAINID, MUTA_ENDPOINT, SYNC_CONCURRENCY } from '../config';
+import { SYNC_CONCURRENCY } from '../config';
 import { muta } from '../muta';
-// import { syncReceipt } from './receipt';
-import { safeJSONParse } from './parse';
+import { BlockTransactionsConverter } from './parse';
+import { fetchWholeBlock } from './fetch';
+import { checkErrorWithDuplicateTx, removeDuplicateTx } from './hack';
+import { GetBlockQuery } from 'muta-sdk/build/main/client/codegen/sdk';
 
-const { toBuffer, addressFromPublicKey } = utils;
-const trace = debug('sync:block');
+const info = debug('sync:info');
+const error = debug('sync:error');
 
-export const rawClient = muta.client().getRawClient();
+export const client = muta.client();
+export const rawClient = client.getRawClient();
 export const prisma = new PrismaClient();
 
-/**
- * convert public key to address hex string without 0x
- * @param pubkey
- */
-function addressFromPubkey(pubkey: string) {
-  return addressFromPublicKey(toBuffer(pubkey)).toString('hex');
-}
-
 interface SyncOptions {
-  endpoint: string;
-  chainId: string;
+  startHeight?: number;
 }
 
-export async function sync(options: SyncOptions) {
-  try {
-    const chainLatestBlock = await rawClient.getBlock();
-    const latestBlockHeight = chainLatestBlock.getBlock.header.execHeight;
+class BlockSynchronizer {
+  /**
+   * current local block height
+   */
+  private localHeight: number;
 
-    const apiLatestBlock = await prisma.block.findMany({
-      first: 1,
-      orderBy: {
-        height: 'desc',
-      },
+  /**
+   * latest remote block height
+   */
+  private remoteHeight: number;
+
+  /**
+   * Muta RPC client
+   */
+  private client: Client;
+
+  /**
+   * Muta Raw RPC client
+   */
+  private rawClient: ReturnType<Client['getRawClient']>;
+
+  constructor(options: SyncOptions) {
+    this.localHeight = 0;
+    this.remoteHeight = 0;
+
+    this.client = client;
+    this.rawClient = rawClient;
+  }
+
+  private async refreshRemoteHeight(): Promise<number> {
+    const remoteBlock = await this.rawClient.getBlock();
+    return utils.hexToNum(remoteBlock.getBlock.header.execHeight);
+  }
+
+  private async refreshLocalHeight(): Promise<number> {
+    const blocks = await prisma.block.findMany({
+      select: { height: true },
+      last: 1,
     });
+    this.localHeight = (blocks[0]?.height ?? 0) + 1;
+    return this.localHeight;
+  }
 
-    let syncBlockHeight = (apiLatestBlock[0]?.height ?? 0) + 1;
+  private async saveBlock(
+    rawBlock: GetBlockQuery,
+    transactions: ReturnType<BlockTransactionsConverter['convert']>,
+    proof: ProofCreateWithoutBlocksInput,
+    validators: ValidatorCreateWithoutBlocksInput[],
+  ) {
+    const header = rawBlock.getBlock.header;
 
-    // TODO
-    //  HACK: now only sync the executed block, need sync the newest block
-    let targetBlockHeight = utils.hexToNum(latestBlockHeight);
-    if (targetBlockHeight < 1) targetBlockHeight = 1;
-    while (syncBlockHeight < targetBlockHeight) {
-      trace(`start: ${syncBlockHeight}, end: ${targetBlockHeight} `);
-
-      const block = await rawClient.getBlock({
-        height: utils.toHex(syncBlockHeight),
-      });
-      const header = block.getBlock.header;
-      const orderedTxHashes = block.getBlock.orderedTxHashes;
-
-      const txs = await Bluebird.all(orderedTxHashes).map(
-        txHash => rawClient.getTransaction({ txHash }),
-        { concurrency: SYNC_CONCURRENCY },
-      );
-
-      const receipts = await Bluebird.all(orderedTxHashes).map(
-        txHash => rawClient.getReceipt({ txHash }),
-        { concurrency: SYNC_CONCURRENCY },
-      );
-      trace(`fetched ${txs.length} txs and ${receipts.length} receipts`);
-
-      const addresses = new Set<string>();
-      const transactions: TransactionCreateWithoutBlockInput[] = txs.map(
-        (tx, i) => {
-          const {
-            serviceName,
-            method,
-            payload: payloadStr,
-            pubkey,
-          } = tx.getTransaction;
-          const caller = addressFromPubkey(pubkey);
-          const receipt = receipts[i]?.getReceipt;
-
-          addresses.add(caller);
-
-          let transfer: AssetTransferCreateWithoutTransactionInput | null = null;
-          if (serviceName === 'asset' && method === 'transfer') {
-            const payload = safeJSONParse<{
-              asset_id: string;
-              to: string;
-              value: BigNumber;
-            }>(payloadStr);
-
-            addresses.add(payload.to);
-
-            transfer = {
-              asset: { connect: { assetId: payload.asset_id } },
-              value: payload.value.toString(16),
-              from: { connect: { address: caller } },
-              to: { connect: { address: payload.to } },
-            };
-          }
-
-          let asset: AssetCreateWithoutCreationTransactionInput | null = null;
-          if (
-            receipt &&
-            !receipt.response.isError &&
-            serviceName === 'asset' &&
-            method === 'create_asset'
-          ) {
-            const payload = safeJSONParse<{
-              supply: BigNumber;
-              symbol: string;
-              name: string;
-              id: string;
-            }>(receipt.response.ret);
-
-            asset = {
-              account: { connect: { address: caller } },
-              assetId: payload.id,
-              name: payload.name,
-              symbol: payload.symbol,
-              supply: payload.supply.toString(16),
-            };
-          }
-
-          return {
-            ...tx.getTransaction,
-            ...(transfer ? { transfer: { create: transfer } } : {}),
-            ...(asset ? { createdAsset: { create: asset } } : {}),
-            account: {
-              connect: { address: addressFromPubkey(tx.getTransaction.pubkey) },
-            },
-            receipt: {
-              create: {
-                cyclesUsed: receipt.cyclesUsed,
-                events: {
-                  create: receipt.events.map(x => ({
-                    data: x.data,
-                    service: x.service,
-                  })),
-                },
-                response: {
-                  create: {
-                    isError: receipt.response.isError,
-                    ret: receipt.response.ret,
-                  },
-                },
-              },
-            },
-          };
-        },
-      );
-
-      await Bluebird.all<string>(addresses).map(
-        address =>
-          prisma.account.upsert({
-            where: { address },
-            create: { address },
-            update: {},
-          }),
-        { concurrency: SYNC_CONCURRENCY },
-      );
-
-      const validators: ValidatorCreateWithoutBlocksInput[] = header.validators.map(
-        v => ({ ...v }),
-      );
-
-      await Promise.all(
-        validators.map(v =>
-          prisma.validator.upsert({
-            where: {
-              address: v.address,
-            },
-            create: {
-              address: v.address,
-              proposeWeight: v.proposeWeight,
-              voteWeight: v.voteWeight,
-            },
-            update: {},
-          }),
-        ),
-      );
-
-      const proof: ProofCreateWithoutBlocksInput = {
-        ...header.proof,
-        height: utils.hexToNum(header.proof.height),
-        round: utils.hexToNum(header.proof.round),
-      };
-
+    try {
       await prisma.block.create({
         data: {
           height: utils.hexToNum(header.height),
-          transactionsCount: orderedTxHashes.length,
+          transactionsCount: transactions.length,
           transactions: {
             create: transactions,
           },
@@ -202,9 +87,7 @@ export async function sync(options: SyncOptions) {
           orderRoot: header.orderRoot,
           stateRoot: header.stateRoot,
           proposer: header.proposer,
-          proof: {
-            create: proof,
-          },
+          proof: { create: proof },
           preHash: header.preHash,
           validatorVersion: header.validatorVersion,
           validators: {
@@ -212,20 +95,81 @@ export async function sync(options: SyncOptions) {
           },
         },
       });
-
-      syncBlockHeight++;
+    } catch (e) {
+      if (checkErrorWithDuplicateTx(e)) {
+        error(`found duplicate tx in #${this.localHeight}`);
+        const correctTransactions = await removeDuplicateTx(transactions);
+        await this.saveBlock(rawBlock, correctTransactions, proof, validators);
+      } else {
+        throw e;
+      }
     }
-  } catch (e) {
-    console.error(e);
-    await Bluebird.delay(500);
-    await sync(options);
   }
 
-  await Bluebird.delay(500);
-  sync(options);
+  async run() {
+    while (1) {
+      try {
+        const localHeight = await this.refreshLocalHeight();
+        const remoteHeight = await this.refreshRemoteHeight();
+
+        if (localHeight >= remoteHeight) {
+          info(`waiting for remote new block`);
+          await this.client.waitForNextNBlock(1);
+          continue;
+        }
+
+        info(`start: ${localHeight}, end: ${remoteHeight} `);
+
+        const { block, txs, receipts } = await fetchWholeBlock(localHeight);
+        const header = block.getBlock.header;
+
+        info(`fetched ${txs.length} txs and ${receipts.length} receipts`);
+
+        const converter = new BlockTransactionsConverter();
+        const transactions = converter.convert(txs, receipts);
+
+        // create accounts if not exists
+        const addresses = converter.getRelevantAddresses();
+        await Bluebird.all<string>(addresses).map(
+          address =>
+            prisma.account.upsert({
+              where: { address },
+              create: { address },
+              update: {},
+            }),
+          { concurrency: SYNC_CONCURRENCY },
+        );
+
+        // create validators if not exists
+        const validators: ValidatorCreateWithoutBlocksInput[] =
+          header.validators;
+
+        await Promise.all(
+          validators.map(validator =>
+            prisma.validator.upsert({
+              where: { address: validator.address },
+              create: {
+                address: validator.address,
+                proposeWeight: validator.proposeWeight,
+                voteWeight: validator.voteWeight,
+              },
+              update: {},
+            }),
+          ),
+        );
+
+        const proof: ProofCreateWithoutBlocksInput = {
+          ...header.proof,
+          height: utils.hexToNum(header.proof.height),
+          round: utils.hexToNum(header.proof.round),
+        };
+
+        await this.saveBlock(block, transactions, proof, validators);
+      } catch (e) {
+        error(e);
+      }
+    }
+  }
 }
 
-sync({
-  endpoint: MUTA_ENDPOINT,
-  chainId: MUTA_CHAINID,
-});
+new BlockSynchronizer({}).run();
