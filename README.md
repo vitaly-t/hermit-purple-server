@@ -4,31 +4,17 @@ GraphQL APIs for [Muta][muta] framework.
 
 ## Environment Variables
 
-| Key           | Type   | Description                                                  |
-| ------------- | ------ | ------------------------------------------------------------ |
-| MUTA_ENDPOINT | String | The Mute framework GraphQL RPC endpoint, e.g. *http://127.0.0.1:8000/graphql* |
-| MUTA_CHAINID  | String | The ChainID                                                  |
-| POSTGRESQL_URL| String | The PostgreSQL URL for connect the database for syncing or fetching data  |
+| Key                      | Type   | DEFAULT                                                            | Description                             |
+| ------------------------ | ------ | ------------------------------------------------------------------ | --------------------------------------- |
+| MUTA_ENDPOINT            | String | http://127.0.0.1:8000/graphql                                      | The Mute framework GraphQL RPC endpoint |
+| MUTA_CHAINID             | String | 0xb6a4d7da21443f5e816e8700eea87610e6d769657d6b8ec73028457bf2ca4036 | The ChainID                             |
+| POSTGRESQL_URL           | String | postgresql://postgres@localhost:5432/muta?schema=public            | Teh PostgreSQL URL                      |
+| HERMIT_PORT              | Number | 4040                                                               | The cache server listen port            |
+| HERMIT_FETCH_CONCURRENCY | Number | 500                                                                | The concurrency of RPC                  |
 
-## Deployment
+## References
 
-```shell script
-git clone https://github.com/homura/hermit-purple-server.git
-cd hermit-purple-server
-export MUTA_ENDPOINT=http://127.0.0.1:8000/graphql
-yarn
-yarn build
-# recommend pm2 here
-yarn start
-```
+- [deploy](./docs/deploy.md)
 
-## Development
-
-```shell script
-git clone https://github.com/homura/hermit-purple-server.git
-cd hermit-purple-server
-yarn
-yarn dev
-```
 
 [muta]: https://github.com/nervosnetwork/muta
