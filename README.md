@@ -12,6 +12,25 @@ GraphQL APIs for [Muta][muta] framework.
 | HERMIT_PORT              | Number | 4040                                                               | The cache server listen port            |
 | HERMIT_FETCH_CONCURRENCY | Number | 500                                                                | The concurrency of RPC                  |
 
+## How does it work?
+
+```
+                                   block
+                                   tx
+                  +-----------+    receipt   +-----------+
+                  |   sync    +-------------->   Muta    |
+                  |           <--------------+           |
+                  +-----+-----+              +-----------+
+                        |
+                        |
++-----------+        +--v---+
+|  GraphQL  <--------+      |
+|    API    +        |  DB  |
++-----------+        |      |
+                     +------+
+
+```
+
 ## References
 
 - [deploy](./docs/deploy.md)
