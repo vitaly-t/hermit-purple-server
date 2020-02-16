@@ -46,7 +46,7 @@ model Transaction {
   signature    String
   chainId      String
   timeout      String
-  issuer      Account
+  account      Account
   createdAsset Asset?
   transfer     AssetTransfer?
 }
@@ -89,6 +89,7 @@ model Account {
   assets       Asset[]
   transferFrom AssetTransfer[] @relation(name: "TransferFrom")
   transferTo   AssetTransfer[] @relation(name: "TransferTo")
+  balances     Balance[]
 }
 
 model Asset {
@@ -100,6 +101,7 @@ model Asset {
   // hex, differents with AssetService 
   supply              String
   account             Account
+  balances            Balance[]
 }
 
 model AssetTransfer {
@@ -112,4 +114,14 @@ model AssetTransfer {
   to          Account     @relation(name: "TransferTo")
   /// hex, differents with AssetService
   value       String
+}
+
+model Balance {
+  id       Int     @default(autoincrement()) @id
+  /// hash(accountAddress + assetId)
+  compound String  @unique
+  asset    Asset
+  account  Account
+  /// Uint64
+  balance  String
 }

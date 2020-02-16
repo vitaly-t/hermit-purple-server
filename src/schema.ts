@@ -34,6 +34,17 @@ const Account = objectType({
   definition(t) {
     t.model.address();
     t.model.transactions();
+    t.model.balances({ filtering: true, pagination: true, ordering: true });
+  },
+});
+
+const Balance = objectType({
+  name: 'Balance',
+  definition(t) {
+    t.model.account();
+    t.model.asset();
+    t.model.balance();
+    t.model.compound();
   },
 });
 
@@ -95,7 +106,7 @@ const Asset = objectType({
   name: 'Asset',
   definition(t) {
     t.model.assetId();
-    t.model.issuer();
+    t.model.account();
     t.model.name();
     t.model.supply();
     t.model.symbol();
@@ -141,6 +152,7 @@ export const schema = makeSchema({
   types: [
     Account,
     Receipt,
+    Balance,
     ReceiptResponse,
     Event,
     Proof,

@@ -1,14 +1,16 @@
 import {
   PrismaClient,
   ProofCreateWithoutBlocksInput,
+  TransactionCreateWithoutBlockInput,
   ValidatorCreateWithoutBlocksInput,
 } from '@prisma/client';
-import { Client, utils } from 'muta-sdk';
+import { AssetService, utils } from 'muta-sdk';
 import { Promise as Bluebird } from 'bluebird';
+import { BigNumber } from 'bignumber.js';
 import { debug } from 'debug';
 import { SYNC_CONCURRENCY } from '../config';
 import { muta } from '../muta';
-import { BlockTransactionsConverter } from './parse';
+import { BalanceTask, BlockTransactionsConverter } from './parse';
 import { fetchWholeBlock } from './fetch';
 import { checkErrorWithDuplicateTx, removeDuplicateTx } from './hack';
 import { GetBlockQuery } from 'muta-sdk/build/main/client/codegen/sdk';
@@ -18,6 +20,10 @@ const error = debug('sync:error');
 
 export const client = muta.client();
 export const rawClient = client.getRawClient();
+
+// @ts-ignore
+export const readonlyAssetService = new AssetService(client, null);
+
 export const prisma = new PrismaClient();
 
 interface SyncOptions {
@@ -35,26 +41,13 @@ class BlockSynchronizer {
    */
   private remoteHeight: number;
 
-  /**
-   * Muta RPC client
-   */
-  private client: Client;
-
-  /**
-   * Muta Raw RPC client
-   */
-  private rawClient: ReturnType<Client['getRawClient']>;
-
   constructor(options: SyncOptions) {
     this.localHeight = 0;
     this.remoteHeight = 0;
-
-    this.client = client;
-    this.rawClient = rawClient;
   }
 
   private async refreshRemoteHeight(): Promise<number> {
-    const remoteBlock = await this.rawClient.getBlock();
+    const remoteBlock = await rawClient.getBlock();
     return utils.hexToNum(remoteBlock.getBlock.header.execHeight);
   }
 
@@ -67,9 +60,42 @@ class BlockSynchronizer {
     return this.localHeight;
   }
 
+  private async updateBalance(updateBalanceTasks: BalanceTask) {
+    const tasks = Array.from(updateBalanceTasks.entries());
+
+    info(`${tasks.length} balance tasks start`);
+
+    await Bluebird.all(tasks).map(
+      async ([compound, [address, assetId]]) => {
+        let {
+          ret: { balance },
+        } = await readonlyAssetService.get_balance({
+          asset_id: assetId,
+          user: address,
+        });
+
+        balance = new BigNumber(balance).toString(16);
+
+        return prisma.balance.upsert({
+          where: { compound },
+          create: {
+            compound,
+            account: { connect: { address } },
+            asset: { connect: { assetId } },
+            balance,
+          },
+          update: { balance },
+        });
+      },
+      { concurrency: SYNC_CONCURRENCY },
+    );
+
+    info(`${tasks.length} balance tasks updated`);
+  }
+
   private async saveBlock(
     rawBlock: GetBlockQuery,
-    transactions: ReturnType<BlockTransactionsConverter['convert']>,
+    transactions: TransactionCreateWithoutBlockInput[],
     proof: ProofCreateWithoutBlocksInput,
     validators: ValidatorCreateWithoutBlocksInput[],
   ) {
@@ -114,7 +140,7 @@ class BlockSynchronizer {
 
         if (localHeight >= remoteHeight) {
           info(`waiting for remote new block`);
-          await this.client.waitForNextNBlock(1);
+          await client.waitForNextNBlock(1);
           continue;
         }
 
@@ -125,11 +151,13 @@ class BlockSynchronizer {
 
         info(`fetched ${txs.length} txs and ${receipts.length} receipts`);
 
-        const converter = new BlockTransactionsConverter();
-        const transactions = converter.convert(txs, receipts);
+        const converter = new BlockTransactionsConverter(txs, receipts);
+
+        const transactions = converter.getTransactionInput();
 
         // create accounts if not exists
         const addresses = converter.getRelevantAddresses();
+
         await Bluebird.all<string>(addresses).map(
           address =>
             prisma.account.upsert({
@@ -165,6 +193,7 @@ class BlockSynchronizer {
         };
 
         await this.saveBlock(block, transactions, proof, validators);
+        await this.updateBalance(converter.getBalanceTask());
       } catch (e) {
         error(e);
       }
