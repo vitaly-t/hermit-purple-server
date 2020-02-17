@@ -1,6 +1,5 @@
 import {
   PrismaClient,
-  ProofCreateWithoutBlocksInput,
   TransactionCreateWithoutBlockInput,
   ValidatorCreateWithoutBlocksInput,
 } from '@prisma/client';
@@ -96,7 +95,6 @@ class BlockSynchronizer {
   private async saveBlock(
     rawBlock: GetBlockQuery,
     transactions: TransactionCreateWithoutBlockInput[],
-    proof: ProofCreateWithoutBlocksInput,
     validators: ValidatorCreateWithoutBlocksInput[],
   ) {
     const header = rawBlock.getBlock.header;
@@ -113,7 +111,10 @@ class BlockSynchronizer {
           orderRoot: header.orderRoot,
           stateRoot: header.stateRoot,
           proposer: header.proposer,
-          proof: { create: proof },
+          proofBitmap: header.proof.bitmap,
+          proofBlockHash: header.proof.blockHash,
+          proofRound: header.proof.round,
+          proofSignature: header.proof.signature,
           preHash: header.preHash,
           validatorVersion: header.validatorVersion,
           validators: {
@@ -125,7 +126,7 @@ class BlockSynchronizer {
       if (checkErrorWithDuplicateTx(e)) {
         error(`found duplicate tx in #${this.localHeight}`);
         const correctTransactions = await removeDuplicateTx(transactions);
-        await this.saveBlock(rawBlock, correctTransactions, proof, validators);
+        await this.saveBlock(rawBlock, correctTransactions, validators);
       } else {
         throw e;
       }
@@ -186,13 +187,7 @@ class BlockSynchronizer {
           ),
         );
 
-        const proof: ProofCreateWithoutBlocksInput = {
-          ...header.proof,
-          height: utils.hexToNum(header.proof.height),
-          round: utils.hexToNum(header.proof.round),
-        };
-
-        await this.saveBlock(block, transactions, proof, validators);
+        await this.saveBlock(block, transactions, validators);
         await this.updateBalance(converter.getBalanceTask());
       } catch (e) {
         error(e);

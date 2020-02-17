@@ -1,5 +1,5 @@
 import {
-  AssetCreateWithoutCreationTransactionInput,
+  AssetCreateWithoutTransactionInput,
   AssetTransferCreateWithoutTransactionInput,
   TransactionCreateWithoutBlockInput,
 } from '@prisma/client';
@@ -76,13 +76,7 @@ export class BlockTransactionsConverter {
   }
 
   walk() {
-    const {
-      txQuery: txs,
-      receiptQuery: receipts,
-      addresses,
-      txInput,
-      balanceTask,
-    } = this;
+    const { txQuery: txs, receiptQuery: receipts, addresses, txInput } = this;
 
     txs.forEach((tx, i) => {
       const {
@@ -120,7 +114,7 @@ export class BlockTransactionsConverter {
         };
       }
 
-      let asset: AssetCreateWithoutCreationTransactionInput | null = null;
+      let asset: AssetCreateWithoutTransactionInput | null = null;
       if (
         receipt &&
         !receipt.response.isError &&
@@ -149,27 +143,18 @@ export class BlockTransactionsConverter {
         ...tx.getTransaction,
         ...(transfer ? { transfer: { create: transfer } } : {}),
         ...(asset ? { createdAsset: { create: asset } } : {}),
-        account: {
+        from: {
           connect: {
             address: addressFromPubkey(tx.getTransaction.pubkey),
           },
         },
-        receipt: {
-          create: {
-            cyclesUsed: receipt.cyclesUsed,
-            events: {
-              create: receipt.events.map(event => ({
-                data: event.data,
-                service: event.service,
-              })),
-            },
-            response: {
-              create: {
-                isError: receipt.response.isError,
-                ret: receipt.response.ret,
-              },
-            },
-          },
+        receiptIsError: receipt.response.isError,
+        receiptRet: receipt.response.ret,
+        events: {
+          create: receipt.events.map(event => ({
+            data: event.data,
+            service: event.service,
+          })),
         },
       });
     });
