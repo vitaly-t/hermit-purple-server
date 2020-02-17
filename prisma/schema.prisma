@@ -8,9 +8,9 @@ generator client {
   provider = "prisma-client-js"
 }
 
+/// the block resource
 model Block {
-  id                Int           @default(autoincrement()) @id
-  height            Int           @unique
+  height            Int           @id
   transactionsCount Int
   preHash           String
   timestamp         DateTime
@@ -18,73 +18,57 @@ model Block {
   stateRoot         String
   proposer          String
   validatorVersion  String
-  proof             Proof
+  proofRound        String
+  proofBlockHash    String
+  proofSignature    String
+  proofBitmap       String
   transactions      Transaction[]
   validators        Validator[]
 }
 
+
+model Transaction {
+  txHash         String         @id
+  serviceName    String
+  method         String
+  payload        String
+  cyclesPrice    String
+  cyclesLimit    String
+  nonce          String
+  pubkey         String
+  signature      String
+  chainId        String
+  timeout        String
+  block          Block
+  /// transaction send from account
+  from           Account
+  // receipt
+  /// events in revant receipt
+  events         Event[]
+  /// receipt return data, is often a json
+  receiptRet     String?
+  /// is an error transaction
+  receiptIsError Boolean?
+  createdAsset   Asset?
+  transfer       AssetTransfer?
+}
+
+model Event {
+  id      Int         @default(autoincrement()) @id
+  receipt Transaction
+  service String
+  data    String
+}
+
 model Validator {
-  id            Int     @default(autoincrement()) @id
-  address       String  @unique
+  address       String  @id
   proposeWeight Int
   voteWeight    Int
   blocks        Block[]
 }
 
-model Transaction {
-  id           Int            @default(autoincrement()) @id
-  txHash       String         @unique
-  receipt      Receipt?
-  block        Block
-  serviceName  String
-  method       String
-  payload      String
-  cyclesPrice  String
-  cyclesLimit  String
-  nonce        String
-  pubkey       String
-  signature    String
-  chainId      String
-  timeout      String
-  account      Account
-  createdAsset Asset?
-  transfer     AssetTransfer?
-}
-
-model Receipt {
-  id          Int             @default(autoincrement()) @id
-  transaction Transaction
-  cyclesUsed  String
-  events      Event[]
-  response    ReceiptResponse
-}
-
-model ReceiptResponse {
-  id      Int     @default(autoincrement()) @id
-  receipt Receipt
-  ret     String
-  isError Boolean
-}
-
-model Event {
-  id      Int     @default(autoincrement()) @id
-  receipt Receipt
-  service String
-  data    String
-}
-
-model Proof {
-  id        Int    @default(autoincrement()) @id
-  height    Int
-  round     Int
-  blockHash String
-  signature String
-  bitmap    String
-}
-
 model Account {
-  id           Int             @default(autoincrement()) @id
-  address      String          @unique
+  address      String          @id
   transactions Transaction[]
   assets       Asset[]
   transferFrom AssetTransfer[] @relation(name: "TransferFrom")
@@ -93,15 +77,15 @@ model Account {
 }
 
 model Asset {
-  id                  Int         @default(autoincrement()) @id
-  assetId             String      @unique
-  name                String
-  symbol              String
-  creationTransaction Transaction @unique
+  assetId     String      @id
+  name        String
+  symbol      String
+  /// the transaction of the issuer creating this asset
+  transaction Transaction @unique
   // hex, differents with AssetService 
-  supply              String
-  account             Account
-  balances            Balance[]
+  supply      String
+  /// holders of this asset
+  balances    Balance[]
 }
 
 model AssetTransfer {
@@ -118,7 +102,7 @@ model AssetTransfer {
 
 model Balance {
   id       Int     @default(autoincrement()) @id
-  /// hash(accountAddress + assetId)
+  /// keccakHash(accountAddress + assetId)
   compound String  @unique
   asset    Asset
   account  Account
