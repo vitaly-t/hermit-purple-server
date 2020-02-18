@@ -1,3 +1,6 @@
+// calc the complexity of an query request
+// error when the complexity great than `HERMIT_MAX_COMPLEXITY`
+
 import { getComplexity } from 'graphql-query-complexity';
 import { ValidationContext, GraphQLError } from 'graphql';
 import { HERMIT_MAX_COMPLEXITY } from '../config';
@@ -6,7 +9,7 @@ import { Request } from 'express';
 const MUST_LIMIT_TYPE = new Set([
   'blocks',
   'transactions',
-  'account',
+  'accounts',
   'assets',
   'accountTransfers',
 ]);
@@ -24,7 +27,8 @@ export function complexity(context: ValidationContext, request?: Request) {
         if (MUST_LIMIT_TYPE.has(fieldName) && !limit) {
           context.reportError(
             new GraphQLError(
-              `"first" or "last" argument is required in field "${fieldName}" of type "${options.type.name}"`,
+              `"first" or "last" argument is required in field` +
+                `"${fieldName}" of type "${options.type.name}"`,
             ),
           );
         }
