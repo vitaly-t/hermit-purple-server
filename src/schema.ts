@@ -11,7 +11,7 @@ const Validator = objectType({
   },
 });
 
-const Epoch = objectType({
+const Block = objectType({
   name: 'Block',
   definition(t) {
     t.model.height();
@@ -19,6 +19,7 @@ const Epoch = objectType({
     t.model.transactions();
     t.model.preHash();
     t.model.timestamp();
+    t.model.proposer();
     t.model.orderRoot({
       alias: 'orderedTransactionRoot',
     });
@@ -54,6 +55,7 @@ const Balance = objectType({
 const Transaction = objectType({
   name: 'Transaction',
   definition(t) {
+    t.model.order();
     t.model.txHash();
     t.model.block();
     t.model.serviceName();
@@ -67,6 +69,7 @@ const Transaction = objectType({
     t.model.signature();
     t.model.receiptIsError();
     t.model.receiptRet();
+    t.model.cyclesUsed();
   },
 });
 
@@ -129,7 +132,7 @@ export const schema = makeSchema({
     Event,
     Validator,
     Transaction,
-    Epoch,
+    Block,
     Query,
     Asset,
     AssetTransfer,

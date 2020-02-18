@@ -11,6 +11,7 @@ generator client {
 /// the block resource
 model Block {
   height            Int           @id
+  execHeight        Int
   transactionsCount Int
   preHash           String
   timestamp         DateTime
@@ -28,9 +29,15 @@ model Block {
 
 
 model Transaction {
-  txHash         String         @id
+  /// the order of the transaction
+  order          Int            @id @default(autoincrement())
+  /// hex, hash of the transaction
+  txHash         String         @unique
+  /// transaction called service name
   serviceName    String
+  /// transaction called method
   method         String
+  /// the payload of this transaction
   payload        String
   cyclesPrice    String
   cyclesLimit    String
@@ -43,12 +50,14 @@ model Transaction {
   /// transaction send from account
   from           Account
   // receipt
+  receiptIsError Boolean?
   /// events in revant receipt
   events         Event[]
   /// receipt return data, is often a json
   receiptRet     String?
-  /// is an error transaction
-  receiptIsError Boolean?
+  /// cycles used of the transaction
+  cyclesUsed     String?
+  // union transaction
   createdAsset   Asset?
   transfer       AssetTransfer?
 }

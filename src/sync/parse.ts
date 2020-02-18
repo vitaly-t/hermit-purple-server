@@ -150,6 +150,7 @@ export class BlockTransactionsConverter {
         },
         receiptIsError: receipt.response.isError,
         receiptRet: receipt.response.ret,
+        cyclesUsed: receipt.cyclesUsed,
         events: {
           create: receipt.events.map(event => ({
             data: event.data,

@@ -47,7 +47,8 @@ class BlockSynchronizer {
 
   private async refreshRemoteHeight(): Promise<number> {
     const remoteBlock = await rawClient.getBlock();
-    return utils.hexToNum(remoteBlock.getBlock.header.execHeight);
+    this.remoteHeight = utils.hexToNum(remoteBlock.getBlock.header.execHeight);
+    return this.remoteHeight;
   }
 
   private async refreshLocalHeight(): Promise<number> {
@@ -103,6 +104,7 @@ class BlockSynchronizer {
       await prisma.block.create({
         data: {
           height: utils.hexToNum(header.height),
+          execHeight: utils.hexToNum(header.execHeight),
           transactionsCount: transactions.length,
           transactions: {
             create: transactions,
