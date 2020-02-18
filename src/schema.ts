@@ -23,7 +23,10 @@ const Epoch = objectType({
       alias: 'orderedTransactionRoot',
     });
     t.model.stateRoot();
-    t.model.proof();
+    t.model.proofBitmap();
+    t.model.proofBlockHash();
+    t.model.proofRound();
+    t.model.proofSignature();
     t.model.validatorVersion();
     t.model.validators();
   },
@@ -59,20 +62,11 @@ const Transaction = objectType({
     t.model.cyclesPrice();
     t.model.cyclesLimit();
     t.model.nonce();
-    t.model.account();
+    t.model.from();
     t.model.pubkey();
     t.model.signature();
-    t.model.receipt();
-  },
-});
-
-const Receipt = objectType({
-  name: 'Receipt',
-  definition(t) {
-    t.model.transaction();
-    t.model.cyclesUsed();
-    t.model.events();
-    t.model.response();
+    t.model.receiptIsError();
+    t.model.receiptRet();
   },
 });
 
@@ -80,25 +74,7 @@ const Event = objectType({
   name: 'Event',
   definition(t) {
     t.model.data();
-    t.model.receipt();
-  },
-});
-
-const ReceiptResponse = objectType({
-  name: 'ReceiptResponse',
-  definition(t) {
-    t.model.isError();
-    t.model.ret();
-  },
-});
-
-const Proof = objectType({
-  name: 'Proof',
-  definition(t) {
-    t.model.signature();
-    t.model.round();
-    t.model.bitmap();
-    t.model.blockHash();
+    t.model.service();
   },
 });
 
@@ -110,7 +86,7 @@ const Asset = objectType({
     t.model.name();
     t.model.supply();
     t.model.symbol();
-    t.model.creationTransaction();
+    t.model.transaction();
     t.model.assetTransfers();
   },
 });
@@ -130,7 +106,6 @@ const Query = queryType({
     t.crud.block();
     t.crud.transaction();
     t.crud.validator();
-    t.crud.receipt();
     t.crud.account();
     t.crud.asset();
     t.crud.assetTransfer();
@@ -138,7 +113,6 @@ const Query = queryType({
     t.crud.accounts({ ordering: true, filtering: true, pagination: true });
     t.crud.blocks({ ordering: true, filtering: true, pagination: true });
     t.crud.transactions({ ordering: true, filtering: true, pagination: true });
-    t.crud.receipts({ ordering: true, filtering: true, pagination: true });
     t.crud.assets({ ordering: true, filtering: true, pagination: true });
     t.crud.assetTransfers({
       ordering: true,
@@ -151,11 +125,8 @@ const Query = queryType({
 export const schema = makeSchema({
   types: [
     Account,
-    Receipt,
     Balance,
-    ReceiptResponse,
     Event,
-    Proof,
     Validator,
     Transaction,
     Epoch,
