@@ -4,6 +4,7 @@ import * as cors from 'cors';
 import { schema } from './schema';
 import { createContext } from './context';
 import { ALLOW_CORS, HERMIT_PORT, MUTA_ENDPOINT } from './config';
+import { complexity } from './rules/complexity';
 
 const server = new GraphQLServer({
   schema,
@@ -26,6 +27,7 @@ server.express.use(
 
 const options: Options = {
   port: HERMIT_PORT,
+  validationRules: [complexity],
 };
 
 if (ALLOW_CORS) {

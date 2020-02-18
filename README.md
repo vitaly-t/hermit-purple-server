@@ -11,6 +11,7 @@ GraphQL APIs for [Muta][muta] framework.
 | POSTGRESQL_URL           | String | postgresql://postgres@localhost:5432/muta?schema=public            | Teh PostgreSQL URL                      |
 | HERMIT_PORT              | Number | 4040                                                               | The cache server listen port            |
 | HERMIT_FETCH_CONCURRENCY | Number | 500                                                                | The concurrency of RPC                  |
+| HERMIT_MAX_COMPLEXITY    | Number | 100                                                                |
 
 ## How does it work?
 
@@ -39,6 +40,5 @@ GraphQL APIs for [Muta][muta] framework.
 ## References
 
 - [deploy](./docs/deploy.md)
-
 
 [muta]: https://github.com/nervosnetwork/muta

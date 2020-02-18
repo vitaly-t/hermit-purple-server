@@ -15,3 +15,10 @@ export const SYNC_CONCURRENCY: number = Number(
 export const HERMIT_PORT = process.env.HERMIT_PORT || 4040;
 
 export const ALLOW_CORS = process.env.ALLOW_CORS ?? true;
+
+/**
+ * maximum cost each query task
+ */
+export const HERMIT_MAX_COMPLEXITY: number = Number(
+  process.env.HERMIT_MAX_COMPLEXITY ?? 100,
+);
