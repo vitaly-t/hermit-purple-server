@@ -1,6 +1,7 @@
 import { getComplexity } from 'graphql-query-complexity';
 import { ValidationContext, GraphQLError } from 'graphql';
 import { HERMIT_MAX_COMPLEXITY } from '../config';
+import { Request } from 'express';
 
 const MUST_LIMIT_TYPE = new Set([
   'blocks',
@@ -10,10 +11,11 @@ const MUST_LIMIT_TYPE = new Set([
   'accountTransfers',
 ]);
 
-export function complexity(context: ValidationContext) {
+export function complexity(context: ValidationContext, request?: Request) {
   const complexity = getComplexity({
     query: context.getDocument(),
     schema: context.getSchema(),
+    variables: request?.body.variables,
     estimators: [
       options => {
         const fieldName = options.field.name;

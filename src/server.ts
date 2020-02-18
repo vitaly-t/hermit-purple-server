@@ -27,7 +27,7 @@ server.express.use(
 
 const options: Options = {
   port: HERMIT_PORT,
-  validationRules: [complexity],
+  validationRules: req => [context => complexity(context, req)],
 };
 
 if (ALLOW_CORS) {
