@@ -88,6 +88,7 @@ export HERMIT_MAX_COMPLEXITY=100
 ## Build this project
 
 ```
+npm install
 npm run build
 ```
 
