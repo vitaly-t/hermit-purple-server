@@ -10,6 +10,7 @@
   "scripts": {
     "start": "node dist/index",
     "clean": "rm -rf dist",
+    "docs": "graphql-markdown src/generated/schema.graphql > docs/schema.md",
     "build": "npm -s run clean && npm -s run generate && tsc",
     "generate": "npm -s run generate:prisma && npm -s run generate:nexus",
     "generate:prisma": "prisma2 generate",
@@ -41,6 +42,7 @@
   "devDependencies": {
     "@types/ws": "6.0.4",
     "cross-env": "^6.0.3",
+    "graphql-markdown": "^5.2.0",
     "ts-node": "8.6.2",
     "ts-node-dev": "1.0.0-pre.44",
     "typescript": "3.7.4"
