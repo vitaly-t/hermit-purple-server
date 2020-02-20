@@ -101,6 +101,7 @@ const AssetTransfer = objectType({
     t.model.to();
     t.model.value();
     t.model.transaction();
+    t.model.asset();
   },
 });
 
