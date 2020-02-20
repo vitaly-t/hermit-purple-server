@@ -92,7 +92,61 @@ npm install
 npm run build
 ```
 
-## Sync remote block to database
+## Start server and sync(via pm2)
+
+Recommend to use **[pm2](https://pm2.keymetrics.io/)** as the daemon process manager
+
+### Create a `pm2.json` as configuration file
+
+```json
+{
+  "apps": [
+    {
+      "name": "muta-api",
+      "script": "npm",
+      "args": "start"
+    },
+    {
+      "name": "muta-sync",
+      "script": "npm",
+      "args": "run sync",
+      "env": {
+        "DEBUG": "sync:*"
+      }
+    }
+  ]
+}
+```
+
+### Install `pm2` and start it
+
+```
+npm install pm2 -g
+pm2 start pm2.json
+```
+
+Then we would see a table like this
+
+```
+┌────┬────────────────────┬──────────┬──────┬───────────┬──────────┬──────────┐
+│ id │ name               │ mode     │ ↺    │ status    │ cpu      │ memory   │
+├────┼────────────────────┼──────────┼──────┼───────────┼──────────┼──────────┤
+│ 0  │ muta-api           │ fork     │ 0    │ online    │ 0.2%     │ 45.9mb   │
+│ 1  │ muta-sync          │ fork     │ 0    │ online    │ 0.2%     │ 45.5mb   │
+└────┴────────────────────┴──────────┴──────┴───────────┴──────────┴──────────┘
+```
+
+### View log files
+
+```
+pm2 log muta-api
+# or
+pm2 log muta-sync
+```
+
+## Start the server and sync (directly)
+
+### Sync remote block to database
 
 ```
 # Open the log on console
@@ -101,7 +155,7 @@ export DEBUG=sync:*
 npm run sync
 ```
 
-## Run the API server
+### Run the API server
 
 ```
 # recommend pm2
