@@ -53,7 +53,7 @@ export const Block = objectType({
     t.model.proofRound();
     t.field('proofRound', {
       type: 'Uint64',
-      description: 'hello world',
+      description: 'Proof of round',
     });
 
     t.model.proofSignature();
