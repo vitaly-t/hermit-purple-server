@@ -21,7 +21,7 @@
     "sync": "node dist/sync"
   },
   "dependencies": {
-    "@prisma/client": "^2.0.0-preview021",
+    "@prisma/client": "2.0.0-preview021",
     "@types/bluebird": "^3.5.29",
     "@types/http-proxy-middleware": "^0.19.3",
     "bignumber.js": "^9.0.0",
@@ -37,7 +37,7 @@
     "muta-sdk": "^0.7.0-alpha.2",
     "nexus": "^0.12.0-rc.9",
     "nexus-prisma": "^0.9.0",
-    "prisma2": "^2.0.0-preview021"
+    "prisma2": "2.0.0-preview021"
   },
   "devDependencies": {
     "@types/ws": "6.0.4",
