@@ -1,5 +1,5 @@
 import { nexusPrismaPlugin } from 'nexus-prisma';
-import { makeSchema, queryType } from 'nexus';
+import { makeSchema } from 'nexus';
 import {
   AddressScalar,
   BytesScalar,
@@ -10,32 +10,11 @@ import { Validator } from './schema/Validator';
 import { Block } from './schema/Block';
 import { Account } from './schema/Account';
 import { Balance } from './schema/Balance';
-import { /* ResolvedTransaction, */ Transaction } from './schema/Transaction';
+import { Transaction } from './schema/Transaction';
 import { Event } from './schema/Event';
 import { Asset } from './schema/Asset';
 import { AssetTransfer } from './schema/AssetTransfer';
-
-const Query = queryType({
-  definition(t) {
-    t.crud.block();
-    t.crud.transaction();
-    t.crud.validator();
-    t.crud.account();
-    t.crud.asset();
-    t.crud.assetTransfer();
-
-    t.crud.accounts({ ordering: true, filtering: true, pagination: true });
-    t.crud.blocks({ ordering: true, filtering: true, pagination: true });
-    t.crud.transactions({ ordering: true, filtering: true, pagination: true });
-
-    t.crud.assets({ ordering: true, filtering: true, pagination: true });
-    t.crud.assetTransfers({
-      ordering: true,
-      filtering: true,
-      pagination: true,
-    });
-  },
-});
+import { Query } from "./schema/Query";
 
 export const schema = makeSchema({
   types: [

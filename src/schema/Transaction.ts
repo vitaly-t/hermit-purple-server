@@ -87,5 +87,6 @@ export const Transaction = objectType({
 
     t.model.from();
     t.model.block();
+    t.model.transfer();
   },
 });
