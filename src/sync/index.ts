@@ -144,7 +144,9 @@ class BlockSynchronizer {
         const remoteHeight = await this.refreshRemoteHeight();
 
         if (localHeight >= remoteHeight) {
-          info(`waiting for remote new block`);
+          info(
+            `local height: ${localHeight}, remote height: ${remoteHeight}, waiting for remote new block`,
+          );
           await client.waitForNextNBlock(1);
           continue;
         }
