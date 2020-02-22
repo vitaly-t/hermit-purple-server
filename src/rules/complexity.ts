@@ -12,6 +12,8 @@ const MUST_LIMIT_TYPE = new Set([
   'accounts',
   'assets',
   'accountTransfers',
+  'balances',
+  'events'
 ]);
 
 export function complexity(context: ValidationContext, request?: Request) {
