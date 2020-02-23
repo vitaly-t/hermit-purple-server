@@ -16,6 +16,8 @@
     "generate:prisma": "prisma2 generate",
     "generate:nexus": "ts-node --transpile-only src/schema",
     "postinstall": "npm -s run generate",
+    "test": "jest",
+    "test:watch": "jest --watch",
     "dev": "ts-node-dev --no-notify --respawn --transpileOnly src/index",
     "dev:sync": "cross-env DEBUG=sync:* ts-node src/sync",
     "sync": "node dist/sync"
@@ -24,6 +26,7 @@
     "@prisma/client": "2.0.0-preview021",
     "@types/bluebird": "^3.5.29",
     "@types/http-proxy-middleware": "^0.19.3",
+    "@types/lossless-json": "^1.0.0",
     "bignumber.js": "^9.0.0",
     "bluebird": "^3.7.2",
     "cors": "^2.8.5",
@@ -33,18 +36,21 @@
     "graphql-query-complexity": "^0.4.1",
     "graphql-yoga": "1.18.3",
     "http-proxy-middleware": "^0.20.0",
-    "json-bigint": "^0.3.0",
-    "muta-sdk": "^0.7.0-alpha.2",
+    "lossless-json": "^1.0.3",
+    "muta-sdk": "^0.7.0-alpha.4",
     "nexus": "^0.12.0-rc.9",
     "nexus-prisma": "^0.9.0",
     "prisma2": "2.0.0-preview021"
   },
   "devDependencies": {
+    "@types/jest": "^25.1.3",
     "@types/ws": "6.0.4",
     "cross-env": "^6.0.3",
     "graphql-markdown": "^5.2.0",
+    "jest": "^25.1.0",
+    "ts-jest": "^25.2.1",
     "ts-node": "8.6.2",
     "ts-node-dev": "1.0.0-pre.44",
-    "typescript": "3.7.4"
+    "typescript": "^3.8.2"
   }
 }

@@ -1,7 +1,7 @@
 import { utils } from 'muta-sdk';
 import { Promise as Bluebird } from 'bluebird';
 import { SYNC_CONCURRENCY } from '../config';
-import { rawClient } from './index';
+import { rawClient } from "./muta";
 
 export async function fetchWholeBlock(height: number) {
   const block = await rawClient.getBlock({

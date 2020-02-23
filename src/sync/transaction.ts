@@ -3,22 +3,14 @@ import {
   AssetTransferCreateWithoutTransactionInput,
   TransactionCreateWithoutBlockInput,
 } from '@prisma/client';
-import { BigNumber } from 'bignumber.js';
 import {
   GetReceiptQuery,
   GetTransactionQuery,
 } from 'muta-sdk/build/main/client/codegen/sdk';
 import { utils } from 'muta-sdk';
 import { compoundBalance } from './utils';
-
-const JSONbig = require('json-bigint');
-
-/**
- * parse number with BigNumber
- */
-export function safeJSONParse<O = unknown, I = any>(x: I): O {
-  return JSONbig.parse(x);
-}
+import { Address } from 'muta-sdk/build/main/types';
+import { hexJSON, SourceDataType } from '../utils/hex';
 
 /**
  * convert public key to address hex string without 0x
@@ -69,6 +61,10 @@ export class BlockTransactionsConverter {
     return this.balanceTask;
   }
 
+  private setAddressTask(address: Address) {
+    this.addresses.add(address);
+  }
+
   private setBalanceTask(address: string, assetId: string) {
     const compounded = compoundBalance(address, assetId);
     if (this.balanceTask.has(compounded)) return;
@@ -86,30 +82,29 @@ export class BlockTransactionsConverter {
         pubkey,
       } = tx.getTransaction;
 
-      const caller: string = utils
+      const from: string = utils
         .addressFromPublicKey(utils.toBuffer(pubkey))
         .toString('hex');
+      this.setAddressTask(from);
 
       const receipt = receipts[i]?.getReceipt;
 
-      addresses.add(caller);
-
       let transfer: AssetTransferCreateWithoutTransactionInput | null = null;
       if (serviceName === 'asset' && method === 'transfer') {
-        const payload = safeJSONParse<{
-          asset_id: string;
-          to: string;
-          value: BigNumber;
-        }>(payloadStr);
+        const payload = hexJSON(payloadStr, {
+          asset_id: SourceDataType.Hash,
+          to: SourceDataType.String,
+          value: SourceDataType.u64,
+        });
 
-        addresses.add(payload.to);
-        this.setBalanceTask(caller, payload.asset_id);
+        this.setAddressTask(payload.to);
+        this.setBalanceTask(from, payload.asset_id);
         this.setBalanceTask(payload.to, payload.asset_id);
 
         transfer = {
           asset: { connect: { assetId: payload.asset_id } },
-          value: payload.value.toString(16),
-          from: { connect: { address: caller } },
+          value: payload.value,
+          from: { connect: { address: from } },
           to: { connect: { address: payload.to } },
         };
       }
@@ -121,21 +116,21 @@ export class BlockTransactionsConverter {
         serviceName === 'asset' &&
         method === 'create_asset'
       ) {
-        const payload = safeJSONParse<{
-          supply: BigNumber;
-          symbol: string;
-          name: string;
-          id: string;
-        }>(receipt.response.ret);
+        const payload = hexJSON(receipt.response.ret, {
+          supply: SourceDataType.u64,
+          symbol: SourceDataType.String,
+          name: SourceDataType.String,
+          id: SourceDataType.Hash,
+        });
 
-        this.setBalanceTask(caller, payload.id);
+        this.setBalanceTask(from, payload.id);
 
         asset = {
-          account: { connect: { address: caller } },
+          account: { connect: { address: from } },
           assetId: payload.id,
           name: payload.name,
           symbol: payload.symbol,
-          supply: payload.supply.toString(16),
+          supply: payload.supply,
         };
       }
 
