@@ -90,7 +90,12 @@ export class BlockTransactionsConverter {
       const receipt = receipts[i]?.getReceipt;
 
       let transfer: AssetTransferCreateWithoutTransactionInput | null = null;
-      if (serviceName === 'asset' && method === 'transfer') {
+      if (
+        receipt &&
+        !receipt.response.isError &&
+        serviceName === 'asset' &&
+        method === 'transfer'
+      ) {
         const payload = hexJSON(payloadStr, {
           asset_id: SourceDataType.Hash,
           to: SourceDataType.String,
