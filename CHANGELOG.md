@@ -2,6 +2,24 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.0.2-alpha.0](https://github.com/homura/hermit-purple-server/compare/v0.0.1...v0.0.2-alpha.0) (2020-02-24)
+
+
+### Features
+
+* available access transfer from transaction directly ([38b8904](https://github.com/homura/hermit-purple-server/commit/38b89041480ac0e72275c3745c54359d3a899809))
+* disable query all balances and events in a query block ([5e9e42f](https://github.com/homura/hermit-purple-server/commit/5e9e42f6b6b406829c8745bb79508b8042a7fbd9))
+* logs for current progress of sync ([0de0d1f](https://github.com/homura/hermit-purple-server/commit/0de0d1f836594413a809c2740c9f4ee4fae10b7d))
+* supported field description ([8f2b19a](https://github.com/homura/hermit-purple-server/commit/8f2b19a93d63e18e0f27cbb22d02c72285ccd759))
+* supported linking to Asset from AssetTransfer ([5afb0d9](https://github.com/homura/hermit-purple-server/commit/5afb0d975c1e6dcad4d1830098e2d48247ddeffd))
+
+
+### Bug Fixes
+
+* skip the error receipt ([08b2bc4](https://github.com/homura/hermit-purple-server/commit/08b2bc4b1b3b1abb9c433f1785e04e4d18183b2d))
+* unified into hex string without 0x before save to database ([f1aeea0](https://github.com/homura/hermit-purple-server/commit/f1aeea04e010bc889d4ef692453538ef85822166))
+* uniform hexadecimal format before storing in database ([6a228f9](https://github.com/homura/hermit-purple-server/commit/6a228f956a436bce51c5e1bd741e6c44187cfee2))
+
 ### 0.0.1 (2020-02-19)
 
 
