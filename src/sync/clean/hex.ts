@@ -1,17 +1,37 @@
+// This module is used to clean hexadecimal data.
+// It is used to ensure the uniformity of hexadecimal
+// data presented in the form of strings.
+
 import { parse } from 'lossless-json';
 import { BigNumber } from 'bignumber.js';
 import { Hash, Uint64 } from 'muta-sdk/build/main/types';
 
+export function hexWithout0x(
+  x: string | BigNumber | number,
+  base: number,
+  padZeroToLength: number = 0,
+) {
+  x = typeof x === 'string' ? x.toLowerCase() : x;
+  return new BigNumber(x, base)
+    .toString(16)
+    .padStart(padZeroToLength, '0')
+    .toLowerCase();
+}
+
 export function hexU64(x: string | BigNumber | number) {
-  return new BigNumber(x, 10).toString(16).padStart(16, '0');
+  return hexWithout0x(x, 10, 16);
 }
 
 export function hexUint64(x: string | BigNumber) {
-  return new BigNumber(x, 16).toString(16).padStart(16, '0');
+  return hexWithout0x(x, 16, 16);
 }
 
 export function hexHash(x: string | BigNumber) {
-  return new BigNumber(x, 16).toString(16);
+  return hexWithout0x(x, 16, 64);
+}
+
+export function hexAddress(x: string) {
+  return hexWithout0x(x, 16, 40);
 }
 
 export enum SourceDataType {
@@ -25,6 +45,11 @@ export enum SourceDataType {
    * e.g. "ffff", "0xffff"
    */
   Uint64 = 'Uint64',
+
+  /**
+   * An address hex
+   */
+  Address = 'Address',
 
   /**
    * A 64 (or 66 if starts with `0x`) length hex string,
@@ -69,6 +94,8 @@ export function hexJSON<T extends HexSchema>(
       return hexU64(value);
     } else if (valueType === SourceDataType.Hash) {
       return hexHash(value);
+    } else if (valueType === SourceDataType.Address) {
+      return hexAddress(value);
     }
     return value;
   });

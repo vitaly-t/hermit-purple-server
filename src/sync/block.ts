@@ -1,18 +1,18 @@
-import { client, rawClient, readonlyAssetService } from './muta';
-import { utils } from 'muta-sdk';
-import { BalanceTask, BlockTransactionsConverter } from './transaction';
-import { error, info } from './log';
-import { Promise as Bluebird } from 'bluebird';
-import { hexU64 } from '../utils/hex';
-import { SYNC_CONCURRENCY } from '../config';
-import { GetBlockQuery } from 'muta-sdk/build/main/client/codegen/sdk';
 import {
   TransactionCreateWithoutBlockInput,
   ValidatorCreateWithoutBlocksInput,
 } from '@prisma/client';
-import { checkErrorWithDuplicateTx, removeDuplicateTx } from './hack';
+import { Promise as Bluebird } from 'bluebird';
+import { utils } from 'muta-sdk';
+import { GetBlockQuery } from 'muta-sdk/build/main/client/codegen/sdk';
+import { SYNC_CONCURRENCY } from '../config';
+import { prisma } from './';
+import { hexU64 } from './clean/hex';
 import { fetchWholeBlock } from './fetch';
-import { prisma } from './index';
+import { checkErrorWithDuplicateTx, removeDuplicateTx } from './hack';
+import { error, info } from './log';
+import { client, rawClient, readonlyAssetService } from './muta';
+import { BalanceTask, BlockTransactionsConverter } from './transaction';
 
 export interface SyncOptions {
   startHeight?: number;
@@ -32,6 +32,68 @@ export class BlockSynchronizer {
   constructor(options: SyncOptions) {
     this.localHeight = 0;
     this.remoteHeight = 0;
+  }
+
+  async run() {
+    while (1) {
+      try {
+        const localHeight = await this.refreshLocalHeight();
+        const remoteHeight = await this.refreshRemoteHeight();
+
+        if (localHeight >= remoteHeight) {
+          info(
+            `local height: ${localHeight}, remote height: ${remoteHeight}, waiting for remote new block`,
+          );
+          await client.waitForNextNBlock(1);
+          continue;
+        }
+
+        info(`start: ${localHeight}, end: ${remoteHeight} `);
+
+        const { block, txs, receipts } = await fetchWholeBlock(localHeight);
+        const header = block.getBlock.header;
+
+        info(`fetched ${txs.length} txs and ${receipts.length} receipts`);
+
+        const converter = new BlockTransactionsConverter(txs, receipts);
+        const transactions = converter.getTransactionInput();
+        // create accounts if not exists
+        const addresses = converter.getRelevantAddresses();
+
+        await Bluebird.all<string>(addresses).map(
+          address =>
+            prisma.account.upsert({
+              where: { address },
+              create: { address },
+              update: {},
+            }),
+          { concurrency: SYNC_CONCURRENCY },
+        );
+
+        // create validators if not exists
+        const validators: ValidatorCreateWithoutBlocksInput[] =
+          header.validators;
+
+        await Promise.all(
+          validators.map(validator =>
+            prisma.validator.upsert({
+              where: { address: validator.address },
+              create: {
+                address: validator.address,
+                proposeWeight: validator.proposeWeight,
+                voteWeight: validator.voteWeight,
+              },
+              update: {},
+            }),
+          ),
+        );
+
+        await this.saveBlock(block, transactions, validators);
+        await this.updateBalance(converter.getBalanceTask());
+      } catch (e) {
+        error(e);
+      }
+    }
   }
 
   private async refreshRemoteHeight(): Promise<number> {
@@ -118,70 +180,6 @@ export class BlockSynchronizer {
         await this.saveBlock(rawBlock, correctTransactions, validators);
       } else {
         throw e;
-      }
-    }
-  }
-
-  async run() {
-    while (1) {
-      try {
-        const localHeight = await this.refreshLocalHeight();
-        const remoteHeight = await this.refreshRemoteHeight();
-
-        if (localHeight >= remoteHeight) {
-          info(
-            `local height: ${localHeight}, remote height: ${remoteHeight}, waiting for remote new block`,
-          );
-          await client.waitForNextNBlock(1);
-          continue;
-        }
-
-        info(`start: ${localHeight}, end: ${remoteHeight} `);
-
-        const { block, txs, receipts } = await fetchWholeBlock(localHeight);
-        const header = block.getBlock.header;
-
-        info(`fetched ${txs.length} txs and ${receipts.length} receipts`);
-
-        const converter = new BlockTransactionsConverter(txs, receipts);
-
-        const transactions = converter.getTransactionInput();
-
-        // create accounts if not exists
-        const addresses = converter.getRelevantAddresses();
-
-        await Bluebird.all<string>(addresses).map(
-          address =>
-            prisma.account.upsert({
-              where: { address },
-              create: { address },
-              update: {},
-            }),
-          { concurrency: SYNC_CONCURRENCY },
-        );
-
-        // create validators if not exists
-        const validators: ValidatorCreateWithoutBlocksInput[] =
-          header.validators;
-
-        await Promise.all(
-          validators.map(validator =>
-            prisma.validator.upsert({
-              where: { address: validator.address },
-              create: {
-                address: validator.address,
-                proposeWeight: validator.proposeWeight,
-                voteWeight: validator.voteWeight,
-              },
-              update: {},
-            }),
-          ),
-        );
-
-        await this.saveBlock(block, transactions, validators);
-        await this.updateBalance(converter.getBalanceTask());
-      } catch (e) {
-        error(e);
       }
     }
   }

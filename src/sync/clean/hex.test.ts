@@ -1,9 +1,31 @@
-import { SourceDataType, hexJSON, hexU64 } from './hex';
+import { SourceDataType, hexJSON, hexU64, hexAddress } from './hex';
 
 test('parse u64', () => {
   expect(hexU64('0')).toBe('0000000000000000');
   expect(hexU64('1')).toBe('0000000000000001');
   expect(hexU64('18446744073709551615')).toBe('ffffffffffffffff');
+});
+
+test('parse address', () => {
+  expect(hexAddress('0x1000000000000000000000000000000000000000')).toBe(
+    '1000000000000000000000000000000000000000',
+  );
+
+  expect(hexAddress('1000000000000000000000000000000000000000')).toBe(
+    '1000000000000000000000000000000000000000',
+  );
+
+  expect(hexAddress('0FfFFFFFFFFFFFFFFFFFFFFFFfFFFFFFFFfFFFFF')).toBe(
+    '0fffffffffffffffffffffffffffffffffffffff',
+  );
+
+  expect(hexAddress('0fffffffffffffffffffffffffffffffffffffff')).toBe(
+    '0fffffffffffffffffffffffffffffffffffffff',
+  );
+
+  expect(hexAddress('FFfFFFFFFFFFFFFFFFFFFFFFFfFFFFFFFFfFFFFF')).toBe(
+    'ffffffffffffffffffffffffffffffffffffffff',
+  );
 });
 
 test('test JSONhexify', () => {

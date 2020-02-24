@@ -3,14 +3,17 @@ import {
   AssetTransferCreateWithoutTransactionInput,
   TransactionCreateWithoutBlockInput,
 } from '@prisma/client';
+import { utils } from 'muta-sdk';
 import {
   GetReceiptQuery,
   GetTransactionQuery,
 } from 'muta-sdk/build/main/client/codegen/sdk';
-import { utils } from 'muta-sdk';
-import { compoundBalance } from './utils';
-import { Address } from 'muta-sdk/build/main/types';
-import { hexJSON, SourceDataType } from '../utils/hex';
+import { hexJSON, SourceDataType } from './clean/hex';
+import {
+  compoundBalance,
+  isValidAddressInput,
+  isValidHashInput,
+} from './utils';
 
 /**
  * convert public key to address hex string without 0x
@@ -61,18 +64,8 @@ export class BlockTransactionsConverter {
     return this.balanceTask;
   }
 
-  private setAddressTask(address: Address) {
-    this.addresses.add(address);
-  }
-
-  private setBalanceTask(address: string, assetId: string) {
-    const compounded = compoundBalance(address, assetId);
-    if (this.balanceTask.has(compounded)) return;
-    this.balanceTask.set(compounded, [address, assetId]);
-  }
-
   walk() {
-    const { txQuery: txs, receiptQuery: receipts, addresses, txInput } = this;
+    const { txQuery: txs, receiptQuery: receipts, txInput } = this;
 
     txs.forEach((tx, i) => {
       const {
@@ -85,14 +78,15 @@ export class BlockTransactionsConverter {
       const from: string = utils
         .addressFromPublicKey(utils.toBuffer(pubkey))
         .toString('hex');
-      this.setAddressTask(from);
+
+      this.enqueueAddressTask(from);
 
       const receipt = receipts[i]?.getReceipt;
+      const receiptWithoutError = receipt && !receipt.response.isError;
 
       let transfer: AssetTransferCreateWithoutTransactionInput | null = null;
       if (
-        receipt &&
-        !receipt.response.isError &&
+        receiptWithoutError &&
         serviceName === 'asset' &&
         method === 'transfer'
       ) {
@@ -102,9 +96,9 @@ export class BlockTransactionsConverter {
           value: SourceDataType.u64,
         });
 
-        this.setAddressTask(payload.to);
-        this.setBalanceTask(from, payload.asset_id);
-        this.setBalanceTask(payload.to, payload.asset_id);
+        this.enqueueAddressTask(payload.to);
+        this.enqueueBalanceTask(from, payload.asset_id);
+        this.enqueueBalanceTask(payload.to, payload.asset_id);
 
         transfer = {
           asset: { connect: { assetId: payload.asset_id } },
@@ -114,10 +108,36 @@ export class BlockTransactionsConverter {
         };
       }
 
+      if (
+        receiptWithoutError &&
+        serviceName === 'asset' &&
+        method === 'transfer_from'
+      ) {
+        const payload = hexJSON(payloadStr, {
+          asset_id: SourceDataType.Hash,
+          sender: SourceDataType.Address,
+          recipient: SourceDataType.Address,
+          value: SourceDataType.u64,
+        });
+
+        this.enqueueAddressTask(payload.sender);
+        this.enqueueAddressTask(payload.recipient);
+
+        this.enqueueBalanceTask(from, payload.asset_id);
+        this.enqueueBalanceTask(payload.sender, payload.asset_id);
+        this.enqueueBalanceTask(payload.recipient, payload.asset_id);
+
+        transfer = {
+          asset: { connect: { assetId: payload.asset_id } },
+          value: payload.value,
+          from: { connect: { address: payload.sender } },
+          to: { connect: { address: payload.recipient } },
+        };
+      }
+
       let asset: AssetCreateWithoutTransactionInput | null = null;
       if (
-        receipt &&
-        !receipt.response.isError &&
+        receiptWithoutError &&
         serviceName === 'asset' &&
         method === 'create_asset'
       ) {
@@ -128,7 +148,7 @@ export class BlockTransactionsConverter {
           id: SourceDataType.Hash,
         });
 
-        this.setBalanceTask(from, payload.id);
+        this.enqueueBalanceTask(from, payload.id);
 
         asset = {
           account: { connect: { address: from } },
@@ -159,5 +179,18 @@ export class BlockTransactionsConverter {
         },
       });
     });
+  }
+
+  private enqueueAddressTask(address: string) {
+    if (!isValidAddressInput(address)) return;
+    this.addresses.add(address);
+  }
+
+  private enqueueBalanceTask(address: string, assetId: string) {
+    if (!isValidAddressInput(address) || !isValidHashInput(assetId)) return;
+
+    const compounded = compoundBalance(address, assetId);
+    if (this.balanceTask.has(compounded)) return;
+    this.balanceTask.set(compounded, [address, assetId]);
   }
 }
