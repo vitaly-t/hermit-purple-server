@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.0.2-alpha.1](https://github.com/homura/hermit-purple-server/compare/v0.0.2-alpha.0...v0.0.2-alpha.1) (2020-02-25)
+
+
+### Bug Fixes
+
+* fix dirty data caused by inconsistent hex format ([fbab8be](https://github.com/homura/hermit-purple-server/commit/fbab8be7d08b51f3f1c8f51ab970084040606399))
+
 ### [0.0.2-alpha.0](https://github.com/homura/hermit-purple-server/compare/v0.0.1...v0.0.2-alpha.0) (2020-02-24)
 
 
