@@ -51,3 +51,25 @@ test('test JSONhexify', () => {
     Uint64: '000000000000ffff',
   });
 });
+
+test('test a real transfer payload', () => {
+  const parsed = hexJSON(
+    `{
+    "asset_id": "302bcda9544a599370bf3f77a3afbd39a05ca75ee8534685460b7e36073e910f",
+    "to": "0x1234567890123456789012345678901234567890",
+    "value": 10
+  }`,
+    {
+      asset_id: SourceDataType.Hash,
+      to: SourceDataType.Address,
+      value: SourceDataType.u64,
+    },
+  );
+
+  expect(parsed).toEqual({
+    asset_id:
+      '302bcda9544a599370bf3f77a3afbd39a05ca75ee8534685460b7e36073e910f',
+    to: '1234567890123456789012345678901234567890',
+    value: '000000000000000a',
+  });
+});

@@ -150,7 +150,7 @@ export class BlockSynchronizer {
     const header = rawBlock.getBlock.header;
 
     try {
-      await prisma.block.create({
+      const inputBlock = {
         data: {
           height: utils.hexToNum(header.height),
           execHeight: utils.hexToNum(header.execHeight),
@@ -172,7 +172,8 @@ export class BlockSynchronizer {
             connect: validators.map(v => ({ address: v.address })),
           },
         },
-      });
+      };
+      await prisma.block.create(inputBlock);
     } catch (e) {
       if (checkErrorWithDuplicateTx(e)) {
         error(`found duplicate tx in #${this.localHeight}`);

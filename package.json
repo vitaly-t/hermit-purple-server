@@ -24,9 +24,10 @@
     "release:alpha": "standard-version --prerelease alpha"
   },
   "dependencies": {
-    "@prisma/client": "2.0.0-preview021",
+    "@prisma/client": "2.0.0-preview022",
     "@types/bluebird": "^3.5.29",
     "@types/http-proxy-middleware": "^0.19.3",
+    "@types/lodash": "^4.14.149",
     "@types/lossless-json": "^1.0.0",
     "bignumber.js": "^9.0.0",
     "bluebird": "^3.7.2",
@@ -37,11 +38,12 @@
     "graphql-query-complexity": "^0.4.1",
     "graphql-yoga": "1.18.3",
     "http-proxy-middleware": "^0.20.0",
+    "lodash": "^4.17.15",
     "lossless-json": "^1.0.3",
     "muta-sdk": "^0.7.0-alpha.4",
-    "nexus": "^0.12.0-rc.9",
-    "nexus-prisma": "^0.9.0",
-    "prisma2": "2.0.0-preview021"
+    "nexus": "0.12.0-rc.13",
+    "nexus-prisma": "0.10.0",
+    "prisma2": "2.0.0-preview022"
   },
   "devDependencies": {
     "@types/jest": "^25.1.3",

@@ -92,7 +92,7 @@ export class BlockTransactionsConverter {
       ) {
         const payload = hexJSON(payloadStr, {
           asset_id: SourceDataType.Hash,
-          to: SourceDataType.String,
+          to: SourceDataType.Address,
           value: SourceDataType.u64,
         });
 
