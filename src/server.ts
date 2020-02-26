@@ -3,7 +3,7 @@ import * as proxy from 'http-proxy-middleware';
 import * as cors from 'cors';
 import { schema } from './schema';
 import { createContext } from './context';
-import { ALLOW_CORS, HERMIT_PORT, MUTA_ENDPOINT } from './config';
+import { HERMIT_CORS_ORIGIN, HERMIT_PORT, MUTA_ENDPOINT } from './config';
 import { complexity } from './rules/complexity';
 
 const server = new GraphQLServer({
@@ -11,8 +11,8 @@ const server = new GraphQLServer({
   context: createContext,
 });
 
-if (ALLOW_CORS) {
-  server.express.use(cors({ origin: '*' }));
+if (HERMIT_CORS_ORIGIN) {
+  server.express.use(cors({ origin: HERMIT_CORS_ORIGIN }));
 }
 server.express.use(
   '/chain',
@@ -28,14 +28,9 @@ server.express.use(
 const options: Options = {
   port: HERMIT_PORT,
   validationRules: req => [context => complexity(context, req)],
+  ...(HERMIT_CORS_ORIGIN ? { origin: HERMIT_CORS_ORIGIN } : {}),
 };
 
-if (ALLOW_CORS) {
-  options.cors = {
-    origin: '*',
-  };
-}
-
 server.start(options, () =>
-  console.log(`🚀 Server ready at: http://localhost:${HERMIT_PORT}`),
+  console.log(`🚀 Server ready at: http://127.0.0.1:${HERMIT_PORT}`),
 );

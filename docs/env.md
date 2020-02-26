@@ -35,3 +35,13 @@
 - type: Number
 - default: 100
 - description: A large query would be baned when complexity over this value
+
+## HERMIT_CORS_ORIGIN:
+- type: String
+- default: true
+- description: Enable [CORS](https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS)
+
+## HERMIT_BYPASS_CHAIN
+- type: String
+- default: chain
+- description: Path to forward requests to Muta
