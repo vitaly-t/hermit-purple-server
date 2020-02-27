@@ -19,7 +19,7 @@ import {
  * convert public key to address hex string without 0x
  * @param pubkey
  */
-function addressFromPubkey(pubkey: string) {
+export function addressFromPubkey(pubkey: string) {
   return utils.addressFromPublicKey(utils.toBuffer(pubkey)).toString('hex');
 }
 

@@ -10,9 +10,15 @@ import { prisma } from './index';
  */
 export function checkErrorWithDuplicateTx(e: {
   code: string;
-  meta: { fieldName: string };
-}) {
-  return e?.code === 'P2002' && e?.meta?.fieldName?.includes('txHash');
+  detail: string;
+}): string {
+  // for more information of error code, view the PostgrsSQL docs https://www.postgresql.org/docs/9.2/errcodes-appendix.html
+  // the error detail message would be like this
+  // Key ("txHash")=(a9d5a689fd26af6b894b0433793d50972d81f3c31535d1e16aa999024a156c4b) already exists.
+  if (e?.code === '23505' && e?.detail?.includes('txHash')) {
+    return e.detail.match(/[0-9a-f]{64}/)?.[0] ?? '';
+  }
+  return '';
 }
 
 /**

@@ -8,6 +8,7 @@ import { GetBlockQuery } from 'muta-sdk/build/main/client/codegen/sdk';
 import { SYNC_CONCURRENCY } from '../config';
 import { prisma } from './';
 import { hexU64 } from './clean/hex';
+import { saveWholeBlock } from './db';
 import { fetchWholeBlock } from './fetch';
 import { checkErrorWithDuplicateTx, removeDuplicateTx } from './hack';
 import { error, info } from './log';
@@ -150,14 +151,11 @@ export class BlockSynchronizer {
     const header = rawBlock.getBlock.header;
 
     try {
-      const inputBlock = {
-        data: {
+      await saveWholeBlock(
+        {
           height: utils.hexToNum(header.height),
           execHeight: utils.hexToNum(header.execHeight),
           transactionsCount: transactions.length,
-          transactions: {
-            create: transactions,
-          },
           timestamp: new Date(Number(utils.hexToNum(header.timestamp) + '000')),
           orderRoot: header.orderRoot,
           stateRoot: header.stateRoot,
@@ -168,16 +166,17 @@ export class BlockSynchronizer {
           proofSignature: header.proof.signature,
           preHash: header.preHash,
           validatorVersion: header.validatorVersion,
-          validators: {
-            connect: validators.map(v => ({ address: v.address })),
-          },
         },
-      };
-      await prisma.block.create(inputBlock);
+        transactions,
+        validators,
+      );
     } catch (e) {
-      if (checkErrorWithDuplicateTx(e)) {
-        error(`found duplicate tx in #${this.localHeight}`);
-        const correctTransactions = await removeDuplicateTx(transactions);
+      const dupTxHash = checkErrorWithDuplicateTx(e);
+      if (dupTxHash) {
+        error(`found duplicate tx in #${this.localHeight}: ${dupTxHash}`);
+        const correctTransactions = transactions.filter(
+          tx => tx.txHash !== dupTxHash,
+        );
         await this.saveBlock(rawBlock, correctTransactions, validators);
       } else {
         throw e;
