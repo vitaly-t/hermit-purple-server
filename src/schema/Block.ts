@@ -6,6 +6,12 @@ export const Block = objectType({
     t.model.height();
     t.int('height', { description: 'Block height' });
 
+    t.model.blockHash();
+    t.field('blockHash', {
+      type: 'Hash',
+      description: 'The current block hash',
+    });
+
     t.model.transactionsCount();
     t.int('transactionsCount', {
       description: 'Show how many transactions in the block',

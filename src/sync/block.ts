@@ -10,7 +10,7 @@ import { prisma } from './';
 import { hexU64 } from './clean/hex';
 import { saveWholeBlock } from './db';
 import { fetchWholeBlock } from './fetch';
-import { checkErrorWithDuplicateTx, removeDuplicateTx } from './hack';
+import { checkErrorWithDuplicateTx } from './hack';
 import { error, info } from './log';
 import { client, rawClient, readonlyAssetService } from './muta';
 import { BalanceTask, BlockTransactionsConverter } from './transaction';
@@ -153,6 +153,7 @@ export class BlockSynchronizer {
     try {
       await saveWholeBlock(
         {
+          blockHash: rawBlock.getBlock.hash,
           height: utils.hexToNum(header.height),
           execHeight: utils.hexToNum(header.execHeight),
           transactionsCount: transactions.length,

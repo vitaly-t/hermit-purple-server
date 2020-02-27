@@ -1,4 +1,5 @@
-CREATE TABLE "public"."Block" (
+CREATE UNLOGGED TABLE "public"."Block" (
+    "blockHash"  text     NOT NULL DEFAULT '',
     "execHeight" integer  NOT NULL DEFAULT 0,
     "height" integer  NOT NULL ,
     "orderRoot" text  NOT NULL DEFAULT '',
@@ -15,7 +16,7 @@ CREATE TABLE "public"."Block" (
     PRIMARY KEY ("height")
 );
 
-CREATE TABLE "public"."Transaction" (
+CREATE UNLOGGED TABLE "public"."Transaction" (
     "block" integer  NOT NULL ,
     "chainId" text  NOT NULL DEFAULT '',
     "cyclesLimit" text  NOT NULL DEFAULT '',
@@ -36,7 +37,7 @@ CREATE TABLE "public"."Transaction" (
     PRIMARY KEY ("order")
 );
 
-CREATE TABLE "public"."Event" (
+CREATE UNLOGGED TABLE "public"."Event" (
     "data" text  NOT NULL DEFAULT '',
     "id" SERIAL,
     "receipt" integer  NOT NULL ,
@@ -44,19 +45,19 @@ CREATE TABLE "public"."Event" (
     PRIMARY KEY ("id")
 );
 
-CREATE TABLE "public"."Validator" (
+CREATE UNLOGGED TABLE "public"."Validator" (
     "address" text  NOT NULL ,
     "proposeWeight" integer  NOT NULL DEFAULT 0,
     "voteWeight" integer  NOT NULL DEFAULT 0,
     PRIMARY KEY ("address")
 );
 
-CREATE TABLE "public"."Account" (
+CREATE UNLOGGED TABLE "public"."Account" (
     "address" text  NOT NULL ,
     PRIMARY KEY ("address")
 );
 
-CREATE TABLE "public"."Asset" (
+CREATE UNLOGGED TABLE "public"."Asset" (
     "account" text   ,
     "assetId" text  NOT NULL ,
     "name" text  NOT NULL DEFAULT '',
@@ -66,7 +67,7 @@ CREATE TABLE "public"."Asset" (
     PRIMARY KEY ("assetId")
 );
 
-CREATE TABLE "public"."AssetTransfer" (
+CREATE UNLOGGED TABLE "public"."AssetTransfer" (
     "asset" text  NOT NULL ,
     "from" text  NOT NULL ,
     "id" SERIAL,
@@ -76,7 +77,7 @@ CREATE TABLE "public"."AssetTransfer" (
     PRIMARY KEY ("id")
 );
 
-CREATE TABLE "public"."Balance" (
+CREATE UNLOGGED TABLE "public"."Balance" (
     "account" text  NOT NULL ,
     "asset" text  NOT NULL ,
     "balance" text  NOT NULL DEFAULT '',
@@ -85,10 +86,12 @@ CREATE TABLE "public"."Balance" (
     PRIMARY KEY ("id")
 );
 
-CREATE TABLE "public"."_BlockToValidator" (
+CREATE UNLOGGED TABLE "public"."_BlockToValidator" (
     "A" integer  NOT NULL ,
     "B" text  NOT NULL 
 );
+
+CREATE UNIQUE INDEX "Block.blockHash" ON "public"."Block"("blockHash");
 
 CREATE UNIQUE INDEX "Transaction.txHash" ON "public"."Transaction"("txHash");
 
@@ -103,3 +106,23 @@ CREATE UNIQUE INDEX "AssetTransfer_transaction" ON "public"."AssetTransfer"("tra
 CREATE UNIQUE INDEX "Balance.compound" ON "public"."Balance"("compound");
 
 CREATE UNIQUE INDEX "_BlockToValidator_AB_unique" ON "public"."_BlockToValidator"("A","B");
+
+ALTER TABLE "public"."Block" SET (
+  autovacuum_enabled = false
+);
+
+ALTER TABLE "public"."Transaction" SET (
+  autovacuum_enabled = false
+);
+
+ALTER TABLE "public"."Event" SET (
+  autovacuum_enabled = false
+);
+
+ALTER TABLE "public"."AssetTransfer" SET (
+  autovacuum_enabled = false
+);
+
+ALTER TABLE "public"."Balance" SET (
+  autovacuum_enabled = false
+);

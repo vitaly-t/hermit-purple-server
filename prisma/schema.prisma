@@ -11,6 +11,7 @@ generator client {
 /// the block resource
 model Block {
   height            Int           @id
+  blockHash         String        @unique
   execHeight        Int
   transactionsCount Int
   preHash           String
