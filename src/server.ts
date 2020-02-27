@@ -25,6 +25,17 @@ server.express.use(
   }),
 );
 
+if (process.env.NODE_ENV !== 'development') {
+  server.use(function(err, req, res, next) {
+    if (err) {
+      res.status(500).send('Oops');
+      return;
+    }
+
+    next();
+  });
+}
+
 const options: Options = {
   port: HERMIT_PORT,
   validationRules: req => [context => complexity(context, req)],
