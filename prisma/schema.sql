@@ -103,29 +103,3 @@ CREATE UNIQUE INDEX "AssetTransfer_transaction" ON "public"."AssetTransfer"("tra
 CREATE UNIQUE INDEX "Balance.compound" ON "public"."Balance"("compound");
 
 CREATE UNIQUE INDEX "_BlockToValidator_AB_unique" ON "public"."_BlockToValidator"("A","B");
-
-ALTER TABLE "public"."Transaction" ADD FOREIGN KEY ("block") REFERENCES "public"."Block"("height") ON DELETE RESTRICT;
-
-ALTER TABLE "public"."Transaction" ADD FOREIGN KEY ("from") REFERENCES "public"."Account"("address") ON DELETE RESTRICT;
-
-ALTER TABLE "public"."Event" ADD FOREIGN KEY ("receipt") REFERENCES "public"."Transaction"("order") ON DELETE RESTRICT;
-
-ALTER TABLE "public"."Asset" ADD FOREIGN KEY ("transaction") REFERENCES "public"."Transaction"("order") ON DELETE RESTRICT;
-
-ALTER TABLE "public"."Asset" ADD FOREIGN KEY ("account") REFERENCES "public"."Account"("address") ON DELETE SET NULL;
-
-ALTER TABLE "public"."AssetTransfer" ADD FOREIGN KEY ("transaction") REFERENCES "public"."Transaction"("order") ON DELETE RESTRICT;
-
-ALTER TABLE "public"."AssetTransfer" ADD FOREIGN KEY ("from") REFERENCES "public"."Account"("address") ON DELETE RESTRICT;
-
-ALTER TABLE "public"."AssetTransfer" ADD FOREIGN KEY ("to") REFERENCES "public"."Account"("address") ON DELETE RESTRICT;
-
-ALTER TABLE "public"."AssetTransfer" ADD FOREIGN KEY ("asset") REFERENCES "public"."Asset"("assetId") ON DELETE RESTRICT;
-
-ALTER TABLE "public"."Balance" ADD FOREIGN KEY ("account") REFERENCES "public"."Account"("address") ON DELETE RESTRICT;
-
-ALTER TABLE "public"."Balance" ADD FOREIGN KEY ("asset") REFERENCES "public"."Asset"("assetId") ON DELETE RESTRICT;
-
-ALTER TABLE "public"."_BlockToValidator" ADD FOREIGN KEY ("A") REFERENCES "public"."Block"("height") ON DELETE CASCADE;
-
-ALTER TABLE "public"."_BlockToValidator" ADD FOREIGN KEY ("B") REFERENCES "public"."Validator"("address") ON DELETE CASCADE;
