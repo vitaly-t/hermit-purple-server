@@ -5,7 +5,7 @@ import {
   GetBlockQuery,
   GetReceiptQuery,
 } from 'muta-sdk/build/main/client/codegen/sdk';
-import { GetTransactionQuery } from 'muta-sdk/src/client/codegen/sdk';
+import { GetTransactionQuery } from 'muta-sdk/build/main/client/codegen/sdk';
 import { rawClient } from './muta';
 
 const axios = Axios.create({ baseURL: process.env.MUTA_ENDPOINT });
