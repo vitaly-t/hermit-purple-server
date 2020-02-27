@@ -8,6 +8,7 @@ import {
   Asset,
   AssetTransfer,
   Block,
+  Event,
   Transaction,
 } from './db/types';
 
@@ -47,6 +48,28 @@ export async function saveWholeBlock(
       .batchInsert('Transaction', inputTransactions)
       .returning('order')
       .transacting(trx);
+
+    const inputEvents = transactions.flatMap<Event>((tx, index) => {
+      const events = tx.events?.create;
+      if (!events) return [];
+      if (Array.isArray(events)) {
+        return events.map(event => ({
+          receipt: transactionOrders[index],
+          data: event.data,
+          service: event.service,
+        }));
+      } else {
+        return [
+          {
+            receipt: transactionOrders[index],
+            data: events.data,
+            service: events.service,
+          },
+        ];
+      }
+    });
+
+    await knex.batchInsert('Event', inputEvents).transacting(trx);
 
     // resolve the Transaction as Asset
     const inputAssets = transactions.reduce<Asset[]>((assets, tx, i) => {
