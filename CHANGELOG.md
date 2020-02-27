@@ -2,6 +2,22 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.0.2-alpha.2](https://github.com/homura/hermit-purple-server/compare/v0.0.2-alpha.1...v0.0.2-alpha.2) (2020-02-27)
+
+
+### Features
+
+* hide error when non development environment ([03f0726](https://github.com/homura/hermit-purple-server/commit/03f07266e4e6c26d3963d68c05e31c5f00f358db))
+* remove `FOREIGN KEY` for performance ([51d203a](https://github.com/homura/hermit-purple-server/commit/51d203a448ba7044d589550d1b8fc0aaf5e27588))
+* supported custom `CORS_ORIGIN` and `BYPASS_CHAIN` ([5e109a0](https://github.com/homura/hermit-purple-server/commit/5e109a00c46a8d8fa4a017ebf494e73be530b71d))
+* supported query `blockHash` in `Block` ([92aed46](https://github.com/homura/hermit-purple-server/commit/92aed463756b4a1af49792d590bbdacd6befbed3))
+* supported save the receipt events to database ([c8910b0](https://github.com/homura/hermit-purple-server/commit/c8910b0dbdce624da899d78cfa1d4eb0ae1278c0))
+
+
+### Bug Fixes
+
+* fix the import path error ([b322386](https://github.com/homura/hermit-purple-server/commit/b3223861cd60c8abc5147cf2507153594b213917))
+
 ### [0.0.2-alpha.1](https://github.com/homura/hermit-purple-server/compare/v0.0.2-alpha.0...v0.0.2-alpha.1) (2020-02-25)
 
 
