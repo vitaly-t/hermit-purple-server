@@ -121,6 +121,7 @@ model TransferHistory {
   method         String
   receiptIsError Boolean?
   from           String
+  timestamp      String
   to             String
   value          String
 }

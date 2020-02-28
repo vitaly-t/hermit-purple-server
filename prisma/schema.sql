@@ -82,6 +82,7 @@ CREATE UNLOGGED TABLE "public"."_BlockToValidator" ("A" integer NOT NULL, "B" te
 CREATE UNLOGGED TABLE "public"."TransferHistory" (
   "id" SERIAL,
   "blockHeight" integer NOT NULL DEFAULT 0,
+  "timestamp" text NOT NULL DEFAULT '',
   "assetName" text NOT NULL DEFAULT '',
   "assetId" text NOT NULL DEFAULT '',
   "assetSymbol" text NOT NULL DEFAULT '',

@@ -154,6 +154,7 @@ export async function saveWholeBlock(
           method: relatedTx.method,
           receiptIsError: relatedTx.receiptIsError,
           txHash: relatedTx.txHash,
+          timestamp: block.timestamp,
 
           assetName: indexedAsset[assetId].name,
           assetSymbol: indexedAsset[assetId].symbol,
