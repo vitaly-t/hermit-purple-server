@@ -7,6 +7,7 @@ import {
   Validator as RawValidator,
   Account as RawAccount,
   Balance as RawBalance,
+  TransferHistory as RawTransferHistory,
 } from '@prisma/client';
 
 export type Block = Omit<RawBlock, 'timestamp'> & {
@@ -60,3 +61,5 @@ export interface _BlockToValidator {
   // FOREIGN KEY("B") REFERENCE "public"."Validator"("address")
   B: string;
 }
+
+export type TransferHistory = Omit<RawTransferHistory, 'id'>;

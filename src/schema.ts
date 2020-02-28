@@ -6,6 +6,7 @@ import {
   HashScalar,
   Uint64Scalar,
 } from './schema/scalar';
+import { TransferHistory } from './schema/TransferHistory';
 import { Validator } from './schema/Validator';
 import { Block } from './schema/Block';
 import { Account } from './schema/Account';
@@ -36,6 +37,7 @@ export const schema = makeSchema({
     Block,
     Asset,
     AssetTransfer,
+    TransferHistory,
 
     /* Query */
     Query,

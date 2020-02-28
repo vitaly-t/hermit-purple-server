@@ -110,6 +110,21 @@ model AssetTransfer {
   value       String
 }
 
+model TransferHistory {
+  id             Int      @default(autoincrement()) @id
+  blockHeight    Int
+  assetName      String
+  assetId        String
+  assetSymbol    String
+  txHash         String
+  service        String
+  method         String
+  receiptIsError Boolean?
+  from           String
+  to             String
+  value          String
+}
+
 model Balance {
   id       Int     @default(autoincrement()) @id
   /// keccakHash(accountAddress + assetId)

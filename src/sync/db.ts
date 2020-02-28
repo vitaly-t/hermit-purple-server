@@ -10,7 +10,11 @@ import {
   Block,
   Event,
   Transaction,
+  TransferHistory,
 } from './db/types';
+import { prisma } from './index';
+import { uniq, keyBy } from 'lodash';
+import Bluebird = require('bluebird');
 
 const knex = Knex({
   client: 'pg',
@@ -120,6 +124,45 @@ export async function saveWholeBlock(
 
     await knex
       .batchInsert('_BlockToValidator', input_BlockToValidators)
+      .transacting(trx);
+
+    const assetIds = uniq(
+      inputAssetTransfers.map<string>(transfer => transfer.asset),
+    );
+
+    const assets = await Bluebird.all(assetIds).map(assetId => {
+      return prisma.asset.findOne({ where: { assetId } });
+    });
+    const indexedAsset = (keyBy(assets, asset => asset?.assetId) as any) as {
+      [key: string]: Asset;
+    };
+
+    const inputTransferHistories = inputAssetTransfers.map<TransferHistory>(
+      transfer => {
+        const index = transactionOrders.findIndex(
+          order => order === transfer.transaction,
+        );
+        const relatedTx = inputTransactions[index];
+        const assetId = transfer.asset;
+        return {
+          assetId,
+          value: transfer.value,
+          blockHeight: block.height,
+          from: transfer.from,
+          to: transfer.to,
+          service: relatedTx.serviceName,
+          method: relatedTx.method,
+          receiptIsError: relatedTx.receiptIsError,
+          txHash: relatedTx.txHash,
+
+          assetName: indexedAsset[assetId].name,
+          assetSymbol: indexedAsset[assetId].symbol,
+        };
+      },
+    );
+
+    await knex
+      .batchInsert('TransferHistory', inputTransferHistories)
       .transacting(trx);
   });
 }
