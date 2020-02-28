@@ -101,11 +101,25 @@ CREATE UNIQUE INDEX "Asset_transaction" ON "public"."Asset"("transaction");
 
 CREATE UNIQUE INDEX "AssetTransfer.transaction" ON "public"."AssetTransfer"("transaction");
 
-CREATE UNIQUE INDEX "AssetTransfer_transaction" ON "public"."AssetTransfer"("transaction");
-
 CREATE UNIQUE INDEX "Balance.compound" ON "public"."Balance"("compound");
 
 CREATE UNIQUE INDEX "_BlockToValidator_AB_unique" ON "public"."_BlockToValidator"("A","B");
+
+CREATE INDEX "Transaction.from" on "public"."Transaction"("from");
+
+CREATE INDEX "Transaction.block" ON "public"."Transaction"("block");
+
+CREATE INDEX "Event.receipt" ON "public"."Event"("receipt");
+
+CREATE INDEX "Asset.account" ON "public"."Asset"("account");
+
+CREATE INDEX "Balance.account" on "public"."Balance"("account");
+
+CREATE INDEX "AssetTransfer.asset" ON "public"."AssetTransfer"("asset");
+
+CREATE INDEX "AssetTransfer.from" on "public"."AssetTransfer"("from");
+
+CREATE INDEX "AssetTransfer.to" on "public"."AssetTransfer"("to");
 
 ALTER TABLE "public"."Block" SET (
   autovacuum_enabled = false
