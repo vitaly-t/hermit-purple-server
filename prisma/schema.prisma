@@ -15,7 +15,7 @@ model Block {
   execHeight        Int
   transactionsCount Int
   preHash           String
-  timestamp         DateTime
+  timestamp         String
   orderRoot         String
   stateRoot         String
   proposer          String

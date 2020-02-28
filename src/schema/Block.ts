@@ -21,9 +21,13 @@ export const Block = objectType({
     t.field('preHash', { type: 'Hash', description: 'The prev block hash' });
 
     t.model.timestamp();
-    t.field('timestamp', {
-      type: 'DateTime',
-      description: "A datetime string format as yyyy-MM-dd'T'HH:mm:ss.SSSZ",
+    t.string('timestamp', {
+      description: "A datetime string format as UTC string",
+      resolve(parent) {
+        return new Date(
+          +(Number('0x' + parent.timestamp) + '000'),
+        ).toUTCString();
+      },
     });
 
     t.model.proposer();

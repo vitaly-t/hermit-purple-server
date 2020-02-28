@@ -157,7 +157,7 @@ export class BlockSynchronizer {
           height: utils.hexToNum(header.height),
           execHeight: utils.hexToNum(header.execHeight),
           transactionsCount: transactions.length,
-          timestamp: new Date(Number(utils.hexToNum(header.timestamp) + '000')),
+          timestamp: header.timestamp,
           orderRoot: header.orderRoot,
           stateRoot: header.stateRoot,
           proposer: header.proposer,

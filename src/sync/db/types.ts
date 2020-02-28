@@ -1,5 +1,5 @@
 import {
-  Block,
+  Block as RawBlock,
   Transaction as RawTransaction,
   Asset as RawAsset,
   AssetTransfer as RawAssetTransfer,
@@ -9,7 +9,11 @@ import {
   Balance as RawBalance,
 } from '@prisma/client';
 
-export { Block };
+export type Block = Omit<RawBlock, 'timestamp'> & {
+  // uint64 hex timestamp
+  timestamp: string;
+};
+
 export type Transaction = Omit<RawTransaction, 'order'> & {
   // FOREIGN KEY("from") REFERENCE "public"."Account"("address")
   from: string;

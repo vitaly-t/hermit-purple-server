@@ -10,7 +10,7 @@ CREATE UNLOGGED TABLE "public"."Block" (
     "proofSignature" text  NOT NULL DEFAULT '',
     "proposer" text  NOT NULL DEFAULT '',
     "stateRoot" text  NOT NULL DEFAULT '',
-    "timestamp" timestamp(3)  NOT NULL DEFAULT '1970-01-01 00:00:00',
+    "timestamp" text  NOT NULL DEFAULT '0000000000000000',
     "transactionsCount" integer  NOT NULL DEFAULT 0,
     "validatorVersion" text  NOT NULL DEFAULT '',
     PRIMARY KEY ("height")
