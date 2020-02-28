@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.0.2-alpha.3](https://github.com/homura/hermit-purple-server/compare/v0.0.2-alpha.2...v0.0.2-alpha.3) (2020-02-28)
+
+
+### Features
+
+* add index to schema for performance ([ec7f927](https://github.com/homura/hermit-purple-server/commit/ec7f927e87413f4bac9f94dcc0ad54c6d5a0fba8))
+
+
+### Bug Fixes
+
+* fix format DateTime string with UTC string ([20ed1ee](https://github.com/homura/hermit-purple-server/commit/20ed1ee6daae203508f301aca1c4a67a933ea05a))
+
 ### [0.0.2-alpha.2](https://github.com/homura/hermit-purple-server/compare/v0.0.2-alpha.1...v0.0.2-alpha.2) (2020-02-27)
 
 
