@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.0.2-alpha.4](https://github.com/homura/hermit-purple-server/compare/v0.0.2-alpha.3...v0.0.2-alpha.4) (2020-02-28)
+
+
+### Features
+
+* allow `timestamp` query from `TransferHistory` ([2e1de21](https://github.com/homura/hermit-purple-server/commit/2e1de21866b7ef17163407958ca44d83cdf6a6cf))
+* redundant `TransferHistories` to improve query performance ([a98f376](https://github.com/homura/hermit-purple-server/commit/a98f3769a2b2ecf787134b66718574dad6239535))
+
 ### [0.0.2-alpha.3](https://github.com/homura/hermit-purple-server/compare/v0.0.2-alpha.2...v0.0.2-alpha.3) (2020-02-28)
 
 
