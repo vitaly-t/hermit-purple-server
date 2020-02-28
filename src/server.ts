@@ -1,4 +1,6 @@
+import { GraphQLError } from 'graphql';
 import { GraphQLServer, Options } from 'graphql-yoga';
+import { defaultErrorFormatter } from 'graphql-yoga/dist/defaultErrorFormatter';
 import * as proxy from 'http-proxy-middleware';
 import * as cors from 'cors';
 import { schema } from './schema';
@@ -31,12 +33,17 @@ if (process.env.NODE_ENV !== 'development') {
       res.status(500).send('Oops');
       return;
     }
-
     next();
   });
 }
 
 const options: Options = {
+  formatError(error: GraphQLError) {
+    if (error.originalError) {
+      return 'Unknown error';
+    }
+    return defaultErrorFormatter(error);
+  },
   port: HERMIT_PORT,
   validationRules: req => [context => complexity(context, req)],
   ...(HERMIT_CORS_ORIGIN ? { origin: HERMIT_CORS_ORIGIN } : {}),

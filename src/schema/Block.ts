@@ -22,7 +22,7 @@ export const Block = objectType({
 
     t.model.timestamp();
     t.string('timestamp', {
-      description: "A datetime string format as UTC string",
+      description: 'A datetime string format as UTC string',
       resolve(parent) {
         return new Date(
           +(Number('0x' + parent.timestamp) + '000'),
