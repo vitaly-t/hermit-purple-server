@@ -1,4 +1,4 @@
-import { objectType } from 'nexus';
+import { inputObjectType, objectType } from 'nexus';
 
 export const TransferHistory = objectType({
   name: 'TransferHistory',
@@ -31,6 +31,17 @@ export const TransferHistory = objectType({
     });
 
     t.string('from');
+    t.string('to');
+  },
+});
+
+export const TransferHistoriesWhereInputType = inputObjectType({
+  name: 'TransferHistoriesWhereInput',
+  definition(t) {
+    t.int('blockHeight');
+    t.string('assetId');
+    t.string('from');
+    t.string('txHash');
     t.string('to');
   },
 });

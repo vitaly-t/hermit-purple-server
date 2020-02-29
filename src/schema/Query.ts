@@ -1,4 +1,5 @@
-import { intArg, queryType, stringArg } from 'nexus';
+import { arg, intArg, queryType } from 'nexus';
+
 const isHex = require('is-hex');
 
 function isValidHex(x: string | undefined | null) {
@@ -31,26 +32,17 @@ export const Query = queryType({
       type: 'TransferHistory',
       nullable: true,
       args: {
-        from: stringArg({ description: 'from address' }),
-        to: stringArg({ description: 'to address' }),
-        assetId: stringArg({ description: '' }),
-        txHash: stringArg({ description: '' }),
-        blockHeight: intArg(),
+        where: arg({
+          type: 'TransferHistoriesWhereInput',
+        }),
         first: intArg(),
         last: intArg(),
         skip: intArg(),
       },
       async resolve(root, args, ctx) {
-        const {
-          first,
-          last,
-          assetId,
-          blockHeight,
-          from,
-          txHash,
-          to,
-          skip,
-        } = args;
+        const { first, last, skip } = args;
+        const { assetId, blockHeight, from, txHash, to } = args.where || {};
+
         const limit = first || last;
         const offset = skip ?? 0;
         const orderBy = first ? 'ASC' : 'DESC';
