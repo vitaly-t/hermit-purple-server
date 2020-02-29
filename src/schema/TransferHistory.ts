@@ -34,6 +34,7 @@ export const TransferHistory = objectType({
     t.string('to');
   },
 });
+
 export const TransferHistoriesWhereInputType = inputObjectType({
   name: 'TransferHistoriesWhereInput',
   definition(t) {
