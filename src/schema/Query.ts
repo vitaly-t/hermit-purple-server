@@ -1,5 +1,10 @@
 import { intArg, queryType, stringArg } from 'nexus';
-import { prisma } from '../sync';
+const isHex = require('is-hex');
+
+function isValidHex(x: string | undefined | null) {
+  if (x === undefined || x === null) return true;
+  return isHex(x);
+}
 
 export const Query = queryType({
   definition(t) {
@@ -50,6 +55,10 @@ export const Query = queryType({
         const offset = skip ?? 0;
         const orderBy = first ? 'ASC' : 'DESC';
 
+        if (!isValidHex(assetId) || !isValidHex(from) || !isValidHex(to)) {
+          return [];
+        }
+
         let whereClause = Object.entries({
           assetId,
           blockHeight,
@@ -59,7 +68,7 @@ export const Query = queryType({
         })
           .map(([key, value]) => value && `"${key}" = '${value}'`)
           .filter(x => x)
-          .join(' AND ');
+          .join(' OR ');
         whereClause = whereClause && `where ${whereClause}`;
         const sql = `
               SELECT
@@ -70,7 +79,7 @@ export const Query = queryType({
                   from public."TransferHistory"
                   ${whereClause}
                   ORDER BY
-                    "id" DESC
+                    "id" ${orderBy}
                 ) as "items"
               ORDER BY
                 "id" ${orderBy}
@@ -78,7 +87,7 @@ export const Query = queryType({
                 ${offset}
               limit
                 ${limit};`;
-        return await prisma.raw(sql);
+        return await ctx.prisma.raw(sql);
       },
     });
   },

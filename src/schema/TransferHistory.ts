@@ -3,9 +3,8 @@ import { objectType } from 'nexus';
 export const TransferHistory = objectType({
   name: 'TransferHistory',
   definition(t) {
-    t.model.blockHeight();
+    t.int('blockHeight');
 
-    t.model.timestamp();
     t.string('timestamp', {
       description: 'A datetime string format as UTC string',
       resolve(parent) {
@@ -15,19 +14,23 @@ export const TransferHistory = objectType({
       },
     });
 
-    t.model.assetId();
-    t.model.assetName();
-    t.model.assetSymbol();
-    t.model.value();
+    t.string('assetId');
+    t.string('assetName');
+    t.string('assetSymbol');
+    t.string('value');
 
-    t.model.txHash();
+    t.string('txHash');
 
-    t.model.service();
-    t.model.method();
+    t.string('service');
+    t.string('method');
 
-    t.model.receiptIsError();
+    t.boolean('receiptIsError', {
+      resolve(parent) {
+        return parent?.receiptIsError ?? false;
+      },
+    });
 
-    t.model.from();
-    t.model.to();
+    t.string('from');
+    t.string('to');
   },
 });

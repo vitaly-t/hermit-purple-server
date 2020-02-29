@@ -39,6 +39,7 @@
     "graphql-query-complexity": "^0.4.1",
     "graphql-yoga": "1.18.3",
     "http-proxy-middleware": "^0.20.0",
+    "is-hex": "^1.1.3",
     "knex": "^0.20.10",
     "lodash": "^4.17.15",
     "lossless-json": "^1.0.3",
