@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.0.2](https://github.com/homura/hermit-purple-server/compare/v0.0.2-alpha.5...v0.0.2) (2020-02-29)
+
+
+### Features
+
+* change `TransferHistories` arguments as an inputObject with a where clause ([890beee](https://github.com/homura/hermit-purple-server/commit/890beee322cb9479a0de6ba8644cbe12b45c8749))
+* disabled CORS default ([6f211d7](https://github.com/homura/hermit-purple-server/commit/6f211d77d4d708278a6c0440bf9c1927e1b5f621))
+
 ### [0.0.2-alpha.5](https://github.com/homura/hermit-purple-server/compare/v0.0.2-alpha.4...v0.0.2-alpha.5) (2020-02-29)
 
 ### [0.0.2-alpha.4](https://github.com/homura/hermit-purple-server/compare/v0.0.2-alpha.3...v0.0.2-alpha.4) (2020-02-28)
