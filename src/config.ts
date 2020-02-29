@@ -26,7 +26,7 @@ export const HERMIT_PORT = process.env.HERMIT_PORT ?? 4040;
 /**
  * [CORS](https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS) origin
  */
-export const HERMIT_CORS_ORIGIN = process.env.HERMIT_CORS_ORIGIN ?? '*';
+export const HERMIT_CORS_ORIGIN = process.env.HERMIT_CORS_ORIGIN ?? '';
 
 /**
  * Maximum number of pull fields allowed by a query
