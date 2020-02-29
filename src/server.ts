@@ -13,9 +13,9 @@ const server = new GraphQLServer({
   context: createContext,
 });
 
-// if (HERMIT_CORS_ORIGIN) {
-//   server.express.use(cors({ origin: HERMIT_CORS_ORIGIN }));
-// }
+if (HERMIT_CORS_ORIGIN) {
+  server.express.use(cors({ origin: HERMIT_CORS_ORIGIN }));
+}
 server.express.use(
   '/chain',
   proxy({
@@ -46,7 +46,9 @@ const options: Options = {
   },
   port: HERMIT_PORT,
   validationRules: req => [context => complexity(context, req)],
-  cors: false,
+  ...(HERMIT_CORS_ORIGIN
+    ? { cors: { origin: HERMIT_CORS_ORIGIN } }
+    : { cors: false }),
 };
 
 server.start(options, () =>
