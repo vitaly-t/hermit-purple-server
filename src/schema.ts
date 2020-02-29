@@ -6,7 +6,10 @@ import {
   HashScalar,
   Uint64Scalar,
 } from './schema/scalar';
-import { TransferHistory } from './schema/TransferHistory';
+import {
+  TransferHistoriesWhereInputType,
+  TransferHistory
+} from './schema/TransferHistory';
 import { Validator } from './schema/Validator';
 import { Block } from './schema/Block';
 import { Account } from './schema/Account';
@@ -15,10 +18,13 @@ import { Transaction } from './schema/Transaction';
 import { Event } from './schema/Event';
 import { Asset } from './schema/Asset';
 import { AssetTransfer } from './schema/AssetTransfer';
-import { Query } from './schema/Query';
+import { Query} from './schema/Query';
 
 export const schema = makeSchema({
   types: [
+    /* input objects */
+    TransferHistoriesWhereInputType,
+
     /* scalar types */
     AddressScalar,
     Uint64Scalar,
