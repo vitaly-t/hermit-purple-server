@@ -38,8 +38,7 @@
 
 ## HERMIT_CORS_ORIGIN:
 - type: String
-- default: *
-- description: Enable [CORS](https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS), set to empty string would disable the CORS
+- description: set `*` to enable all [CORS](https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS)
 
 ## HERMIT_BYPASS_CHAIN
 - type: String
