@@ -1,5 +1,6 @@
 import { nexusPrismaPlugin } from 'nexus-prisma';
 import { makeSchema } from 'nexus';
+import { OrderByEnum } from './schema/enum/OrderBy';
 import {
   AddressScalar,
   BytesScalar,
@@ -7,8 +8,9 @@ import {
   Uint64Scalar,
 } from './schema/scalar';
 import {
+  TransferHistoriesOrderByInputType,
   TransferHistoriesWhereInputType,
-  TransferHistory
+  TransferHistory,
 } from './schema/TransferHistory';
 import { Validator } from './schema/Validator';
 import { Block } from './schema/Block';
@@ -18,12 +20,16 @@ import { Transaction } from './schema/Transaction';
 import { Event } from './schema/Event';
 import { Asset } from './schema/Asset';
 import { AssetTransfer } from './schema/AssetTransfer';
-import { Query} from './schema/Query';
+import { Query } from './schema/Query';
 
 export const schema = makeSchema({
   types: [
     /* input objects */
     TransferHistoriesWhereInputType,
+    TransferHistoriesOrderByInputType,
+
+    /* enums */
+    OrderByEnum,
 
     /* scalar types */
     AddressScalar,

@@ -1,4 +1,5 @@
 import { arg, intArg, queryType } from 'nexus';
+import { orderBy as sortBy } from 'lodash';
 
 const isHex = require('is-hex');
 
@@ -38,6 +39,9 @@ export const Query = queryType({
         first: intArg(),
         last: intArg(),
         skip: intArg(),
+        orderBy: arg({
+          type: 'TransferHistoriesOrderByInputType',
+        }),
       },
       async resolve(root, args, ctx) {
         const { first, last, skip } = args;
@@ -45,7 +49,15 @@ export const Query = queryType({
 
         const limit = first || last;
         const offset = skip ?? 0;
-        const orderBy = first ? 'ASC' : 'DESC';
+        const orderById = args.orderBy?.id || 'asc';
+        const orderBy = (() => {
+          if (orderById === 'desc') {
+            if (last) return 'asc';
+            return 'desc';
+          }
+          if (last) return 'desc';
+          return 'asc';
+        })();
 
         if (!isValidHex(assetId) || !isValidHex(from) || !isValidHex(to)) {
           return [];
@@ -79,7 +91,8 @@ export const Query = queryType({
                 ${offset}
               limit
                 ${limit};`;
-        return await ctx.prisma.raw(sql);
+        const histories = await ctx.prisma.raw(sql);
+        return sortBy(histories, x => x.id, orderById);
       },
     });
   },

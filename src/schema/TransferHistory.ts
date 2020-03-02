@@ -3,6 +3,8 @@ import { inputObjectType, objectType } from 'nexus';
 export const TransferHistory = objectType({
   name: 'TransferHistory',
   definition(t) {
+    t.int('id');
+
     t.int('blockHeight');
 
     t.string('timestamp', {
@@ -32,6 +34,15 @@ export const TransferHistory = objectType({
 
     t.string('from');
     t.string('to');
+  },
+});
+
+export const TransferHistoriesOrderByInputType = inputObjectType({
+  name: 'TransferHistoriesOrderByInputType',
+  definition(t) {
+    t.field('id', {
+      type: 'OrderByEnum',
+    });
   },
 });
 
