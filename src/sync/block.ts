@@ -9,6 +9,8 @@ import { SYNC_CONCURRENCY } from '../config';
 import { prisma } from './';
 import { hexU64 } from './clean/hex';
 import { saveWholeBlock } from './db';
+import { getDB } from './db/mongo';
+import { Block } from './db/types';
 import { fetchWholeBlock } from './fetch';
 import { checkErrorWithDuplicateTx } from './hack';
 import { error, info } from './log';
@@ -104,10 +106,14 @@ export class BlockSynchronizer {
   }
 
   private async refreshLocalHeight(): Promise<number> {
-    const blocks = await prisma.block.findMany({
-      select: { height: true },
-      last: 1,
-    });
+    const db = await getDB();
+    const blocks = await db
+      .collection<Block>('block')
+      .find()
+      .sort({ height: -1 })
+      .limit(1)
+      .toArray();
+
     this.localHeight = (blocks[0]?.height ?? 0) + 1;
     return this.localHeight;
   }
