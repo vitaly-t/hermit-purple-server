@@ -5,6 +5,7 @@
 import { parse } from 'lossless-json';
 import { BigNumber } from 'bignumber.js';
 import { Hash, Uint64 } from 'muta-sdk/build/main/types';
+import { rm0x } from 'muta-sdk/build/main/utils';
 
 export function hexWithout0x(
   x: string | BigNumber | number,
@@ -22,16 +23,22 @@ export function hexU64(x: string | BigNumber | number) {
   return hexWithout0x(x, 10, 16);
 }
 
-export function hexUint64(x: string | BigNumber) {
-  return hexWithout0x(x, 16, 16);
+export function hexUint64(x: string) {
+  return rm0x(x)
+    .toLowerCase()
+    .padStart(16, '0');
 }
 
-export function hexHash(x: string | BigNumber) {
-  return hexWithout0x(x, 16, 64);
+export function hexHash(x: string) {
+  return rm0x(x)
+    .toLowerCase()
+    .padStart(64, '0');
 }
 
 export function hexAddress(x: string) {
-  return hexWithout0x(x, 16, 40);
+  return rm0x(x)
+    .toLowerCase()
+    .padStart(40, '0');
 }
 
 export enum SourceDataType {

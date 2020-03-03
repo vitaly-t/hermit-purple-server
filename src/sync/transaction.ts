@@ -15,6 +15,19 @@ import {
   isValidHashInput,
 } from './utils';
 
+const transferFromSchema = {
+  asset_id: SourceDataType.Hash,
+  sender: SourceDataType.Address,
+  recipient: SourceDataType.Address,
+  value: SourceDataType.u64,
+};
+
+const transferSchema = {
+  asset_id: SourceDataType.Hash,
+  to: SourceDataType.Address,
+  value: SourceDataType.u64,
+};
+
 /**
  * convert public key to address hex string without 0x
  * @param pubkey
@@ -67,7 +80,8 @@ export class BlockTransactionsConverter {
   walk() {
     const { txQuery: txs, receiptQuery: receipts, txInput } = this;
 
-    txs.forEach((tx, i) => {
+    for (let i = 0; i < txs.length; i++) {
+      const tx = txs[i];
       const {
         serviceName,
         method,
@@ -90,11 +104,7 @@ export class BlockTransactionsConverter {
         serviceName === 'asset' &&
         method === 'transfer'
       ) {
-        const payload = hexJSON(payloadStr, {
-          asset_id: SourceDataType.Hash,
-          to: SourceDataType.Address,
-          value: SourceDataType.u64,
-        });
+        const payload = hexJSON(payloadStr, transferSchema);
 
         this.enqueueAddressTask(payload.to);
         this.enqueueBalanceTask(from, payload.asset_id);
@@ -113,12 +123,7 @@ export class BlockTransactionsConverter {
         serviceName === 'asset' &&
         method === 'transfer_from'
       ) {
-        const payload = hexJSON(payloadStr, {
-          asset_id: SourceDataType.Hash,
-          sender: SourceDataType.Address,
-          recipient: SourceDataType.Address,
-          value: SourceDataType.u64,
-        });
+        const payload = hexJSON(payloadStr, transferFromSchema);
 
         this.enqueueAddressTask(payload.sender);
         this.enqueueAddressTask(payload.recipient);
@@ -178,7 +183,7 @@ export class BlockTransactionsConverter {
           })),
         },
       });
-    });
+    }
   }
 
   private enqueueAddressTask(address: string) {

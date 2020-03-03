@@ -4,18 +4,8 @@ import {
 } from '@prisma/client';
 import * as Knex from 'knex';
 import { getDB } from './db/mongo';
-import {
-  _BlockToValidator,
-  Asset,
-  AssetTransfer,
-  Block,
-  Event,
-  Transaction,
-  TransferHistory,
-} from './db/types';
-import { prisma } from './index';
-import { uniq, keyBy } from 'lodash';
-import Bluebird = require('bluebird');
+import { Block, Transaction } from './db/types';
+import { info } from './log';
 
 const knex = Knex({
   client: 'pg',
@@ -30,10 +20,10 @@ export async function saveWholeBlock(
   const db = await getDB();
 
   await db.collection('block').insertOne(block);
-  if (!transactions.length) return;
+  const txLength = transactions.length;
+  if (!txLength) return;
 
   const transactionCollection = db.collection<Transaction>('transaction');
-
 
   const [latestTx] = await transactionCollection
     .find()
@@ -64,5 +54,7 @@ export async function saveWholeBlock(
     signature: tx.signature,
   }));
 
+  info(`block: ${block.height}, start insert ${txLength} txs`);
   await db.collection('transaction').insertMany(inputTransactions);
+  info(`block: ${block.height}, end insert ${txLength} txs`);
 }

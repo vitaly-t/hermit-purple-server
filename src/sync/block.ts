@@ -60,36 +60,38 @@ export class BlockSynchronizer {
 
         const converter = new BlockTransactionsConverter(txs, receipts);
         const transactions = converter.getTransactionInput();
+        info(`block: ${localHeight}, converted ${txs.length} transactions`);
+
         // create accounts if not exists
         const addresses = converter.getRelevantAddresses();
 
-        await Bluebird.all<string>(addresses).map(
-          address =>
-            prisma.account.upsert({
-              where: { address },
-              create: { address },
-              update: {},
-            }),
-          { concurrency: SYNC_CONCURRENCY },
-        );
+        // await Bluebird.all<string>(addresses).map(
+        //   address =>
+        //     prisma.account.upsert({
+        //       where: { address },
+        //       create: { address },
+        //       update: {},
+        //     }),
+        //   { concurrency: SYNC_CONCURRENCY },
+        // );
 
         // create validators if not exists
         const validators: ValidatorCreateWithoutBlocksInput[] =
           header.validators;
 
-        await Promise.all(
-          validators.map(validator =>
-            prisma.validator.upsert({
-              where: { address: validator.address },
-              create: {
-                address: validator.address,
-                proposeWeight: validator.proposeWeight,
-                voteWeight: validator.voteWeight,
-              },
-              update: {},
-            }),
-          ),
-        );
+        // await Promise.all(
+        //   validators.map(validator =>
+        //     prisma.validator.upsert({
+        //       where: { address: validator.address },
+        //       create: {
+        //         address: validator.address,
+        //         proposeWeight: validator.proposeWeight,
+        //         voteWeight: validator.voteWeight,
+        //       },
+        //       update: {},
+        //     }),
+        //   ),
+        // );
 
         await this.saveBlock(block, transactions, validators);
         await this.updateBalance(converter.getBalanceTask());
