@@ -1,5 +1,5 @@
 import { arg, intArg, queryType } from 'nexus';
-import { orderBy as sortBy } from 'lodash';
+import { collection } from '../sync/db/mongo';
 
 const isHex = require('is-hex');
 
@@ -29,8 +29,8 @@ export const Query = queryType({
       pagination: true,
     });
 
-    t.list.field('transferHistories', {
-      type: 'TransferHistory',
+    t.list.field('transactionHistories', {
+      type: 'Transaction',
       nullable: true,
       args: {
         where: arg({
@@ -47,52 +47,33 @@ export const Query = queryType({
         const { first, last, skip } = args;
         const { assetId, blockHeight, from, txHash, to } = args.where || {};
 
-        const limit = first || last;
-        const offset = skip ?? 0;
+        const limit = (first || last) as number;
         const orderById = args.orderBy?.id || 'asc';
-        const orderBy = (() => {
+        const orderBy: 1 | -1 = (() => {
           if (orderById === 'desc') {
-            if (last) return 'asc';
-            return 'desc';
+            if (last) return 1;
+            return -1;
           }
-          if (last) return 'desc';
-          return 'asc';
+          if (last) return -1;
+          return 1;
         })();
 
         if (!isValidHex(assetId) || !isValidHex(from) || !isValidHex(to)) {
           return [];
         }
 
-        let whereClause = Object.entries({
-          assetId,
-          blockHeight,
-          from,
-          to,
-          txHash,
-        })
-          .map(([key, value]) => value && `"${key}" = '${value}'`)
-          .filter(x => x)
-          .join(' OR ');
-        whereClause = whereClause && `where ${whereClause}`;
-        const sql = `
-              SELECT
-                *
-              from(
-                  select
-                    *
-                  from public."TransferHistory"
-                  ${whereClause}
-                  ORDER BY
-                    "id" ${orderBy}
-                ) as "items"
-              ORDER BY
-                "id" ${orderBy}
-              offset
-                ${offset}
-              limit
-                ${limit};`;
-        const histories = await ctx.prisma.raw(sql);
-        return sortBy(histories, x => x.id, orderById);
+        const transaction = await collection('transaction');
+        const histories = await transaction
+          .find({
+            ...(from ? { from } : {}),
+            ...(blockHeight ? { order: blockHeight } : {}),
+            ...(txHash ? { txHash } : {}),
+          })
+          .sort({ order: orderBy })
+          .skip(skip ?? 0)
+          .limit(limit)
+          .toArray();
+        return histories;
       },
     });
   },

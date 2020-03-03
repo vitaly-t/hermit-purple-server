@@ -15,7 +15,7 @@ export type Block = Omit<RawBlock, 'timestamp'> & {
   timestamp: string;
 };
 
-export type Transaction = Omit<RawTransaction, 'order'> & {
+export type Transaction = RawTransaction & {
   // FOREIGN KEY("from") REFERENCE "public"."Account"("address")
   from: string;
 };

@@ -3,6 +3,7 @@ import {
   ValidatorCreateWithoutBlocksInput,
 } from '@prisma/client';
 import * as Knex from 'knex';
+import { getDB } from './db/mongo';
 import {
   _BlockToValidator,
   Asset,
@@ -26,144 +27,42 @@ export async function saveWholeBlock(
   transactions: TransactionCreateWithoutBlockInput[],
   validators: ValidatorCreateWithoutBlocksInput[],
 ) {
-  return knex.transaction(async trx => {
-    await trx<Block>('Block').insert(block);
+  const db = await getDB();
 
-    const inputTransactions = transactions.map<Transaction>(tx => ({
-      block: block.height,
-      from: tx.from?.connect?.address as string,
-      cyclesPrice: tx.cyclesPrice,
-      cyclesLimit: tx.cyclesLimit,
-      cyclesUsed: tx.cyclesUsed ?? null,
-      timeout: tx.timeout,
-      method: tx.method,
-      serviceName: tx.serviceName,
-      txHash: tx.txHash,
-      chainId: tx.chainId,
-      nonce: tx.nonce,
-      receiptIsError: tx.receiptIsError ?? null,
-      payload: tx.payload,
-      pubkey: tx.pubkey,
-      receiptRet: tx.receiptRet ?? null,
-      signature: tx.signature,
-    }));
+  await db.collection('block').insertOne(block);
+  if (!transactions.length) return;
 
-    const transactionOrders = await knex
-      .batchInsert('Transaction', inputTransactions)
-      .returning('order')
-      .transacting(trx);
+  const transactionCollection = db.collection<Transaction>('transaction');
 
-    const inputEvents = transactions.flatMap<Event>((tx, index) => {
-      const events = tx.events?.create;
-      if (!events) return [];
-      if (Array.isArray(events)) {
-        return events.map(event => ({
-          receipt: transactionOrders[index],
-          data: event.data,
-          service: event.service,
-        }));
-      } else {
-        return [
-          {
-            receipt: transactionOrders[index],
-            data: events.data,
-            service: events.service,
-          },
-        ];
-      }
-    });
 
-    await knex.batchInsert('Event', inputEvents).transacting(trx);
+  const [latestTx] = await transactionCollection
+    .find()
+    .sort({ order: -1 })
+    .limit(1)
+    .toArray();
 
-    // resolve the Transaction as Asset
-    const inputAssets = transactions.reduce<Asset[]>((assets, tx, i) => {
-      const asset = tx.createdAsset?.create;
-      if (!asset) return assets;
+  // @ts-ignore
+  const order = (latestTx?.order ?? 0) + 1;
 
-      return assets.concat({
-        transaction: transactionOrders[i],
-        supply: asset.supply,
-        account: asset.account?.connect?.address as string,
-        assetId: asset.assetId,
-        name: asset.name,
-        symbol: asset.symbol,
-      });
-    }, []);
+  const inputTransactions = transactions.map<Transaction>((tx, i) => ({
+    order: order + i,
+    block: block.height,
+    from: tx.from?.connect?.address as string,
+    cyclesPrice: tx.cyclesPrice,
+    cyclesLimit: tx.cyclesLimit,
+    cyclesUsed: tx.cyclesUsed ?? null,
+    timeout: tx.timeout,
+    method: tx.method,
+    serviceName: tx.serviceName,
+    txHash: tx.txHash,
+    chainId: tx.chainId,
+    nonce: tx.nonce,
+    receiptIsError: tx.receiptIsError ?? null,
+    payload: tx.payload,
+    pubkey: tx.pubkey,
+    receiptRet: tx.receiptRet ?? null,
+    signature: tx.signature,
+  }));
 
-    await knex.batchInsert('Asset', inputAssets).transacting(trx);
-
-    const inputAssetTransfers = transactions.reduce<AssetTransfer[]>(
-      (transfers, tx, i) => {
-        const transfer = tx.transfer?.create;
-        if (!transfer) return transfers;
-
-        return transfers.concat({
-          transaction: transactionOrders[i],
-          value: transfer.value,
-          from: transfer.from.connect?.address as string,
-          to: transfer.to.connect?.address as string,
-          asset: transfer.asset.connect?.assetId as string,
-        });
-      },
-      [],
-    );
-
-    await knex
-      .batchInsert('AssetTransfer', inputAssetTransfers)
-      .transacting(trx);
-
-    const input_BlockToValidators = validators.reduce<_BlockToValidator[]>(
-      (blockValidators, validator) => {
-        return blockValidators.concat({
-          A: block.height,
-          B: validator.address,
-        });
-      },
-      [],
-    );
-
-    await knex
-      .batchInsert('_BlockToValidator', input_BlockToValidators)
-      .transacting(trx);
-
-    const assetIds = uniq(
-      inputAssetTransfers.map<string>(transfer => transfer.asset),
-    );
-
-    const assets = await Bluebird.all(assetIds).map(assetId => {
-      return prisma.asset.findOne({ where: { assetId } });
-    });
-    const indexedAsset = (keyBy(assets, asset => asset?.assetId) as any) as {
-      [key: string]: Asset;
-    };
-
-    const inputTransferHistories = inputAssetTransfers.map<TransferHistory>(
-      transfer => {
-        const index = transactionOrders.findIndex(
-          order => order === transfer.transaction,
-        );
-        const relatedTx = inputTransactions[index];
-        const assetId = transfer.asset;
-        return {
-          assetId,
-          value: transfer.value,
-          blockHeight: block.height,
-          from: transfer.from,
-          to: transfer.to,
-          service: relatedTx.serviceName,
-          method: relatedTx.method,
-          receiptIsError: relatedTx.receiptIsError,
-          txHash: relatedTx.txHash,
-          timestamp: block.timestamp,
-
-          assetName: indexedAsset[assetId].name,
-          assetSymbol: indexedAsset[assetId].symbol,
-        };
-      },
-    );
-
-    await knex
-      .batchInsert('TransferHistory', inputTransferHistories)
-      .transacting(trx);
-  });
+  await db.collection('transaction').insertMany(inputTransactions);
 }
