@@ -8,12 +8,7 @@ All notable changes to this project will be documented in this file. See [standa
 ### Features
 
 * add Dockerfile ([a129dea](https://github.com/homura/hermit-purple-server/commit/a129deae29b6dcf9d0b4f30aed66dd857f913975))
-* change `TransferHistories` arguments as an inputObject with a where clause ([6608bbc](https://github.com/homura/hermit-purple-server/commit/6608bbc4772cd35fc6ee4f80ab715046f8baa41c))
-* default `TransferHistories` orderBy desc ([1286b75](https://github.com/homura/hermit-purple-server/commit/1286b75097c1f1e2d2b85d60114360ca2920d6bd))
-* disable CORS now ([99754a1](https://github.com/homura/hermit-purple-server/commit/99754a101386f3a2348ed4e4a5bbeb0662c68739))
-* disabled CORS default ([a0e9a4f](https://github.com/homura/hermit-purple-server/commit/a0e9a4f4c55603443dfda5a2dc7a9ec92fddb18d))
-* supported `OrderBy` for `TransferHistories` ([54186d3](https://github.com/homura/hermit-purple-server/commit/54186d3328624836f69458f738a3b92e7516412c))
-* supported `OrderBy` for `TransferHistories` ([#1](https://github.com/homura/hermit-purple-server/issues/1)) ([ec2a337](https://github.com/homura/hermit-purple-server/commit/ec2a3376f923a5497cccfca686f7eb36ba2fcb37))
+* supported `orderBy` for `TransferHistories` defaults `orderBy` to  desc ([#1](https://github.com/homura/hermit-purple-server/issues/1)) ([ec2a337](https://github.com/homura/hermit-purple-server/commit/ec2a3376f923a5497cccfca686f7eb36ba2fcb37))
 
 ## [0.1.0](https://github.com/homura/hermit-purple-server/compare/v0.0.2-alpha.5...v0.1.0) (2020-02-29)
 
