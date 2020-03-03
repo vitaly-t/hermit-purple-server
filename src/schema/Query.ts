@@ -49,7 +49,7 @@ export const Query = queryType({
 
         const limit = first || last;
         const offset = skip ?? 0;
-        const orderById = args.orderBy?.id || 'asc';
+        const orderById = args.orderBy?.id || 'desc';
         const orderBy = (() => {
           if (orderById === 'desc') {
             if (last) return 'asc';
