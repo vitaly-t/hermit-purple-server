@@ -3,7 +3,7 @@
 
 import { getComplexity } from 'graphql-query-complexity';
 import { ValidationContext, GraphQLError } from 'graphql';
-import { HERMIT_MAX_COMPLEXITY } from '../config';
+import { HERMIT_MAX_COMPLEXITY } from '../../config';
 import { Request } from 'express';
 
 const MUST_LIMIT_TYPE = new Set([

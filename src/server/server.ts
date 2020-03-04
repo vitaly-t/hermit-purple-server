@@ -5,7 +5,7 @@ import * as proxy from 'http-proxy-middleware';
 import * as cors from 'cors';
 import { schema } from './schema';
 import { createContext } from './context';
-import { HERMIT_CORS_ORIGIN, HERMIT_PORT, MUTA_ENDPOINT } from './config';
+import { HERMIT_CORS_ORIGIN, HERMIT_PORT, MUTA_ENDPOINT } from '../config';
 import { complexity } from './rules/complexity';
 
 const server = new GraphQLServer({

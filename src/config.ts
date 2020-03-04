@@ -1,5 +1,5 @@
 /**
- * =Muta endpoint
+ * Muta endpoint
  */
 export const MUTA_ENDPOINT =
   process.env.MUTA_ENDPOINT ?? 'http://127.0.0.1:8000/graphql';
