@@ -26,6 +26,7 @@
   "dependencies": {
     "@prisma/client": "2.0.0-preview022",
     "@types/bluebird": "^3.5.29",
+    "@types/graphql-relay": "^0.4.11",
     "@types/http-proxy-middleware": "^0.19.3",
     "@types/lodash": "^4.14.149",
     "@types/lossless-json": "^1.0.0",
@@ -37,6 +38,7 @@
     "dotenv": "^8.2.0",
     "graphql": "^14.6.0",
     "graphql-query-complexity": "^0.4.1",
+    "graphql-relay": "^0.6.0",
     "graphql-yoga": "1.18.3",
     "http-proxy-middleware": "^0.20.0",
     "is-hex": "^1.1.3",

@@ -1,4 +1,4 @@
-import { objectType } from 'nexus';
+import { arg, objectType, queryField } from 'nexus';
 
 export const Block = objectType({
   name: 'Block',
@@ -76,14 +76,13 @@ export const Block = objectType({
       },
     });
 
-    // t.model.validators();
     t.connectionField('validators', {
       type: 'Validator',
       nodes() {
         return [];
       },
     });
-    // t.model.transactions();
+
     t.connectionField('transactions', {
       type: 'Transaction',
       nodes() {
@@ -91,4 +90,52 @@ export const Block = objectType({
       },
     });
   },
+});
+
+export const blockQuery = queryField(t => {
+  t.field('block', {
+    type: 'Block',
+    args: {
+      hash: arg({ type: 'Hash' }),
+      height: arg({ type: 'Int' }),
+    },
+    resolve() {
+      return Promise.resolve({
+        height: 0,
+        timestamp: '',
+        blockHash: '',
+        proofBlockHash: '',
+        proofRound: '',
+        proposer: '',
+        proofSignature: '',
+        proofBitmap: '',
+        execHeight: 0,
+        transactionsCount: 0,
+        validatorVersion: '',
+        stateRoot: '',
+        orderRoot: '',
+        preHash: '',
+      });
+    },
+  });
+});
+
+export const blocksConnection = queryField(t => {
+  t.connectionField('blocks', {
+    type: 'Block',
+    additionalArgs: {
+      from: arg({
+        type: 'Address',
+      }),
+      service: arg({
+        type: 'String',
+      }),
+      method: arg({
+        type: 'String',
+      }),
+    },
+    nodes() {
+      return [];
+    },
+  });
 });

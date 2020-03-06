@@ -1,9 +1,11 @@
 import { connectionPlugin, makeSchema } from 'nexus';
 import * as basicTypes from './schema/types';
+import * as customTypes from './custom/schema/types';
 
 export const schema = makeSchema({
   types: {
     ...basicTypes,
+    ...customTypes,
   },
   plugins: [connectionPlugin()],
   outputs: {
