@@ -123,17 +123,6 @@ export const blockQuery = queryField(t => {
 export const blocksConnection = queryField(t => {
   t.connectionField('blocks', {
     type: 'Block',
-    additionalArgs: {
-      from: arg({
-        type: 'Address',
-      }),
-      service: arg({
-        type: 'String',
-      }),
-      method: arg({
-        type: 'String',
-      }),
-    },
     nodes() {
       return [];
     },

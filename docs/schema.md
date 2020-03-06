@@ -138,11 +138,6 @@ Returns the first n elements from the list.
 </td>
 </tr>
 <tr>
-<td colspan="2" align="right" valign="top">from</td>
-<td valign="top"><a href="#address">Address</a></td>
-<td></td>
-</tr>
-<tr>
 <td colspan="2" align="right" valign="top">last</td>
 <td valign="top"><a href="#int">Int</a></td>
 <td>
@@ -150,16 +145,6 @@ Returns the first n elements from the list.
 Returns the last n elements from the list.
 
 </td>
-</tr>
-<tr>
-<td colspan="2" align="right" valign="top">method</td>
-<td valign="top"><a href="#string">String</a></td>
-<td></td>
-</tr>
-<tr>
-<td colspan="2" align="right" valign="top">service</td>
-<td valign="top"><a href="#string">String</a></td>
-<td></td>
 </tr>
 <tr>
 <td colspan="2" valign="top"><strong>transaction</strong></td>
