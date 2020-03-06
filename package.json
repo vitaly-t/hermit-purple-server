@@ -10,7 +10,7 @@
   "scripts": {
     "start": "node dist/index",
     "clean": "rm -rf dist",
-    "docs": "graphql-markdown src/generated/schema.graphql > docs/schema.md",
+    "docs": "graphql-markdown src/server/generated/schema.graphql > docs/schema.md",
     "build": "npm -s run clean && npm -s run generate && tsc --skipLibCheck",
     "generate": "dotenv -- npm -s run generate:prisma && npm -s run generate:nexus",
     "generate:prisma": "prisma2 generate",
