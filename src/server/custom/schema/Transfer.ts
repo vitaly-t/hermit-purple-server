@@ -48,6 +48,9 @@ export const transferConnection = queryField(t => {
       asset: arg({
         type: 'Hash',
       }),
+      blockHeight: arg({
+        type: 'Int',
+      }),
     },
     nodes() {
       return [];

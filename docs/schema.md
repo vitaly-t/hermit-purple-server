@@ -251,6 +251,11 @@ Returns the elements in the list that come before the specified cursor
 </td>
 </tr>
 <tr>
+<td colspan="2" align="right" valign="top">blockHeight</td>
+<td valign="top"><a href="#int">Int</a></td>
+<td></td>
+</tr>
+<tr>
 <td colspan="2" align="right" valign="top">first</td>
 <td valign="top"><a href="#int">Int</a></td>
 <td>
