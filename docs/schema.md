@@ -12,6 +12,7 @@
     * [Block](#block)
     * [Event](#event)
     * [Transaction](#transaction)
+    * [TransferHistory](#transferhistory)
     * [Validator](#validator)
   * [Inputs](#inputs)
     * [AccountOrderByInput](#accountorderbyinput)
@@ -28,11 +29,11 @@
     * [BalanceFilter](#balancefilter)
     * [BalanceOrderByInput](#balanceorderbyinput)
     * [BalanceWhereInput](#balancewhereinput)
+    * [BalanceWhereUniqueInput](#balancewhereuniqueinput)
     * [BlockFilter](#blockfilter)
     * [BlockOrderByInput](#blockorderbyinput)
     * [BlockWhereInput](#blockwhereinput)
     * [BlockWhereUniqueInput](#blockwhereuniqueinput)
-    * [DateTimeFilter](#datetimefilter)
     * [EventFilter](#eventfilter)
     * [EventWhereInput](#eventwhereinput)
     * [IntFilter](#intfilter)
@@ -43,16 +44,19 @@
     * [TransactionOrderByInput](#transactionorderbyinput)
     * [TransactionWhereInput](#transactionwhereinput)
     * [TransactionWhereUniqueInput](#transactionwhereuniqueinput)
+    * [TransferHistoriesOrderByInputType](#transferhistoriesorderbyinputtype)
+    * [TransferHistoriesWhereInput](#transferhistorieswhereinput)
+    * [TransferHistoryWhereUniqueInput](#transferhistorywhereuniqueinput)
     * [ValidatorFilter](#validatorfilter)
     * [ValidatorWhereInput](#validatorwhereinput)
     * [ValidatorWhereUniqueInput](#validatorwhereuniqueinput)
   * [Enums](#enums)
     * [OrderByArg](#orderbyarg)
+    * [OrderByEnum](#orderbyenum)
   * [Scalars](#scalars)
     * [Address](#address)
     * [Boolean](#boolean)
     * [Bytes](#bytes)
-    * [DateTime](#datetime)
     * [Hash](#hash)
     * [Int](#int)
     * [String](#string)
@@ -88,12 +92,12 @@
 </tr>
 <tr>
 <td colspan="2" align="right" valign="top">after</td>
-<td valign="top"><a href="#string">String</a></td>
+<td valign="top"><a href="#accountwhereuniqueinput">AccountWhereUniqueInput</a></td>
 <td></td>
 </tr>
 <tr>
 <td colspan="2" align="right" valign="top">before</td>
-<td valign="top"><a href="#string">String</a></td>
+<td valign="top"><a href="#accountwhereuniqueinput">AccountWhereUniqueInput</a></td>
 <td></td>
 </tr>
 <tr>
@@ -138,12 +142,12 @@
 </tr>
 <tr>
 <td colspan="2" align="right" valign="top">after</td>
-<td valign="top"><a href="#string">String</a></td>
+<td valign="top"><a href="#assetwhereuniqueinput">AssetWhereUniqueInput</a></td>
 <td></td>
 </tr>
 <tr>
 <td colspan="2" align="right" valign="top">before</td>
-<td valign="top"><a href="#string">String</a></td>
+<td valign="top"><a href="#assetwhereuniqueinput">AssetWhereUniqueInput</a></td>
 <td></td>
 </tr>
 <tr>
@@ -188,12 +192,12 @@
 </tr>
 <tr>
 <td colspan="2" align="right" valign="top">after</td>
-<td valign="top"><a href="#int">Int</a></td>
+<td valign="top"><a href="#assettransferwhereuniqueinput">AssetTransferWhereUniqueInput</a></td>
 <td></td>
 </tr>
 <tr>
 <td colspan="2" align="right" valign="top">before</td>
-<td valign="top"><a href="#int">Int</a></td>
+<td valign="top"><a href="#assettransferwhereuniqueinput">AssetTransferWhereUniqueInput</a></td>
 <td></td>
 </tr>
 <tr>
@@ -238,12 +242,12 @@
 </tr>
 <tr>
 <td colspan="2" align="right" valign="top">after</td>
-<td valign="top"><a href="#int">Int</a></td>
+<td valign="top"><a href="#blockwhereuniqueinput">BlockWhereUniqueInput</a></td>
 <td></td>
 </tr>
 <tr>
 <td colspan="2" align="right" valign="top">before</td>
-<td valign="top"><a href="#int">Int</a></td>
+<td valign="top"><a href="#blockwhereuniqueinput">BlockWhereUniqueInput</a></td>
 <td></td>
 </tr>
 <tr>
@@ -288,12 +292,12 @@
 </tr>
 <tr>
 <td colspan="2" align="right" valign="top">after</td>
-<td valign="top"><a href="#int">Int</a></td>
+<td valign="top"><a href="#transactionwhereuniqueinput">TransactionWhereUniqueInput</a></td>
 <td></td>
 </tr>
 <tr>
 <td colspan="2" align="right" valign="top">before</td>
-<td valign="top"><a href="#int">Int</a></td>
+<td valign="top"><a href="#transactionwhereuniqueinput">TransactionWhereUniqueInput</a></td>
 <td></td>
 </tr>
 <tr>
@@ -319,6 +323,46 @@
 <tr>
 <td colspan="2" align="right" valign="top">where</td>
 <td valign="top"><a href="#transactionwhereinput">TransactionWhereInput</a></td>
+<td></td>
+</tr>
+<tr>
+<td colspan="2" valign="top"><strong>transferHistories</strong></td>
+<td valign="top">[<a href="#transferhistory">TransferHistory</a>!]</td>
+<td></td>
+</tr>
+<tr>
+<td colspan="2" align="right" valign="top">first</td>
+<td valign="top"><a href="#int">Int</a></td>
+<td></td>
+</tr>
+<tr>
+<td colspan="2" align="right" valign="top">last</td>
+<td valign="top"><a href="#int">Int</a></td>
+<td></td>
+</tr>
+<tr>
+<td colspan="2" align="right" valign="top">orderBy</td>
+<td valign="top"><a href="#transferhistoriesorderbyinputtype">TransferHistoriesOrderByInputType</a></td>
+<td></td>
+</tr>
+<tr>
+<td colspan="2" align="right" valign="top">skip</td>
+<td valign="top"><a href="#int">Int</a></td>
+<td></td>
+</tr>
+<tr>
+<td colspan="2" align="right" valign="top">where</td>
+<td valign="top"><a href="#transferhistorieswhereinput">TransferHistoriesWhereInput</a></td>
+<td></td>
+</tr>
+<tr>
+<td colspan="2" valign="top"><strong>transferHistory</strong></td>
+<td valign="top"><a href="#transferhistory">TransferHistory</a></td>
+<td></td>
+</tr>
+<tr>
+<td colspan="2" align="right" valign="top">where</td>
+<td valign="top"><a href="#transferhistorywhereuniqueinput">TransferHistoryWhereUniqueInput</a>!</td>
 <td></td>
 </tr>
 <tr>
@@ -360,12 +404,12 @@
 </tr>
 <tr>
 <td colspan="2" align="right" valign="top">after</td>
-<td valign="top"><a href="#int">Int</a></td>
+<td valign="top"><a href="#balancewhereuniqueinput">BalanceWhereUniqueInput</a></td>
 <td></td>
 </tr>
 <tr>
 <td colspan="2" align="right" valign="top">before</td>
-<td valign="top"><a href="#int">Int</a></td>
+<td valign="top"><a href="#balancewhereuniqueinput">BalanceWhereUniqueInput</a></td>
 <td></td>
 </tr>
 <tr>
@@ -400,12 +444,12 @@
 </tr>
 <tr>
 <td colspan="2" align="right" valign="top">after</td>
-<td valign="top"><a href="#int">Int</a></td>
+<td valign="top"><a href="#transactionwhereuniqueinput">TransactionWhereUniqueInput</a></td>
 <td></td>
 </tr>
 <tr>
 <td colspan="2" align="right" valign="top">before</td>
-<td valign="top"><a href="#int">Int</a></td>
+<td valign="top"><a href="#transactionwhereuniqueinput">TransactionWhereUniqueInput</a></td>
 <td></td>
 </tr>
 <tr>
@@ -465,12 +509,12 @@
 </tr>
 <tr>
 <td colspan="2" align="right" valign="top">after</td>
-<td valign="top"><a href="#int">Int</a></td>
+<td valign="top"><a href="#assettransferwhereuniqueinput">AssetTransferWhereUniqueInput</a></td>
 <td></td>
 </tr>
 <tr>
 <td colspan="2" align="right" valign="top">before</td>
-<td valign="top"><a href="#int">Int</a></td>
+<td valign="top"><a href="#assettransferwhereuniqueinput">AssetTransferWhereUniqueInput</a></td>
 <td></td>
 </tr>
 <tr>
@@ -619,6 +663,15 @@ Same as an id field, but produce by keccak256(address+assetId)
 </thead>
 <tbody>
 <tr>
+<td colspan="2" valign="top"><strong>blockHash</strong></td>
+<td valign="top"><a href="#hash">Hash</a>!</td>
+<td>
+
+The current block hash
+
+</td>
+</tr>
+<tr>
 <td colspan="2" valign="top"><strong>height</strong></td>
 <td valign="top"><a href="#int">Int</a>!</td>
 <td>
@@ -668,7 +721,7 @@ The proof of prev block hash, same as prevBlockHash
 <td valign="top"><a href="#uint64">Uint64</a>!</td>
 <td>
 
-hello world
+Proof of round
 
 </td>
 </tr>
@@ -701,10 +754,10 @@ The Merkle root of state root
 </tr>
 <tr>
 <td colspan="2" valign="top"><strong>timestamp</strong></td>
-<td valign="top"><a href="#datetime">DateTime</a>!</td>
+<td valign="top"><a href="#string">String</a>!</td>
 <td>
 
-A datetime string format as yyyy-MM-dd'T'HH:mm:ss.SSSZ
+A datetime string format as UTC string
 
 </td>
 </tr>
@@ -715,12 +768,12 @@ A datetime string format as yyyy-MM-dd'T'HH:mm:ss.SSSZ
 </tr>
 <tr>
 <td colspan="2" align="right" valign="top">after</td>
-<td valign="top"><a href="#int">Int</a></td>
+<td valign="top"><a href="#transactionwhereuniqueinput">TransactionWhereUniqueInput</a></td>
 <td></td>
 </tr>
 <tr>
 <td colspan="2" align="right" valign="top">before</td>
-<td valign="top"><a href="#int">Int</a></td>
+<td valign="top"><a href="#transactionwhereuniqueinput">TransactionWhereUniqueInput</a></td>
 <td></td>
 </tr>
 <tr>
@@ -754,12 +807,12 @@ Show how many transactions in the block
 </tr>
 <tr>
 <td colspan="2" align="right" valign="top">after</td>
-<td valign="top"><a href="#string">String</a></td>
+<td valign="top"><a href="#validatorwhereuniqueinput">ValidatorWhereUniqueInput</a></td>
 <td></td>
 </tr>
 <tr>
 <td colspan="2" align="right" valign="top">before</td>
-<td valign="top"><a href="#string">String</a></td>
+<td valign="top"><a href="#validatorwhereuniqueinput">ValidatorWhereUniqueInput</a></td>
 <td></td>
 </tr>
 <tr>
@@ -954,6 +1007,11 @@ Signature of a transaction
 </td>
 </tr>
 <tr>
+<td colspan="2" valign="top"><strong>transfer</strong></td>
+<td valign="top"><a href="#assettransfer">AssetTransfer</a></td>
+<td></td>
+</tr>
+<tr>
 <td colspan="2" valign="top"><strong>txHash</strong></td>
 <td valign="top"><a href="#hash">Hash</a>!</td>
 <td>
@@ -961,6 +1019,90 @@ Signature of a transaction
 The transaction hash
 
 </td>
+</tr>
+</tbody>
+</table>
+
+### TransferHistory
+
+<table>
+<thead>
+<tr>
+<th align="left">Field</th>
+<th align="right">Argument</th>
+<th align="left">Type</th>
+<th align="left">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td colspan="2" valign="top"><strong>assetId</strong></td>
+<td valign="top"><a href="#string">String</a>!</td>
+<td></td>
+</tr>
+<tr>
+<td colspan="2" valign="top"><strong>assetName</strong></td>
+<td valign="top"><a href="#string">String</a>!</td>
+<td></td>
+</tr>
+<tr>
+<td colspan="2" valign="top"><strong>assetSymbol</strong></td>
+<td valign="top"><a href="#string">String</a>!</td>
+<td></td>
+</tr>
+<tr>
+<td colspan="2" valign="top"><strong>blockHeight</strong></td>
+<td valign="top"><a href="#int">Int</a>!</td>
+<td></td>
+</tr>
+<tr>
+<td colspan="2" valign="top"><strong>from</strong></td>
+<td valign="top"><a href="#string">String</a>!</td>
+<td></td>
+</tr>
+<tr>
+<td colspan="2" valign="top"><strong>id</strong></td>
+<td valign="top"><a href="#int">Int</a>!</td>
+<td></td>
+</tr>
+<tr>
+<td colspan="2" valign="top"><strong>method</strong></td>
+<td valign="top"><a href="#string">String</a>!</td>
+<td></td>
+</tr>
+<tr>
+<td colspan="2" valign="top"><strong>receiptIsError</strong></td>
+<td valign="top"><a href="#boolean">Boolean</a>!</td>
+<td></td>
+</tr>
+<tr>
+<td colspan="2" valign="top"><strong>service</strong></td>
+<td valign="top"><a href="#string">String</a>!</td>
+<td></td>
+</tr>
+<tr>
+<td colspan="2" valign="top"><strong>timestamp</strong></td>
+<td valign="top"><a href="#string">String</a>!</td>
+<td>
+
+A datetime string format as UTC string
+
+</td>
+</tr>
+<tr>
+<td colspan="2" valign="top"><strong>to</strong></td>
+<td valign="top"><a href="#string">String</a>!</td>
+<td></td>
+</tr>
+<tr>
+<td colspan="2" valign="top"><strong>txHash</strong></td>
+<td valign="top"><a href="#string">String</a>!</td>
+<td></td>
+</tr>
+<tr>
+<td colspan="2" valign="top"><strong>value</strong></td>
+<td valign="top"><a href="#string">String</a>!</td>
+<td></td>
 </tr>
 </tbody>
 </table>
@@ -993,12 +1135,12 @@ A validator address
 </tr>
 <tr>
 <td colspan="2" align="right" valign="top">after</td>
-<td valign="top"><a href="#int">Int</a></td>
+<td valign="top"><a href="#blockwhereuniqueinput">BlockWhereUniqueInput</a></td>
 <td></td>
 </tr>
 <tr>
 <td colspan="2" align="right" valign="top">before</td>
-<td valign="top"><a href="#int">Int</a></td>
+<td valign="top"><a href="#blockwhereuniqueinput">BlockWhereUniqueInput</a></td>
 <td></td>
 </tr>
 <tr>
@@ -1530,6 +1672,30 @@ Vote weight of a validator
 </tbody>
 </table>
 
+### BalanceWhereUniqueInput
+
+<table>
+<thead>
+<tr>
+<th colspan="2" align="left">Field</th>
+<th align="left">Type</th>
+<th align="left">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td colspan="2" valign="top"><strong>compound</strong></td>
+<td valign="top"><a href="#string">String</a></td>
+<td></td>
+</tr>
+<tr>
+<td colspan="2" valign="top"><strong>id</strong></td>
+<td valign="top"><a href="#int">Int</a></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+
 ### BlockFilter
 
 <table>
@@ -1570,6 +1736,11 @@ Vote weight of a validator
 </tr>
 </thead>
 <tbody>
+<tr>
+<td colspan="2" valign="top"><strong>blockHash</strong></td>
+<td valign="top"><a href="#orderbyarg">OrderByArg</a></td>
+<td></td>
+</tr>
 <tr>
 <td colspan="2" valign="top"><strong>execHeight</strong></td>
 <td valign="top"><a href="#orderbyarg">OrderByArg</a></td>
@@ -1655,6 +1826,11 @@ Vote weight of a validator
 <td></td>
 </tr>
 <tr>
+<td colspan="2" valign="top"><strong>blockHash</strong></td>
+<td valign="top"><a href="#stringfilter">StringFilter</a></td>
+<td></td>
+</tr>
+<tr>
 <td colspan="2" valign="top"><strong>execHeight</strong></td>
 <td valign="top"><a href="#intfilter">IntFilter</a></td>
 <td></td>
@@ -1716,7 +1892,7 @@ Vote weight of a validator
 </tr>
 <tr>
 <td colspan="2" valign="top"><strong>timestamp</strong></td>
-<td valign="top"><a href="#datetimefilter">DateTimeFilter</a></td>
+<td valign="top"><a href="#stringfilter">StringFilter</a></td>
 <td></td>
 </tr>
 <tr>
@@ -1754,62 +1930,13 @@ Vote weight of a validator
 </thead>
 <tbody>
 <tr>
+<td colspan="2" valign="top"><strong>blockHash</strong></td>
+<td valign="top"><a href="#string">String</a></td>
+<td></td>
+</tr>
+<tr>
 <td colspan="2" valign="top"><strong>height</strong></td>
 <td valign="top"><a href="#int">Int</a></td>
-<td></td>
-</tr>
-</tbody>
-</table>
-
-### DateTimeFilter
-
-<table>
-<thead>
-<tr>
-<th colspan="2" align="left">Field</th>
-<th align="left">Type</th>
-<th align="left">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td colspan="2" valign="top"><strong>equals</strong></td>
-<td valign="top"><a href="#datetime">DateTime</a></td>
-<td></td>
-</tr>
-<tr>
-<td colspan="2" valign="top"><strong>gt</strong></td>
-<td valign="top"><a href="#datetime">DateTime</a></td>
-<td></td>
-</tr>
-<tr>
-<td colspan="2" valign="top"><strong>gte</strong></td>
-<td valign="top"><a href="#datetime">DateTime</a></td>
-<td></td>
-</tr>
-<tr>
-<td colspan="2" valign="top"><strong>in</strong></td>
-<td valign="top">[<a href="#datetime">DateTime</a>!]</td>
-<td></td>
-</tr>
-<tr>
-<td colspan="2" valign="top"><strong>lt</strong></td>
-<td valign="top"><a href="#datetime">DateTime</a></td>
-<td></td>
-</tr>
-<tr>
-<td colspan="2" valign="top"><strong>lte</strong></td>
-<td valign="top"><a href="#datetime">DateTime</a></td>
-<td></td>
-</tr>
-<tr>
-<td colspan="2" valign="top"><strong>not</strong></td>
-<td valign="top"><a href="#datetime">DateTime</a></td>
-<td></td>
-</tr>
-<tr>
-<td colspan="2" valign="top"><strong>notIn</strong></td>
-<td valign="top">[<a href="#datetime">DateTime</a>!]</td>
 <td></td>
 </tr>
 </tbody>
@@ -2380,6 +2507,83 @@ Vote weight of a validator
 </tbody>
 </table>
 
+### TransferHistoriesOrderByInputType
+
+<table>
+<thead>
+<tr>
+<th colspan="2" align="left">Field</th>
+<th align="left">Type</th>
+<th align="left">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td colspan="2" valign="top"><strong>id</strong></td>
+<td valign="top"><a href="#orderbyenum">OrderByEnum</a></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+
+### TransferHistoriesWhereInput
+
+<table>
+<thead>
+<tr>
+<th colspan="2" align="left">Field</th>
+<th align="left">Type</th>
+<th align="left">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td colspan="2" valign="top"><strong>assetId</strong></td>
+<td valign="top"><a href="#string">String</a></td>
+<td></td>
+</tr>
+<tr>
+<td colspan="2" valign="top"><strong>blockHeight</strong></td>
+<td valign="top"><a href="#int">Int</a></td>
+<td></td>
+</tr>
+<tr>
+<td colspan="2" valign="top"><strong>from</strong></td>
+<td valign="top"><a href="#string">String</a></td>
+<td></td>
+</tr>
+<tr>
+<td colspan="2" valign="top"><strong>to</strong></td>
+<td valign="top"><a href="#string">String</a></td>
+<td></td>
+</tr>
+<tr>
+<td colspan="2" valign="top"><strong>txHash</strong></td>
+<td valign="top"><a href="#string">String</a></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+
+### TransferHistoryWhereUniqueInput
+
+<table>
+<thead>
+<tr>
+<th colspan="2" align="left">Field</th>
+<th align="left">Type</th>
+<th align="left">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td colspan="2" valign="top"><strong>id</strong></td>
+<td valign="top"><a href="#int">Int</a></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+
 ### ValidatorFilter
 
 <table>
@@ -2498,6 +2702,25 @@ Vote weight of a validator
 </tbody>
 </table>
 
+### OrderByEnum
+
+<table>
+<thead>
+<th align="left">Value</th>
+<th align="left">Description</th>
+</thead>
+<tbody>
+<tr>
+<td valign="top"><strong>asc</strong></td>
+<td></td>
+</tr>
+<tr>
+<td valign="top"><strong>desc</strong></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+
 ## Scalars
 
 ### Address
@@ -2511,8 +2734,6 @@ The `Boolean` scalar type represents `true` or `false`.
 ### Bytes
 
 Bytes corresponding hex string
-
-### DateTime
 
 ### Hash
 
