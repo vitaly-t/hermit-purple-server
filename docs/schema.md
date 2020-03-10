@@ -7,24 +7,13 @@
   * [Objects](#objects)
     * [Account](#account)
     * [Asset](#asset)
-    * [AssetConnection](#assetconnection)
-    * [AssetEdge](#assetedge)
     * [Balance](#balance)
     * [Block](#block)
-    * [BlockConnection](#blockconnection)
-    * [BlockEdge](#blockedge)
     * [Event](#event)
-    * [PageInfo](#pageinfo)
     * [Receipt](#receipt)
     * [Transaction](#transaction)
-    * [TransactionConnection](#transactionconnection)
-    * [TransactionEdge](#transactionedge)
     * [Transfer](#transfer)
-    * [TransferConnection](#transferconnection)
-    * [TransferEdge](#transferedge)
     * [Validator](#validator)
-    * [ValidatorConnection](#validatorconnection)
-    * [ValidatorEdge](#validatoredge)
   * [Enums](#enums)
     * [OrderByEnum](#orderbyenum)
   * [Scalars](#scalars)
@@ -51,48 +40,57 @@
 <tbody>
 <tr>
 <td colspan="2" valign="top"><strong>assets</strong></td>
-<td valign="top"><a href="#assetconnection">AssetConnection</a>!</td>
+<td valign="top">[<a href="#asset">Asset</a>!]!</td>
 <td></td>
-</tr>
-<tr>
-<td colspan="2" align="right" valign="top">after</td>
-<td valign="top"><a href="#string">String</a></td>
-<td>
-
-Returns the elements in the list that come after the specified cursor
-
-</td>
-</tr>
-<tr>
-<td colspan="2" align="right" valign="top">before</td>
-<td valign="top"><a href="#string">String</a></td>
-<td>
-
-Returns the elements in the list that come before the specified cursor
-
-</td>
 </tr>
 <tr>
 <td colspan="2" align="right" valign="top">first</td>
 <td valign="top"><a href="#int">Int</a></td>
-<td>
-
-Returns the first n elements from the list.
-
-</td>
+<td></td>
 </tr>
 <tr>
 <td colspan="2" align="right" valign="top">last</td>
 <td valign="top"><a href="#int">Int</a></td>
-<td>
-
-Returns the last n elements from the list.
-
-</td>
+<td></td>
+</tr>
+<tr>
+<td colspan="2" align="right" valign="top">skip</td>
+<td valign="top"><a href="#int">Int</a></td>
+<td></td>
+</tr>
+<tr>
+<td colspan="2" valign="top"><strong>balances</strong></td>
+<td valign="top">[<a href="#balance">Balance</a>!]!</td>
+<td></td>
+</tr>
+<tr>
+<td colspan="2" align="right" valign="top">address</td>
+<td valign="top"><a href="#address">Address</a></td>
+<td></td>
+</tr>
+<tr>
+<td colspan="2" align="right" valign="top">assetId</td>
+<td valign="top"><a href="#hash">Hash</a></td>
+<td></td>
+</tr>
+<tr>
+<td colspan="2" align="right" valign="top">first</td>
+<td valign="top"><a href="#int">Int</a></td>
+<td></td>
+</tr>
+<tr>
+<td colspan="2" align="right" valign="top">last</td>
+<td valign="top"><a href="#int">Int</a></td>
+<td></td>
+</tr>
+<tr>
+<td colspan="2" align="right" valign="top">skip</td>
+<td valign="top"><a href="#int">Int</a></td>
+<td></td>
 </tr>
 <tr>
 <td colspan="2" valign="top"><strong>block</strong></td>
-<td valign="top"><a href="#block">Block</a>!</td>
+<td valign="top"><a href="#block">Block</a></td>
 <td></td>
 </tr>
 <tr>
@@ -107,48 +105,27 @@ Returns the last n elements from the list.
 </tr>
 <tr>
 <td colspan="2" valign="top"><strong>blocks</strong></td>
-<td valign="top"><a href="#blockconnection">BlockConnection</a>!</td>
+<td valign="top">[<a href="#block">Block</a>!]!</td>
 <td></td>
-</tr>
-<tr>
-<td colspan="2" align="right" valign="top">after</td>
-<td valign="top"><a href="#string">String</a></td>
-<td>
-
-Returns the elements in the list that come after the specified cursor
-
-</td>
-</tr>
-<tr>
-<td colspan="2" align="right" valign="top">before</td>
-<td valign="top"><a href="#string">String</a></td>
-<td>
-
-Returns the elements in the list that come before the specified cursor
-
-</td>
 </tr>
 <tr>
 <td colspan="2" align="right" valign="top">first</td>
 <td valign="top"><a href="#int">Int</a></td>
-<td>
-
-Returns the first n elements from the list.
-
-</td>
+<td></td>
 </tr>
 <tr>
 <td colspan="2" align="right" valign="top">last</td>
 <td valign="top"><a href="#int">Int</a></td>
-<td>
-
-Returns the last n elements from the list.
-
-</td>
+<td></td>
+</tr>
+<tr>
+<td colspan="2" align="right" valign="top">skip</td>
+<td valign="top"><a href="#int">Int</a></td>
+<td></td>
 </tr>
 <tr>
 <td colspan="2" valign="top"><strong>transaction</strong></td>
-<td valign="top"><a href="#transaction">Transaction</a>!</td>
+<td valign="top"><a href="#transaction">Transaction</a></td>
 <td></td>
 </tr>
 <tr>
@@ -163,26 +140,8 @@ Returns the last n elements from the list.
 </tr>
 <tr>
 <td colspan="2" valign="top"><strong>transactions</strong></td>
-<td valign="top"><a href="#transactionconnection">TransactionConnection</a>!</td>
+<td valign="top">[<a href="#transaction">Transaction</a>!]!</td>
 <td></td>
-</tr>
-<tr>
-<td colspan="2" align="right" valign="top">after</td>
-<td valign="top"><a href="#string">String</a></td>
-<td>
-
-Returns the elements in the list that come after the specified cursor
-
-</td>
-</tr>
-<tr>
-<td colspan="2" align="right" valign="top">before</td>
-<td valign="top"><a href="#string">String</a></td>
-<td>
-
-Returns the elements in the list that come before the specified cursor
-
-</td>
 </tr>
 <tr>
 <td colspan="2" align="right" valign="top">block</td>
@@ -192,11 +151,7 @@ Returns the elements in the list that come before the specified cursor
 <tr>
 <td colspan="2" align="right" valign="top">first</td>
 <td valign="top"><a href="#int">Int</a></td>
-<td>
-
-Returns the first n elements from the list.
-
-</td>
+<td></td>
 </tr>
 <tr>
 <td colspan="2" align="right" valign="top">from</td>
@@ -206,11 +161,7 @@ Returns the first n elements from the list.
 <tr>
 <td colspan="2" align="right" valign="top">last</td>
 <td valign="top"><a href="#int">Int</a></td>
-<td>
-
-Returns the last n elements from the list.
-
-</td>
+<td></td>
 </tr>
 <tr>
 <td colspan="2" align="right" valign="top">method</td>
@@ -223,32 +174,19 @@ Returns the last n elements from the list.
 <td></td>
 </tr>
 <tr>
-<td colspan="2" valign="top"><strong>transferHistories</strong></td>
-<td valign="top"><a href="#transferconnection">TransferConnection</a>!</td>
+<td colspan="2" align="right" valign="top">skip</td>
+<td valign="top"><a href="#int">Int</a></td>
 <td></td>
 </tr>
 <tr>
-<td colspan="2" align="right" valign="top">after</td>
-<td valign="top"><a href="#string">String</a></td>
-<td>
-
-Returns the elements in the list that come after the specified cursor
-
-</td>
+<td colspan="2" valign="top"><strong>transfers</strong></td>
+<td valign="top">[<a href="#transfer">Transfer</a>!]!</td>
+<td></td>
 </tr>
 <tr>
 <td colspan="2" align="right" valign="top">asset</td>
 <td valign="top"><a href="#hash">Hash</a></td>
 <td></td>
-</tr>
-<tr>
-<td colspan="2" align="right" valign="top">before</td>
-<td valign="top"><a href="#string">String</a></td>
-<td>
-
-Returns the elements in the list that come before the specified cursor
-
-</td>
 </tr>
 <tr>
 <td colspan="2" align="right" valign="top">blockHeight</td>
@@ -258,11 +196,7 @@ Returns the elements in the list that come before the specified cursor
 <tr>
 <td colspan="2" align="right" valign="top">first</td>
 <td valign="top"><a href="#int">Int</a></td>
-<td>
-
-Returns the first n elements from the list.
-
-</td>
+<td></td>
 </tr>
 <tr>
 <td colspan="2" align="right" valign="top">fromOrTo</td>
@@ -272,11 +206,12 @@ Returns the first n elements from the list.
 <tr>
 <td colspan="2" align="right" valign="top">last</td>
 <td valign="top"><a href="#int">Int</a></td>
-<td>
-
-Returns the last n elements from the list.
-
-</td>
+<td></td>
+</tr>
+<tr>
+<td colspan="2" align="right" valign="top">skip</td>
+<td valign="top"><a href="#int">Int</a></td>
+<td></td>
 </tr>
 </tbody>
 </table>
@@ -300,47 +235,6 @@ Returns the last n elements from the list.
 <td valign="top"><a href="#address">Address</a>!</td>
 <td></td>
 </tr>
-<tr>
-<td colspan="2" valign="top"><strong>transactions</strong></td>
-<td valign="top"><a href="#transactionconnection">TransactionConnection</a>!</td>
-<td></td>
-</tr>
-<tr>
-<td colspan="2" align="right" valign="top">after</td>
-<td valign="top"><a href="#string">String</a></td>
-<td>
-
-Returns the elements in the list that come after the specified cursor
-
-</td>
-</tr>
-<tr>
-<td colspan="2" align="right" valign="top">before</td>
-<td valign="top"><a href="#string">String</a></td>
-<td>
-
-Returns the elements in the list that come before the specified cursor
-
-</td>
-</tr>
-<tr>
-<td colspan="2" align="right" valign="top">first</td>
-<td valign="top"><a href="#int">Int</a></td>
-<td>
-
-Returns the first n elements from the list.
-
-</td>
-</tr>
-<tr>
-<td colspan="2" align="right" valign="top">last</td>
-<td valign="top"><a href="#int">Int</a></td>
-<td>
-
-Returns the last n elements from the list.
-
-</td>
-</tr>
 </tbody>
 </table>
 
@@ -363,7 +257,7 @@ Returns the last n elements from the list.
 </tr>
 <tr>
 <td colspan="2" valign="top"><strong>issuer</strong></td>
-<td valign="top"><a href="#account">Account</a>!</td>
+<td valign="top"><a href="#address">Address</a>!</td>
 <td></td>
 </tr>
 <tr>
@@ -389,118 +283,6 @@ The **short** name of this asset
 
 </td>
 </tr>
-<tr>
-<td colspan="2" valign="top"><strong>transaction</strong></td>
-<td valign="top"><a href="#transaction">Transaction</a>!</td>
-<td></td>
-</tr>
-<tr>
-<td colspan="2" valign="top"><strong>transfers</strong></td>
-<td valign="top"><a href="#transferconnection">TransferConnection</a>!</td>
-<td></td>
-</tr>
-<tr>
-<td colspan="2" align="right" valign="top">after</td>
-<td valign="top"><a href="#string">String</a></td>
-<td>
-
-Returns the elements in the list that come after the specified cursor
-
-</td>
-</tr>
-<tr>
-<td colspan="2" align="right" valign="top">before</td>
-<td valign="top"><a href="#string">String</a></td>
-<td>
-
-Returns the elements in the list that come before the specified cursor
-
-</td>
-</tr>
-<tr>
-<td colspan="2" align="right" valign="top">first</td>
-<td valign="top"><a href="#int">Int</a></td>
-<td>
-
-Returns the first n elements from the list.
-
-</td>
-</tr>
-<tr>
-<td colspan="2" align="right" valign="top">last</td>
-<td valign="top"><a href="#int">Int</a></td>
-<td>
-
-Returns the last n elements from the list.
-
-</td>
-</tr>
-</tbody>
-</table>
-
-### AssetConnection
-
-<table>
-<thead>
-<tr>
-<th align="left">Field</th>
-<th align="right">Argument</th>
-<th align="left">Type</th>
-<th align="left">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td colspan="2" valign="top"><strong>edges</strong></td>
-<td valign="top">[<a href="#assetedge">AssetEdge</a>]</td>
-<td>
-
-https://facebook.github.io/relay/graphql/connections.htm#sec-Edge-Types
-
-</td>
-</tr>
-<tr>
-<td colspan="2" valign="top"><strong>pageInfo</strong></td>
-<td valign="top"><a href="#pageinfo">PageInfo</a>!</td>
-<td>
-
-https://facebook.github.io/relay/graphql/connections.htm#sec-undefined.PageInfo
-
-</td>
-</tr>
-</tbody>
-</table>
-
-### AssetEdge
-
-<table>
-<thead>
-<tr>
-<th align="left">Field</th>
-<th align="right">Argument</th>
-<th align="left">Type</th>
-<th align="left">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td colspan="2" valign="top"><strong>cursor</strong></td>
-<td valign="top"><a href="#string">String</a>!</td>
-<td>
-
-https://facebook.github.io/relay/graphql/connections.htm#sec-Cursor
-
-</td>
-</tr>
-<tr>
-<td colspan="2" valign="top"><strong>node</strong></td>
-<td valign="top"><a href="#asset">Asset</a>!</td>
-<td>
-
-https://facebook.github.io/relay/graphql/connections.htm#sec-Node
-
-</td>
-</tr>
 </tbody>
 </table>
 
@@ -523,7 +305,7 @@ https://facebook.github.io/relay/graphql/connections.htm#sec-Node
 </tr>
 <tr>
 <td colspan="2" valign="top"><strong>asset</strong></td>
-<td valign="top"><a href="#asset">Asset</a>!</td>
+<td valign="top"><a href="#hash">Hash</a>!</td>
 <td></td>
 </tr>
 <tr>
@@ -596,15 +378,6 @@ The proof of a bitmap
 </td>
 </tr>
 <tr>
-<td colspan="2" valign="top"><strong>proofBlockHash</strong></td>
-<td valign="top"><a href="#hash">Hash</a>!</td>
-<td>
-
-The proof of prev block hash, same as prevBlockHash
-
-</td>
-</tr>
-<tr>
 <td colspan="2" valign="top"><strong>proofRound</strong></td>
 <td valign="top"><a href="#uint64">Uint64</a>!</td>
 <td>
@@ -650,47 +423,6 @@ A datetime string format as UTC string
 </td>
 </tr>
 <tr>
-<td colspan="2" valign="top"><strong>transactions</strong></td>
-<td valign="top"><a href="#transactionconnection">TransactionConnection</a>!</td>
-<td></td>
-</tr>
-<tr>
-<td colspan="2" align="right" valign="top">after</td>
-<td valign="top"><a href="#string">String</a></td>
-<td>
-
-Returns the elements in the list that come after the specified cursor
-
-</td>
-</tr>
-<tr>
-<td colspan="2" align="right" valign="top">before</td>
-<td valign="top"><a href="#string">String</a></td>
-<td>
-
-Returns the elements in the list that come before the specified cursor
-
-</td>
-</tr>
-<tr>
-<td colspan="2" align="right" valign="top">first</td>
-<td valign="top"><a href="#int">Int</a></td>
-<td>
-
-Returns the first n elements from the list.
-
-</td>
-</tr>
-<tr>
-<td colspan="2" align="right" valign="top">last</td>
-<td valign="top"><a href="#int">Int</a></td>
-<td>
-
-Returns the last n elements from the list.
-
-</td>
-</tr>
-<tr>
 <td colspan="2" valign="top"><strong>transactionsCount</strong></td>
 <td valign="top"><a href="#int">Int</a>!</td>
 <td>
@@ -710,44 +442,8 @@ The validator count of the block
 </tr>
 <tr>
 <td colspan="2" valign="top"><strong>validators</strong></td>
-<td valign="top"><a href="#validatorconnection">ValidatorConnection</a>!</td>
+<td valign="top">[<a href="#validator">Validator</a>!]!</td>
 <td></td>
-</tr>
-<tr>
-<td colspan="2" align="right" valign="top">after</td>
-<td valign="top"><a href="#string">String</a></td>
-<td>
-
-Returns the elements in the list that come after the specified cursor
-
-</td>
-</tr>
-<tr>
-<td colspan="2" align="right" valign="top">before</td>
-<td valign="top"><a href="#string">String</a></td>
-<td>
-
-Returns the elements in the list that come before the specified cursor
-
-</td>
-</tr>
-<tr>
-<td colspan="2" align="right" valign="top">first</td>
-<td valign="top"><a href="#int">Int</a></td>
-<td>
-
-Returns the first n elements from the list.
-
-</td>
-</tr>
-<tr>
-<td colspan="2" align="right" valign="top">last</td>
-<td valign="top"><a href="#int">Int</a></td>
-<td>
-
-Returns the last n elements from the list.
-
-</td>
 </tr>
 <tr>
 <td colspan="2" valign="top"><strong>validatorVersion</strong></td>
@@ -755,72 +451,6 @@ Returns the last n elements from the list.
 <td>
 
 The version of validators
-
-</td>
-</tr>
-</tbody>
-</table>
-
-### BlockConnection
-
-<table>
-<thead>
-<tr>
-<th align="left">Field</th>
-<th align="right">Argument</th>
-<th align="left">Type</th>
-<th align="left">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td colspan="2" valign="top"><strong>edges</strong></td>
-<td valign="top">[<a href="#blockedge">BlockEdge</a>]</td>
-<td>
-
-https://facebook.github.io/relay/graphql/connections.htm#sec-Edge-Types
-
-</td>
-</tr>
-<tr>
-<td colspan="2" valign="top"><strong>pageInfo</strong></td>
-<td valign="top"><a href="#pageinfo">PageInfo</a>!</td>
-<td>
-
-https://facebook.github.io/relay/graphql/connections.htm#sec-undefined.PageInfo
-
-</td>
-</tr>
-</tbody>
-</table>
-
-### BlockEdge
-
-<table>
-<thead>
-<tr>
-<th align="left">Field</th>
-<th align="right">Argument</th>
-<th align="left">Type</th>
-<th align="left">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td colspan="2" valign="top"><strong>cursor</strong></td>
-<td valign="top"><a href="#string">String</a>!</td>
-<td>
-
-https://facebook.github.io/relay/graphql/connections.htm#sec-Cursor
-
-</td>
-</tr>
-<tr>
-<td colspan="2" valign="top"><strong>node</strong></td>
-<td valign="top"><a href="#block">Block</a>!</td>
-<td>
-
-https://facebook.github.io/relay/graphql/connections.htm#sec-Node
 
 </td>
 </tr>
@@ -854,64 +484,6 @@ Event payload, convenience for debug
 <td>
 
 The event emitted from which service
-
-</td>
-</tr>
-<tr>
-<td colspan="2" valign="top"><strong>transaction</strong></td>
-<td valign="top"><a href="#transaction">Transaction</a>!</td>
-<td></td>
-</tr>
-</tbody>
-</table>
-
-### PageInfo
-
-PageInfo cursor, as defined in https://facebook.github.io/relay/graphql/connections.htm#sec-undefined.PageInfo
-
-<table>
-<thead>
-<tr>
-<th align="left">Field</th>
-<th align="right">Argument</th>
-<th align="left">Type</th>
-<th align="left">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td colspan="2" valign="top"><strong>endCursor</strong></td>
-<td valign="top"><a href="#string">String</a></td>
-<td>
-
-The cursor corresponding to the last nodes in edges. Null if the connection is empty.
-
-</td>
-</tr>
-<tr>
-<td colspan="2" valign="top"><strong>hasNextPage</strong></td>
-<td valign="top"><a href="#boolean">Boolean</a>!</td>
-<td>
-
-Used to indicate whether more edges exist following the set defined by the clients arguments.
-
-</td>
-</tr>
-<tr>
-<td colspan="2" valign="top"><strong>hasPreviousPage</strong></td>
-<td valign="top"><a href="#boolean">Boolean</a>!</td>
-<td>
-
-Used to indicate whether more edges exist prior to the set defined by the clients arguments.
-
-</td>
-</tr>
-<tr>
-<td colspan="2" valign="top"><strong>startCursor</strong></td>
-<td valign="top"><a href="#string">String</a></td>
-<td>
-
-The cursor corresponding to the first nodes in edges. Null if the connection is empty.
 
 </td>
 </tr>
@@ -974,7 +546,7 @@ Transaction response, is often a string in json format
 <tbody>
 <tr>
 <td colspan="2" valign="top"><strong>block</strong></td>
-<td valign="top"><a href="#block">Block</a>!</td>
+<td valign="top"><a href="#block">Block</a></td>
 <td></td>
 </tr>
 <tr>
@@ -1080,72 +652,6 @@ The transaction hash
 </tbody>
 </table>
 
-### TransactionConnection
-
-<table>
-<thead>
-<tr>
-<th align="left">Field</th>
-<th align="right">Argument</th>
-<th align="left">Type</th>
-<th align="left">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td colspan="2" valign="top"><strong>edges</strong></td>
-<td valign="top">[<a href="#transactionedge">TransactionEdge</a>]</td>
-<td>
-
-https://facebook.github.io/relay/graphql/connections.htm#sec-Edge-Types
-
-</td>
-</tr>
-<tr>
-<td colspan="2" valign="top"><strong>pageInfo</strong></td>
-<td valign="top"><a href="#pageinfo">PageInfo</a>!</td>
-<td>
-
-https://facebook.github.io/relay/graphql/connections.htm#sec-undefined.PageInfo
-
-</td>
-</tr>
-</tbody>
-</table>
-
-### TransactionEdge
-
-<table>
-<thead>
-<tr>
-<th align="left">Field</th>
-<th align="right">Argument</th>
-<th align="left">Type</th>
-<th align="left">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td colspan="2" valign="top"><strong>cursor</strong></td>
-<td valign="top"><a href="#string">String</a>!</td>
-<td>
-
-https://facebook.github.io/relay/graphql/connections.htm#sec-Cursor
-
-</td>
-</tr>
-<tr>
-<td colspan="2" valign="top"><strong>node</strong></td>
-<td valign="top"><a href="#transaction">Transaction</a>!</td>
-<td>
-
-https://facebook.github.io/relay/graphql/connections.htm#sec-Node
-
-</td>
-</tr>
-</tbody>
-</table>
-
 ### Transfer
 
 <table>
@@ -1159,12 +665,7 @@ https://facebook.github.io/relay/graphql/connections.htm#sec-Node
 </thead>
 <tbody>
 <tr>
-<td colspan="2" valign="top"><strong>asset</strong></td>
-<td valign="top"><a href="#asset">Asset</a>!</td>
-<td></td>
-</tr>
-<tr>
-<td colspan="2" valign="top"><strong>blockHeight</strong></td>
+<td colspan="2" valign="top"><strong>block</strong></td>
 <td valign="top"><a href="#int">Int</a>!</td>
 <td></td>
 </tr>
@@ -1176,11 +677,6 @@ https://facebook.github.io/relay/graphql/connections.htm#sec-Node
 <tr>
 <td colspan="2" valign="top"><strong>id</strong></td>
 <td valign="top"><a href="#int">Int</a>!</td>
-<td></td>
-</tr>
-<tr>
-<td colspan="2" valign="top"><strong>receiptIsError</strong></td>
-<td valign="top"><a href="#boolean">Boolean</a>!</td>
 <td></td>
 </tr>
 <tr>
@@ -1210,72 +706,6 @@ A datetime string format as UTC string
 </tbody>
 </table>
 
-### TransferConnection
-
-<table>
-<thead>
-<tr>
-<th align="left">Field</th>
-<th align="right">Argument</th>
-<th align="left">Type</th>
-<th align="left">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td colspan="2" valign="top"><strong>edges</strong></td>
-<td valign="top">[<a href="#transferedge">TransferEdge</a>]</td>
-<td>
-
-https://facebook.github.io/relay/graphql/connections.htm#sec-Edge-Types
-
-</td>
-</tr>
-<tr>
-<td colspan="2" valign="top"><strong>pageInfo</strong></td>
-<td valign="top"><a href="#pageinfo">PageInfo</a>!</td>
-<td>
-
-https://facebook.github.io/relay/graphql/connections.htm#sec-undefined.PageInfo
-
-</td>
-</tr>
-</tbody>
-</table>
-
-### TransferEdge
-
-<table>
-<thead>
-<tr>
-<th align="left">Field</th>
-<th align="right">Argument</th>
-<th align="left">Type</th>
-<th align="left">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td colspan="2" valign="top"><strong>cursor</strong></td>
-<td valign="top"><a href="#string">String</a>!</td>
-<td>
-
-https://facebook.github.io/relay/graphql/connections.htm#sec-Cursor
-
-</td>
-</tr>
-<tr>
-<td colspan="2" valign="top"><strong>node</strong></td>
-<td valign="top"><a href="#transfer">Transfer</a>!</td>
-<td>
-
-https://facebook.github.io/relay/graphql/connections.htm#sec-Node
-
-</td>
-</tr>
-</tbody>
-</table>
-
 ### Validator
 
 <table>
@@ -1298,47 +728,6 @@ A validator address
 </td>
 </tr>
 <tr>
-<td colspan="2" valign="top"><strong>blocks</strong></td>
-<td valign="top"><a href="#blockconnection">BlockConnection</a>!</td>
-<td></td>
-</tr>
-<tr>
-<td colspan="2" align="right" valign="top">after</td>
-<td valign="top"><a href="#string">String</a></td>
-<td>
-
-Returns the elements in the list that come after the specified cursor
-
-</td>
-</tr>
-<tr>
-<td colspan="2" align="right" valign="top">before</td>
-<td valign="top"><a href="#string">String</a></td>
-<td>
-
-Returns the elements in the list that come before the specified cursor
-
-</td>
-</tr>
-<tr>
-<td colspan="2" align="right" valign="top">first</td>
-<td valign="top"><a href="#int">Int</a></td>
-<td>
-
-Returns the first n elements from the list.
-
-</td>
-</tr>
-<tr>
-<td colspan="2" align="right" valign="top">last</td>
-<td valign="top"><a href="#int">Int</a></td>
-<td>
-
-Returns the last n elements from the list.
-
-</td>
-</tr>
-<tr>
 <td colspan="2" valign="top"><strong>proposeWeight</strong></td>
 <td valign="top"><a href="#int">Int</a>!</td>
 <td>
@@ -1353,72 +742,6 @@ Propose weight of a validator
 <td>
 
 Vote weight of a validator
-
-</td>
-</tr>
-</tbody>
-</table>
-
-### ValidatorConnection
-
-<table>
-<thead>
-<tr>
-<th align="left">Field</th>
-<th align="right">Argument</th>
-<th align="left">Type</th>
-<th align="left">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td colspan="2" valign="top"><strong>edges</strong></td>
-<td valign="top">[<a href="#validatoredge">ValidatorEdge</a>]</td>
-<td>
-
-https://facebook.github.io/relay/graphql/connections.htm#sec-Edge-Types
-
-</td>
-</tr>
-<tr>
-<td colspan="2" valign="top"><strong>pageInfo</strong></td>
-<td valign="top"><a href="#pageinfo">PageInfo</a>!</td>
-<td>
-
-https://facebook.github.io/relay/graphql/connections.htm#sec-undefined.PageInfo
-
-</td>
-</tr>
-</tbody>
-</table>
-
-### ValidatorEdge
-
-<table>
-<thead>
-<tr>
-<th align="left">Field</th>
-<th align="right">Argument</th>
-<th align="left">Type</th>
-<th align="left">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td colspan="2" valign="top"><strong>cursor</strong></td>
-<td valign="top"><a href="#string">String</a>!</td>
-<td>
-
-https://facebook.github.io/relay/graphql/connections.htm#sec-Cursor
-
-</td>
-</tr>
-<tr>
-<td colspan="2" valign="top"><strong>node</strong></td>
-<td valign="top"><a href="#validator">Validator</a>!</td>
-<td>
-
-https://facebook.github.io/relay/graphql/connections.htm#sec-Node
 
 </td>
 </tr>
