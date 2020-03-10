@@ -1,4 +1,4 @@
-import { SourceDataType, hexJSON, hexU64, hexAddress } from './hex';
+import { SourceDataType, hexJSONParse, hexU64, hexAddress } from './hex';
 
 test('parse u64', () => {
   expect(hexU64('0')).toBe('0000000000000000');
@@ -29,7 +29,7 @@ test('parse address', () => {
 });
 
 test('test JSONhexify', () => {
-  const parsed = hexJSON(
+  const parsed = hexJSONParse(
     `{ 
     "u64": 18446744073709551615, 
     "Hash": "0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
@@ -53,7 +53,7 @@ test('test JSONhexify', () => {
 });
 
 test('test a real transfer payload', () => {
-  const parsed = hexJSON(
+  const parsed = hexJSONParse(
     `{
     "asset_id": "302bcda9544a599370bf3f77a3afbd39a05ca75ee8534685460b7e36073e910f",
     "to": "0x1234567890123456789012345678901234567890",

@@ -4,7 +4,7 @@
 
 import { parse } from 'lossless-json';
 import { BigNumber } from 'bignumber.js';
-import { Hash, Uint64 } from 'muta-sdk/build/main/types';
+import { Address, Hash, Uint64 } from 'muta-sdk/build/main/types';
 import { rm0x } from 'muta-sdk/build/main/utils';
 
 export function hexWithout0x(
@@ -19,26 +19,30 @@ export function hexWithout0x(
     .toLowerCase();
 }
 
-export function hexU64(x: string | BigNumber | number) {
+export function hexU64(x: string | BigNumber | number): Uint64 {
   return hexWithout0x(x, 10, 16);
 }
 
-export function hexUint64(x: string) {
+export function hexUint64(x: string): Uint64 {
   return rm0x(x)
     .toLowerCase()
     .padStart(16, '0');
 }
 
-export function hexHash(x: string) {
+export function hexHash(x: string): Hash {
   return rm0x(x)
     .toLowerCase()
     .padStart(64, '0');
 }
 
-export function hexAddress(x: string) {
+export function hexAddress(x: string): Address {
   return rm0x(x)
     .toLowerCase()
     .padStart(40, '0');
+}
+
+export function hex(x: string) {
+  return rm0x(x).toLowerCase();
 }
 
 export enum SourceDataType {
@@ -88,7 +92,7 @@ export type JSONHex<Schema extends HexSchema> = {
  * @param x a JSON formatted string
  * @param properties the schema
  */
-export function hexJSON<T extends HexSchema>(
+export function hexJSONParse<T extends HexSchema>(
   x: string,
   properties: T,
 ): JSONHex<T> {

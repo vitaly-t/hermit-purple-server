@@ -1,8 +1,16 @@
 require('dotenv').config();
 
-import { PrismaClient } from '@prisma/client';
-import { BlockSynchronizer } from './block';
+import { Executed } from '@hermit/sync/model/Executed';
+import { Packed } from '@hermit/sync/model/Packed';
 
-export const prisma = new PrismaClient();
+export { BlockSynchronizer } from './BlockSynchronizer';
 
-new BlockSynchronizer({}).run();
+export interface Synchronizer {
+  getLocalBlockHeight(): Promise<number>;
+
+  getLocalBlockExecHeight(): Promise<number>;
+
+  onBlockPacked(packed: Packed): Promise<void>;
+
+  onBlockExecuted(executed: Executed): Promise<void>;
+}

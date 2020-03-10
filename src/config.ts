@@ -1,3 +1,4 @@
+require('dotenv').config();
 /**
  * Muta endpoint
  */
@@ -41,3 +42,8 @@ export const HERMIT_MAX_COMPLEXITY: number = Number(
  * the request to Muta
  */
 export const HERMIT_BYPASS_CHAIN = process.env.HERMIT_BYPASS_CHAIN ?? 'chain';
+
+/**
+ *
+ */
+export const HERMIT_DATABASE_URL = process.env.HERMIT_DATABASE_URL as string;

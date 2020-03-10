@@ -1,13 +1,19 @@
+import { hex, hexAddress, hexHash, hexUint64 } from '@hermit/sync/clean/hex';
+import { hexToNum, toHex } from '@hermit/utils';
 import { range } from 'lodash';
-import { utils } from 'muta-sdk';
 import {
   GetBlockQuery,
   GetReceiptQuery,
   GetTransactionQuery,
 } from 'muta-sdk/build/main/client/codegen/sdk';
-import { SYNC_CONCURRENCY } from '../config';
-import { chunkAndBatch } from './fetch/batch';
-import { rawClient } from './muta';
+import { SYNC_CONCURRENCY } from '../../config';
+import { chunkAndBatch } from '../fetch/batch';
+import { rawClient } from '../muta';
+
+export async function fetchRemoteBlockHeight() {
+  const remoteBlock = await rawClient.getBlock();
+  return hexToNum(remoteBlock.getBlock.header.execHeight);
+}
 
 /**
  * ```
@@ -110,31 +116,76 @@ export async function fetchWholeBlock(
   receipts: GetReceiptQuery[];
 }> {
   const block = await rawClient.getBlock({
-    height: utils.toHex(height),
+    height: toHex(height),
   });
-  const orderedTxHashes = block.getBlock.orderedTxHashes;
 
-  // const txs = await Bluebird.all(orderedTxHashes).map(
-  //   txHash => rawClient.getTransaction({ txHash }),
-  //   { concurrency: SYNC_CONCURRENCY },
-  // );
-  //
-  // const receipts = await Bluebird.all(orderedTxHashes).map(
-  //   txHash => rawClient.getReceipt({ txHash }),
-  //   { concurrency: SYNC_CONCURRENCY },
-  // );
+  block.getBlock.hash = hexHash(block.getBlock.hash);
+  const header = block.getBlock.header;
+  block.getBlock.header = {
+    ...header,
+    preHash: hexHash(header.preHash),
+    validators: header.validators.map(validator => ({
+      ...validator,
+      address: hexAddress(validator.address),
+    })),
+    chainId: hexHash(header.chainId),
+    proof: {
+      ...header.proof,
+      blockHash: hexHash(header.proof.blockHash),
+      height: hexUint64(header.proof.height),
+      round: hexUint64(header.proof.round),
+      signature: hex(header.proof.signature),
+    },
+    validatorVersion: hexUint64(header.validatorVersion),
+    execHeight: hexUint64(header.execHeight),
+    orderRoot: hexUint64(header.orderRoot),
+    proposer: hexAddress(header.proposer),
+    stateRoot: hexHash(header.stateRoot),
+    timestamp: hex(header.timestamp),
+  };
+
+  const orderedTxHashes = block.getBlock.orderedTxHashes;
 
   if (orderedTxHashes.length === 0) return { block, txs: [], receipts: [] };
 
   const indexedTransaction = await fetchIndexedTransaction(orderedTxHashes);
   const txs: GetTransactionQuery[] = range(orderedTxHashes.length).map<
     GetTransactionQuery
-  >((i: number) => ({ getTransaction: indexedTransaction[`_${i}`] }));
+  >((i: number) => {
+    const tx = indexedTransaction[`_${i}`];
+    return {
+      getTransaction: {
+        pubkey: hex(tx.pubkey),
+        payload: tx.payload,
+        serviceName: tx.serviceName,
+        chainId: hex(tx.chainId),
+        cyclesLimit: hexUint64(tx.cyclesLimit),
+        cyclesPrice: hexUint64(tx.cyclesPrice),
+        method: tx.method,
+        nonce: hex(tx.nonce),
+        signature: hex(tx.signature),
+        timeout: hex(tx.timeout),
+        txHash: hex(tx.txHash),
+      },
+    };
+  });
 
   const indexedReceipt = await fetchIndexedReceipt(orderedTxHashes);
   const receipts: GetReceiptQuery[] = range(orderedTxHashes.length).map<
     GetReceiptQuery
-  >((i: number) => ({ getReceipt: indexedReceipt[`_${i}`] }));
+  >((i: number) => {
+    const receipt = indexedReceipt[`_${i}`];
+
+    return {
+      getReceipt: {
+        ...receipt,
+        txHash: hex(receipt.txHash),
+        cyclesUsed: hexUint64(receipt.cyclesUsed),
+        height: hexUint64(receipt.height),
+        stateRoot: hex(receipt.stateRoot),
+      },
+    };
+  });
 
   return { block, txs, receipts };
 }
