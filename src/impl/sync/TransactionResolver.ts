@@ -9,9 +9,17 @@ import { readonlyAssetService } from '@hermit/sync/muta';
 import { Receipt, Transaction } from '@hermit/types/model';
 import { toHex } from '@hermit/utils';
 import { utils } from 'muta-sdk';
+import { Uint64 } from 'muta-sdk/build/main/types/scalar';
 
 export type Transfer = Omit<DBTransfer, 'id'>;
 export type Balance = Omit<DBBalance, 'id'>;
+
+interface TransactionResolverOptions {
+  height: number;
+  timestamp: Uint64;
+  transactions: Transaction[];
+  receipts: Receipt[];
+}
 
 export class TransactionResolver {
   private readonly txs: Transaction[];
@@ -31,8 +39,13 @@ export class TransactionResolver {
    * will not be updated repeatedly
    */
   private readonly balanceTask: Set<string>; // address + assetId
+  private height: number;
+  private timestamp: string;
 
-  constructor(transactions: Transaction[], receipts: Receipt[]) {
+  constructor(options: TransactionResolverOptions) {
+    const { transactions, receipts, height, timestamp } = options;
+    this.height = height;
+    this.timestamp = timestamp;
     this.txs = transactions;
     this.receipts = receipts;
 
@@ -120,6 +133,8 @@ export class TransactionResolver {
           to: payload.to,
           txHash,
           value: payload.value,
+          block: this.height,
+          timestamp: this.timestamp,
         });
 
         this.enqueueBalance(from, payload.asset_id);
@@ -140,6 +155,8 @@ export class TransactionResolver {
           to: payload.recipient,
           txHash,
           value: payload.value,
+          block: this.height,
+          timestamp: this.timestamp,
         });
 
         this.enqueueBalance(from, payload.asset_id);

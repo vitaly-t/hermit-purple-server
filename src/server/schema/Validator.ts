@@ -8,12 +8,5 @@ export const Validator = objectType({
     t.int('proposeWeight', { description: 'Propose weight of a validator' });
 
     t.int('voteWeight', { description: 'Vote weight of a validator' });
-
-    t.connectionField('blocks', {
-      type: 'Block',
-      nodes() {
-        return [];
-      },
-    });
   },
 });

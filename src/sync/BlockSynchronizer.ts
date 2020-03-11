@@ -46,9 +46,6 @@ export class BlockSynchronizer {
         info(`start: ${localHeight}, end: ${remoteHeight} `);
 
         const { block, txs, receipts } = await fetchWholeBlock(localHeight);
-
-        info(`fetched ${txs.length} txs and ${receipts.length} receipts`);
-
         await this.onBlockExecuted(block, txs, receipts);
       } catch (e) {
         error(e);

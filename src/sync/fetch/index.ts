@@ -1,4 +1,5 @@
 import { hex, hexAddress, hexHash, hexUint64 } from '@hermit/sync/clean/hex';
+import { info } from '@hermit/sync/log';
 import { hexToNum, toHex } from '@hermit/utils';
 import { range } from 'lodash';
 import {
@@ -149,6 +150,8 @@ export async function fetchWholeBlock(
   if (orderedTxHashes.length === 0) return { block, txs: [], receipts: [] };
 
   const indexedTransaction = await fetchIndexedTransaction(orderedTxHashes);
+  info(`fetched ${orderedTxHashes.length} txs`);
+
   const txs: GetTransactionQuery[] = range(orderedTxHashes.length).map<
     GetTransactionQuery
   >((i: number) => {
@@ -159,8 +162,8 @@ export async function fetchWholeBlock(
         payload: tx.payload,
         serviceName: tx.serviceName,
         chainId: hex(tx.chainId),
-        cyclesLimit: hexUint64(tx.cyclesLimit),
-        cyclesPrice: hexUint64(tx.cyclesPrice),
+        cyclesLimit: hex(tx.cyclesLimit),
+        cyclesPrice: hex(tx.cyclesPrice),
         method: tx.method,
         nonce: hex(tx.nonce),
         signature: hex(tx.signature),
@@ -169,8 +172,11 @@ export async function fetchWholeBlock(
       },
     };
   });
+  info(`parsed ${orderedTxHashes.length} txs`);
 
   const indexedReceipt = await fetchIndexedReceipt(orderedTxHashes);
+  info(`fetched ${orderedTxHashes.length} receipts`);
+
   const receipts: GetReceiptQuery[] = range(orderedTxHashes.length).map<
     GetReceiptQuery
   >((i: number) => {
@@ -180,12 +186,13 @@ export async function fetchWholeBlock(
       getReceipt: {
         ...receipt,
         txHash: hex(receipt.txHash),
-        cyclesUsed: hexUint64(receipt.cyclesUsed),
-        height: hexUint64(receipt.height),
+        cyclesUsed: hex(receipt.cyclesUsed),
+        height: hex(receipt.height),
         stateRoot: hex(receipt.stateRoot),
       },
     };
   });
+  info(`parsed ${orderedTxHashes.length} receipts`);
 
   return { block, txs, receipts };
 }

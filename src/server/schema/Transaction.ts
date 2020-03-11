@@ -1,4 +1,5 @@
 import { objectType, queryField, arg, stringArg } from 'nexus';
+import { pageArgs } from '../common/pagination';
 
 export const Transaction = objectType({
   name: 'Transaction',
@@ -59,8 +60,9 @@ export const Transaction = objectType({
 
     t.field('block', {
       type: 'Block',
+      nullable: true,
       resolve() {
-        return {};
+        return null;
       },
     });
 
@@ -85,16 +87,18 @@ export const transactionQuery = queryField(t => {
         type: 'Hash',
       }),
     },
+    nullable: true,
     resolve() {
-      return {};
+      return null;
     },
   });
 });
 
-export const transactionConnection = queryField(t => {
-  t.connectionField('transactions', {
+export const transactionPagination = queryField(t => {
+  t.list.field('transactions', {
     type: 'Transaction',
-    additionalArgs: {
+    args: {
+      ...pageArgs,
       block: arg({
         type: 'Int',
       }),
@@ -109,7 +113,7 @@ export const transactionConnection = queryField(t => {
       }),
     },
 
-    async nodes() {
+    async resolve() {
       return [];
     },
   });

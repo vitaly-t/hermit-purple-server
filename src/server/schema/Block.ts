@@ -1,4 +1,4 @@
-import { arg, objectType, queryField } from 'nexus';
+import { arg, FieldResolver, intArg, objectType, queryField } from 'nexus';
 
 export const Block = objectType({
   name: 'Block',
@@ -45,11 +45,6 @@ export const Block = objectType({
       description: 'The proof of a bitmap',
     });
 
-    t.field('proofBlockHash', {
-      type: 'Hash',
-      description: 'The proof of prev block hash, same as prevBlockHash',
-    });
-
     t.field('proofRound', {
       type: 'Uint64',
       description: 'Proof of round',
@@ -67,25 +62,14 @@ export const Block = objectType({
 
     t.int('validatorCount', {
       description: 'The validator count of the block',
-    });
-
-    t.connectionField('validators', {
-      type: 'Validator',
-      nodes() {
-        return [];
+      resolve() {
+        return 0;
       },
     });
 
-    t.connectionField('validators', {
+    t.list.field('validators', {
       type: 'Validator',
-      nodes() {
-        return [];
-      },
-    });
-
-    t.connectionField('transactions', {
-      type: 'Transaction',
-      nodes() {
+      resolve() {
         return [];
       },
     });
@@ -94,36 +78,36 @@ export const Block = objectType({
 
 export const blockQuery = queryField(t => {
   t.field('block', {
-    type: 'Block',
+    type: Block,
     args: {
       hash: arg({ type: 'Hash' }),
       height: arg({ type: 'Int' }),
     },
-    resolve() {
-      return Promise.resolve({
-        height: 0,
-        timestamp: '',
-        blockHash: '',
-        proofBlockHash: '',
-        proofRound: '',
-        proposer: '',
-        proofSignature: '',
-        proofBitmap: '',
-        execHeight: 0,
-        transactionsCount: 0,
-        validatorVersion: '',
-        stateRoot: '',
-        orderRoot: '',
-        preHash: '',
-      });
+    nullable: true,
+    async resolve(parent, args, ctx, f) {
+      const { hash, height } = args;
+      const block = ctx.dao.block;
+
+      if (hash) {
+        return (await block.byHash(hash)) ?? null;
+      } else if (height) {
+        return (await block.byHeight(height)) ?? null;
+      }
+
+      return null;
     },
   });
 });
 
-export const blocksConnection = queryField(t => {
-  t.connectionField('blocks', {
+export const blocksPagination = queryField(t => {
+  t.list.field('blocks', {
     type: 'Block',
-    nodes() {
+    args: {
+      first: intArg(),
+      last: intArg(),
+      skip: intArg(),
+    },
+    resolve(parent, args, ctx) {
       return [];
     },
   });

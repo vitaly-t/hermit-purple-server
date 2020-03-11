@@ -1,6 +1,10 @@
 import { connectionPlugin, makeSchema } from 'nexus';
+import { join } from 'path';
+import * as customTypes from '../impl/server/schema/types';
 import * as basicTypes from './schema/types';
-import * as customTypes from './custom/schema/types';
+
+const outputGraphQLSchema = join(__dirname, '../generated/schema.graphql');
+const outputTypegen = join(__dirname, '../generated/nexus.ts');
 
 export const schema = makeSchema({
   types: {
@@ -9,15 +13,25 @@ export const schema = makeSchema({
   },
   plugins: [connectionPlugin()],
   outputs: {
-    schema: __dirname + '/generated/schema.graphql',
-    typegen: __dirname + '/generated/nexus.ts',
+    schema: outputGraphQLSchema,
+    typegen: outputTypegen,
   },
   typegenAutoConfig: {
-    contextType: 'Context.Context',
+    contextType: 'ctx.ServerContext',
+    backingTypeMap: {
+      Address: 'string',
+      Bytes: 'string',
+      Hash: 'string',
+      Uint64: 'string',
+    },
     sources: [
       {
-        source: require.resolve('./context'),
-        alias: 'Context',
+        source: require.resolve('@hermit/impl/server/Context'),
+        alias: 'ctx',
+      },
+      {
+        source: require.resolve('@hermit/generated/schema'),
+        alias: 'db',
       },
     ],
   },

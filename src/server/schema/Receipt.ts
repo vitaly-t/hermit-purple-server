@@ -1,4 +1,4 @@
-import { objectType, queryField, arg } from 'nexus';
+import { objectType } from 'nexus';
 
 export const Receipt = objectType({
   name: 'Receipt',

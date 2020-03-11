@@ -56,7 +56,12 @@ const syncAdapter: Synchronizer = {
 
       if (transactions.length === 0) return;
 
-      const resolver = new TransactionResolver(transactions, receipts);
+      const resolver = new TransactionResolver({
+        transactions,
+        receipts,
+        height: executed.height(),
+        timestamp: executed.getBlock().timestamp,
+      });
       await resolver.resolve();
 
       const createdAssets = resolver.getCreatedAssets();

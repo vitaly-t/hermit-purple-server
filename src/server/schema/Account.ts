@@ -4,12 +4,5 @@ export const Account = objectType({
   name: 'Account',
   definition(t) {
     t.field('address', { type: 'Address' });
-
-    t.connectionField('transactions', {
-      type: 'Transaction',
-      nodes() {
-        return [];
-      },
-    });
   },
 });

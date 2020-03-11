@@ -1,3 +1,4 @@
+import { pageArgs } from '@hermit/server/common/pagination';
 import { objectType, queryField } from 'nexus';
 
 export const Asset = objectType({
@@ -12,34 +13,19 @@ export const Asset = objectType({
     t.field('supply', { type: 'Uint64' });
 
     t.field('issuer', {
-      type: 'Account',
-      resolve() {
-        return {
-          address: '',
-        };
-      },
-    });
-
-    t.field('transaction', {
-      type: 'Transaction',
-      resolve() {
-        return {};
-      },
-    });
-
-    t.connectionField('transfers', {
-      type: 'Transfer',
-      nodes() {
-        return [];
+      type: 'Address',
+      resolve(parent) {
+        return parent.account;
       },
     });
   },
 });
 
-export const assetConnection = queryField(t => {
-  t.connectionField('assets', {
+export const assetsPagination = queryField(t => {
+  t.list.field('assets', {
     type: 'Asset',
-    nodes() {
+    args: pageArgs,
+    resolve() {
       return [];
     },
   });
