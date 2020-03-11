@@ -1,13 +1,8 @@
-import { objectType, queryField, arg, stringArg } from 'nexus';
-import { pageArgs } from '../common/pagination';
+import { arg, objectType, queryField } from 'nexus';
 
 export const Transaction = objectType({
   name: 'Transaction',
   definition(t) {
-    t.int('order', {
-      description: 'The transaction order number of all transactions ',
-    });
-
     t.field('txHash', {
       type: 'Hash',
       description: 'The transaction hash',
@@ -51,21 +46,9 @@ export const Transaction = objectType({
       description: 'Signature of a transaction',
     });
 
-    t.field('from', {
-      type: 'Account',
-      resolve() {
-        return { address: '' };
-      },
-    });
+    t.field('from', { type: 'Address' });
 
-    t.field('block', {
-      type: 'Block',
-      nullable: true,
-      resolve() {
-        return null;
-      },
-    });
-
+    // TODO
     t.field('receipt', {
       type: 'Receipt',
       nullable: true,
@@ -80,41 +63,32 @@ export const transactionQuery = queryField(t => {
   t.field('transaction', {
     type: 'Transaction',
     args: {
-      order: arg({
-        type: 'Int',
-      }),
       txHash: arg({
         type: 'Hash',
       }),
     },
     nullable: true,
-    resolve() {
-      return null;
+    resolve(parent, args, ctx) {
+      return ctx.dao.transaction.byTxHash({
+        txHash: args.txHash!,
+      });
     },
   });
 });
 
-export const transactionPagination = queryField(t => {
-  t.list.field('transactions', {
-    type: 'Transaction',
-    args: {
-      ...pageArgs,
-      block: arg({
-        type: 'Int',
-      }),
-      from: arg({
-        type: 'Address',
-      }),
-      service: arg({
-        type: 'String',
-      }),
-      method: arg({
-        type: 'String',
-      }),
-    },
-
-    async resolve() {
-      return [];
-    },
-  });
-});
+// TODO
+// export const transactionPagination = queryField(t => {
+//   t.list.field('transactions', {
+//     type: 'Transaction',
+//     args: {
+//       ...pageArgs,
+//       block: arg({
+//         type: 'Int',
+//       }),
+//     },
+//
+//     async resolve(parent, args, ctx) {
+//       return ctx.dao.transaction.byBlockHeight({})
+//     },
+//   });
+// });

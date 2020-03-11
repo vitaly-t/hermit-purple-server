@@ -107,7 +107,7 @@ export const upBuilder = (knex: Knex) => {
 
       table.specificType('cyclesUsed', 'varchar(16) NOT NULL');
 
-      table.boolean('isError');
+      table.boolean('isError').notNullable();
 
       table.text('ret').notNullable();
 

@@ -25,8 +25,8 @@ export const assetsPagination = queryField(t => {
   t.list.field('assets', {
     type: 'Asset',
     args: pageArgs,
-    resolve() {
-      return [];
+    resolve(parent, args, ctx) {
+      return ctx.dao.asset.assets({ pageArgs: args });
     },
   });
 });

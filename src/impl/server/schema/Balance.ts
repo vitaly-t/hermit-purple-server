@@ -10,10 +10,7 @@ export const Balance = objectType({
     });
 
     t.field('account', {
-      type: 'Account',
-      resolve() {
-        return { address: '' };
-      },
+      type: 'Address',
     });
 
     t.field('asset', {
@@ -27,11 +24,14 @@ export const balancePagination = queryField(t => {
     type: 'Balance',
     args: {
       ...pageArgs,
-      assetId: arg({ type: 'Hash' }),
+      // assetId: arg({ type: 'Hash' }),
       address: arg({ type: 'Address' }),
     },
-    resolve() {
-      return [];
+    resolve(parent, args, ctx) {
+      return ctx.dao.balance.balances({
+        pageArgs: args,
+        where: { address: args.address! },
+      });
     },
   });
 });

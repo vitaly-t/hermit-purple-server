@@ -3,7 +3,7 @@ import { GraphQLServer, Options } from 'graphql-yoga';
 import { defaultErrorFormatter } from 'graphql-yoga/dist/defaultErrorFormatter';
 import * as proxy from 'http-proxy-middleware';
 import * as cors from 'cors';
-import { createContext } from '../impl/server';
+import { createContext } from '../impl/server/Context';
 import { schema } from './schema';
 import { HERMIT_CORS_ORIGIN, HERMIT_PORT, MUTA_ENDPOINT } from '../config';
 import { complexity } from './rules/complexity';

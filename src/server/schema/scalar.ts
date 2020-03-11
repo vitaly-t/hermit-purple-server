@@ -31,3 +31,15 @@ export const BytesScalar = stringScalar(
   'Bytes',
   'Bytes corresponding hex string',
 );
+
+export const TimestampScalar = scalarType({
+  name: 'Timestamp',
+  description: 'Millisecond timestamp',
+  serialize(v) {
+    const timestamp = Number('0x' + v);
+    // If it is a timestamp in seconds,
+    // it is converted into milliseconds
+    if (timestamp < 10000000000) return timestamp * 1000;
+    return timestamp;
+  },
+});

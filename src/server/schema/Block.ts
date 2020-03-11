@@ -1,3 +1,4 @@
+import { pageArgs } from '@hermit/server/common/pagination';
 import { arg, FieldResolver, intArg, objectType, queryField } from 'nexus';
 
 export const Block = objectType({
@@ -16,14 +17,7 @@ export const Block = objectType({
 
     t.field('preHash', { type: 'Hash', description: 'The prev block hash' });
 
-    t.string('timestamp', {
-      description: 'A datetime string format as UTC string',
-      resolve(parent) {
-        return new Date(
-          +(Number('0x' + parent.timestamp) + '000'),
-        ).toUTCString();
-      },
-    });
+    t.field('timestamp', { type: 'Timestamp' });
 
     t.field('proposer', {
       type: 'Address',
@@ -60,17 +54,12 @@ export const Block = objectType({
       description: 'The version of validators',
     });
 
-    t.int('validatorCount', {
-      description: 'The validator count of the block',
-      resolve() {
-        return 0;
-      },
-    });
-
     t.list.field('validators', {
       type: 'Validator',
-      resolve() {
-        return [];
+      resolve(parent, args, ctx) {
+        return ctx.dao.validator.validatorsByVersion({
+          version: parent.validatorVersion,
+        });
       },
     });
   },
@@ -89,11 +78,10 @@ export const blockQuery = queryField(t => {
       const block = ctx.dao.block;
 
       if (hash) {
-        return (await block.byHash(hash)) ?? null;
+        return (await block.blockByHash({ hash })) ?? null;
       } else if (height) {
-        return (await block.byHeight(height)) ?? null;
+        return (await block.blockByHeight({ height })) ?? null;
       }
-
       return null;
     },
   });
@@ -103,12 +91,10 @@ export const blocksPagination = queryField(t => {
   t.list.field('blocks', {
     type: 'Block',
     args: {
-      first: intArg(),
-      last: intArg(),
-      skip: intArg(),
+      ...pageArgs,
     },
     resolve(parent, args, ctx) {
-      return [];
+      return ctx.dao.block.blocks({ pageArgs: args });
     },
   });
 });

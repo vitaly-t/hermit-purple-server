@@ -1,9 +1,19 @@
-import { BLOCK, TRANSACTION } from '@hermit/impl/db/mysql/constants';
-import { attachOnDuplicateUpdate } from 'knex-on-duplicate-update';
-import * as Knex from 'knex';
 import { HERMIT_DATABASE_URL } from '@hermit/config';
+import {
+  Block,
+  BlockValidator,
+  Receipt,
+  Transaction,
+} from '@hermit/generated/schema';
+import {
+  BLOCK,
+  BLOCK_VALIDATOR,
+  TRANSACTION,
+} from '@hermit/impl/db/mysql/constants';
+import { findMany, findOne } from '@hermit/plugins/knex';
 import { DAO } from '@hermit/types/server';
-import { Block, Receipt, Transaction } from '@hermit/types/model';
+import * as Knex from 'knex';
+import { attachOnDuplicateUpdate } from 'knex-on-duplicate-update';
 
 export const knex = Knex({
   client: 'mysql',
@@ -14,32 +24,41 @@ attachOnDuplicateUpdate();
 
 export const MySQLDAO: DAO = {
   block: {
-    async byHash(hash: string): Promise<Block | undefined> {
-      return knex<Block>(BLOCK)
-        .where({ blockHash: hash })
-        .first();
+    async blockByHash({ hash }) {
+      return findOne<Block>(knex, BLOCK, { blockHash: hash });
     },
-    async byHeight(height: number): Promise<Block | undefined> {
-      return knex<Block>(BLOCK)
-        .where({ height })
-        .first();
+    async blockByHeight({ height }) {
+      return findOne<Block>(knex, BLOCK, { height });
+    },
+
+    async blocks({ pageArgs }) {
+      return findMany<Block>(knex, BLOCK, {
+        orderBy: ['height', 'desc'],
+        page: pageArgs,
+      });
     },
   },
   receipt: {
-    async byTxHash(txHash: string): Promise<Receipt | undefined> {
-      return knex<Receipt>(TRANSACTION)
-        .where({ txHash })
-        .first();
+    async receiptByTxHash({ txHash }) {
+      return findOne<Receipt>(knex, TRANSACTION, { txHash });
     },
   },
   transaction: {
-    async byBlockHeight(height: number): Promise<Transaction[]> {
-      return knex<Transaction>(TRANSACTION).where({ block: height });
+    async byBlockHeight({ blockHeight }) {
+      return findMany<Transaction>(knex, TRANSACTION, {
+        where: { block: blockHeight },
+        orderBy: ['order', 'desc'],
+      });
     },
-    async byTxHash(txHash: string): Promise<Transaction | undefined> {
-      return knex<Transaction>(TRANSACTION)
-        .where({ txHash })
-        .first();
+    async byTxHash({ txHash }) {
+      return findOne<Transaction>(knex, TRANSACTION, { txHash });
+    },
+  },
+  validator: {
+    async validatorsByVersion({ version }) {
+      return findMany<BlockValidator>(knex, BLOCK_VALIDATOR, {
+        where: { version },
+      });
     },
   },
 };

@@ -8,21 +8,26 @@ export const Transfer = objectType({
 
     t.int('block');
 
-    t.string('timestamp', {
+    t.field('timestamp', {
+      type: 'Timestamp',
       description: 'A datetime string format as UTC string',
       async resolve(parent, args, ctx) {
-        const block = await ctx.dao.block.byHeight(parent.block);
+        // TODO
+        //  Redundant timestamps to improve performance
+        const block = await ctx.dao.block.blockByHeight({
+          height: parent.block,
+        });
         return block?.timestamp ?? '';
       },
     });
 
-    // t.field('asset', {
-    //   type: 'Asset',
-    //   resolve(parent, args, ctx) {
-    //
-    //     return {};
-    //   },
-    // });
+    t.field('transaction', {
+      type: 'Transaction',
+      nullable: true,
+      resolve(parent, args, ctx) {
+        return ctx.dao.transaction.byTxHash({ txHash: parent.txHash });
+      },
+    });
 
     t.string('value');
 
@@ -33,7 +38,7 @@ export const Transfer = objectType({
   },
 });
 
-const transferQuery = queryField(t => {
+export const transferQuery = queryField(t => {
   t.field('transfer', {
     type: Transfer,
     args: {
@@ -41,13 +46,12 @@ const transferQuery = queryField(t => {
     },
     nullable: true,
     resolve(parent, args, ctx) {
-
-      return null;
+      return ctx.dao.transfer.transferByTxHash({ txHash: args.txHash! });
     },
   });
 });
 
-export const transferConnection = queryField(t => {
+export const transferPagination = queryField(t => {
   t.list.field('transfers', {
     type: 'Transfer',
     args: {
@@ -62,8 +66,15 @@ export const transferConnection = queryField(t => {
         type: 'Int',
       }),
     },
-    resolve() {
-      return [];
+    resolve(parent, args, ctx) {
+      return ctx.dao.transfer.transfers({
+        pageArgs: args,
+        where: {
+          fromOrTo: args.fromOrTo!,
+          blockHeight: args.blockHeight!,
+          assetId: args.asset!,
+        },
+      });
     },
   });
 });

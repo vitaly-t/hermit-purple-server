@@ -17,6 +17,7 @@ export interface Block {
 }
 
 export interface Transaction {
+  order: number;
   txHash: Hash;
   from: Address;
   serviceName: string;

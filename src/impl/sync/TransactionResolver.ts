@@ -13,16 +13,17 @@ import { Uint64 } from 'muta-sdk/build/main/types/scalar';
 
 export type Transfer = Omit<DBTransfer, 'id'>;
 export type Balance = Omit<DBBalance, 'id'>;
+type TransactionWithoutOrder = Omit<Transaction, 'order'>;
 
 interface TransactionResolverOptions {
   height: number;
   timestamp: Uint64;
-  transactions: Transaction[];
+  transactions: TransactionWithoutOrder[];
   receipts: Receipt[];
 }
 
 export class TransactionResolver {
-  private readonly txs: Transaction[];
+  private readonly txs: TransactionWithoutOrder[];
 
   private readonly receipts: Receipt[];
 
@@ -39,8 +40,8 @@ export class TransactionResolver {
    * will not be updated repeatedly
    */
   private readonly balanceTask: Set<string>; // address + assetId
-  private height: number;
-  private timestamp: string;
+  private readonly height: number;
+  private readonly timestamp: string;
 
   constructor(options: TransactionResolverOptions) {
     const { transactions, receipts, height, timestamp } = options;

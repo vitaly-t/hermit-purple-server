@@ -1,28 +1,41 @@
-import { Hash } from 'muta-sdk/build/main/types/scalar';
-import { Block, Receipt, Transaction } from './model';
+import { Hash, Uint64 } from 'muta-sdk/build/main/types/scalar';
+import { Block, Receipt, Transaction, Validator } from './model';
+
+export type Maybe<T> = T | null;
+
+export type MaybeAsync<T> = Promise<Maybe<T>> | Maybe<T>;
+
+export interface PageArgs {
+  first?: number | undefined | null;
+  last?: number | undefined | null;
+  skip?: number | undefined | null;
+}
 
 export interface BlockDAO {
-  byHeight(height: number): Promise<Block | undefined>;
+  blockByHeight(args: { height: number }): MaybeAsync<Block>;
 
-  byHash(hash: Hash): Promise<Block | undefined>;
+  blockByHash(args: { hash: Hash }): MaybeAsync<Block>;
+
+  blocks(args: { pageArgs: PageArgs }): Promise<Block[]>;
 }
 
 export interface TransactionDAO {
-  byTxHash(hash: Hash): Promise<Transaction | undefined>;
+  byTxHash(args: { txHash: Hash }): MaybeAsync<Transaction>;
 
-  byBlockHeight(height: number): Promise<Transaction[]>;
+  byBlockHeight(args: { blockHeight: number }): Promise<Transaction[]>;
 }
 
 export interface ReceiptDAO {
-  byTxHash(hash: Hash): Promise<Receipt | undefined>;
+  receiptByTxHash(args: { txHash: Hash }): MaybeAsync<Receipt>;
+}
+
+interface ValidatorDAO {
+  validatorsByVersion(args: { version: Uint64 }): Promise<Validator[]>;
 }
 
 export interface DAO {
   block: BlockDAO;
   transaction: TransactionDAO;
   receipt: ReceiptDAO;
-}
-
-export interface ServerContext {
-  dao: DAO;
+  validator: ValidatorDAO;
 }

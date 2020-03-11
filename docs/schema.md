@@ -23,6 +23,7 @@
     * [Hash](#hash)
     * [Int](#int)
     * [String](#string)
+    * [Timestamp](#timestamp)
     * [Uint64](#uint64)
 
 </details>
@@ -66,11 +67,6 @@
 <tr>
 <td colspan="2" align="right" valign="top">address</td>
 <td valign="top"><a href="#address">Address</a></td>
-<td></td>
-</tr>
-<tr>
-<td colspan="2" align="right" valign="top">assetId</td>
-<td valign="top"><a href="#hash">Hash</a></td>
 <td></td>
 </tr>
 <tr>
@@ -129,53 +125,18 @@
 <td></td>
 </tr>
 <tr>
-<td colspan="2" align="right" valign="top">order</td>
-<td valign="top"><a href="#int">Int</a></td>
-<td></td>
-</tr>
-<tr>
 <td colspan="2" align="right" valign="top">txHash</td>
 <td valign="top"><a href="#hash">Hash</a></td>
 <td></td>
 </tr>
 <tr>
-<td colspan="2" valign="top"><strong>transactions</strong></td>
-<td valign="top">[<a href="#transaction">Transaction</a>!]!</td>
+<td colspan="2" valign="top"><strong>transfer</strong></td>
+<td valign="top"><a href="#transfer">Transfer</a></td>
 <td></td>
 </tr>
 <tr>
-<td colspan="2" align="right" valign="top">block</td>
-<td valign="top"><a href="#int">Int</a></td>
-<td></td>
-</tr>
-<tr>
-<td colspan="2" align="right" valign="top">first</td>
-<td valign="top"><a href="#int">Int</a></td>
-<td></td>
-</tr>
-<tr>
-<td colspan="2" align="right" valign="top">from</td>
-<td valign="top"><a href="#address">Address</a></td>
-<td></td>
-</tr>
-<tr>
-<td colspan="2" align="right" valign="top">last</td>
-<td valign="top"><a href="#int">Int</a></td>
-<td></td>
-</tr>
-<tr>
-<td colspan="2" align="right" valign="top">method</td>
-<td valign="top"><a href="#string">String</a></td>
-<td></td>
-</tr>
-<tr>
-<td colspan="2" align="right" valign="top">service</td>
-<td valign="top"><a href="#string">String</a></td>
-<td></td>
-</tr>
-<tr>
-<td colspan="2" align="right" valign="top">skip</td>
-<td valign="top"><a href="#int">Int</a></td>
+<td colspan="2" align="right" valign="top">txHash</td>
+<td valign="top"><a href="#hash">Hash</a></td>
 <td></td>
 </tr>
 <tr>
@@ -300,7 +261,7 @@ The **short** name of this asset
 <tbody>
 <tr>
 <td colspan="2" valign="top"><strong>account</strong></td>
-<td valign="top"><a href="#account">Account</a>!</td>
+<td valign="top"><a href="#address">Address</a>!</td>
 <td></td>
 </tr>
 <tr>
@@ -415,12 +376,8 @@ The Merkle root of state root
 </tr>
 <tr>
 <td colspan="2" valign="top"><strong>timestamp</strong></td>
-<td valign="top"><a href="#string">String</a>!</td>
-<td>
-
-A datetime string format as UTC string
-
-</td>
+<td valign="top"><a href="#timestamp">Timestamp</a>!</td>
+<td></td>
 </tr>
 <tr>
 <td colspan="2" valign="top"><strong>transactionsCount</strong></td>
@@ -428,15 +385,6 @@ A datetime string format as UTC string
 <td>
 
 Show how many transactions in the block
-
-</td>
-</tr>
-<tr>
-<td colspan="2" valign="top"><strong>validatorCount</strong></td>
-<td valign="top"><a href="#int">Int</a>!</td>
-<td>
-
-The validator count of the block
 
 </td>
 </tr>
@@ -545,11 +493,6 @@ Transaction response, is often a string in json format
 </thead>
 <tbody>
 <tr>
-<td colspan="2" valign="top"><strong>block</strong></td>
-<td valign="top"><a href="#block">Block</a></td>
-<td></td>
-</tr>
-<tr>
 <td colspan="2" valign="top"><strong>cyclesLimit</strong></td>
 <td valign="top"><a href="#uint64">Uint64</a>!</td>
 <td>
@@ -569,7 +512,7 @@ Cycles price, similar to the `gasPrice` in eth
 </tr>
 <tr>
 <td colspan="2" valign="top"><strong>from</strong></td>
-<td valign="top"><a href="#account">Account</a>!</td>
+<td valign="top"><a href="#address">Address</a>!</td>
 <td></td>
 </tr>
 <tr>
@@ -587,15 +530,6 @@ Represents what `method` does the transaction called
 <td>
 
 A random 32 bytes, the `nonce` in Muta is difference with Ethereum
-
-</td>
-</tr>
-<tr>
-<td colspan="2" valign="top"><strong>order</strong></td>
-<td valign="top"><a href="#int">Int</a>!</td>
-<td>
-
-The transaction order number of all transactions 
 
 </td>
 </tr>
@@ -681,7 +615,7 @@ The transaction hash
 </tr>
 <tr>
 <td colspan="2" valign="top"><strong>timestamp</strong></td>
-<td valign="top"><a href="#string">String</a>!</td>
+<td valign="top"><a href="#timestamp">Timestamp</a>!</td>
 <td>
 
 A datetime string format as UTC string
@@ -691,6 +625,11 @@ A datetime string format as UTC string
 <tr>
 <td colspan="2" valign="top"><strong>to</strong></td>
 <td valign="top"><a href="#string">String</a>!</td>
+<td></td>
+</tr>
+<tr>
+<td colspan="2" valign="top"><strong>transaction</strong></td>
+<td valign="top"><a href="#transaction">Transaction</a></td>
 <td></td>
 </tr>
 <tr>
@@ -794,6 +733,10 @@ The `Int` scalar type represents non-fractional signed whole numeric values. Int
 ### String
 
 The `String` scalar type represents textual data, represented as UTF-8 character sequences. The String type is most often used by GraphQL to represent free-form human-readable text.
+
+### Timestamp
+
+Millisecond timestamp
 
 ### Uint64
 
