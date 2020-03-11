@@ -20,7 +20,7 @@
     "test:watch": "jest --watch",
     "dev:server": "ts-node-dev -r tsconfig-paths/register --no-notify --respawn --transpileOnly src/server/index.ts",
     "dev:sync": "cross-env DEBUG=sync:* ts-node --transpile-only -r tsconfig-paths/register src/impl/sync.ts",
-    "sync": "node module-alias/register dist/impl/sync",
+    "sync": "node -r module-alias/register dist/impl/sync",
     "release:alpha": "standard-version --prerelease alpha",
     "migrate:up": "ts-node --transpile-only -r tsconfig-paths/register src/impl/db/mysql/migration/001.ts up",
     "migrate:down": "ts-node --transpile-only -r tsconfig-paths/register src/impl/db/mysql/migration/001.ts down"
