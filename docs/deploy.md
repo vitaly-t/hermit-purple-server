@@ -2,35 +2,16 @@
 
 ## Requirement
 
-- PostgreSQL >= 9.x
-- NodeJS >= 12
+- MySQL ≥ 5.7
+- NodeJS >= 12.0
 
 ## Quick start with Ubuntu
 
-### Install PostgreSQL
+### Install MySQL
 
 ```shell script
-# Start with the import of the GPG key for PostgreSQL packages.
-sudo apt-get install wget ca-certificates
-wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo apt-key add -
-
-# Now add the repository to your system.
-sudo sh -c 'echo "deb http://apt.postgresql.org/pub/repos/apt/ `lsb_release -cs`-pgdg main" >> /etc/apt/sources.list.d/pgdg.list'
-
-# Install PostgreSQL
-sudo apt-get update
-sudo apt-get install postgresql postgresql-contrib
-
-# Create Database
-su - postgres
-createdb muta
+apt install mysql
 ```
-
-Learn more about how to [config PostgreSQL](https://help.ubuntu.com/stable/serverguide/postgresql.html)
-
-## Create table
-
-Creating tables from the [schema](../prisma/schema.sql)
 
 ## Install NodeJS
 
@@ -49,22 +30,22 @@ cd hermit-purple-server
 
 this is an example `.env` file
 
-```
+```env
 # the Muta GraphQL RPC endpoint
-# note: /graphql is an endpoint
+# note:
+# /graphql is an endpoint
 # /graphiql is an IDE of GraphQL
-# we should use "x.x.x.x/graphql" here
+# we should use "http://x.x.x.x/graphql" here
 MUTA_ENDPOINT=http://127.0.0.1:8000/graphql
 
-# PostgreSQL uri
-POSTGRESQL_URL=postgresql://user:password@localhost:5432/muta?schema=public
+HERMIT_DATABASE_URL=mysql://user:password@localhost:3306/muta
 
 # ChainID of the running Muta instance
 MUTA_CHAINID=0xb6a4d7da21443f5e816e8700eea87610e6d769657d6b8ec73028457bf2ca4036
 
 # maximum concurrency when sync
 # note: a large number may make Muta slower
-HERMIT_FETCH_CONCURRENCY=500
+HERMIT_FETCH_CONCURRENCY=50
 
 # server listening port
 # after start the server, we can open http://127.0.0.1:4040
@@ -73,6 +54,9 @@ HERMIT_PORT=4040
 
 # maximum cost each query task
 HERMIT_MAX_COMPLEXITY=100
+
+# CORS origin, empty to disable CORS
+HERMIT_CORS_ORIGIN=
 ```
 
 ### Or just use `export` before we run `npm xxx`
@@ -90,6 +74,20 @@ export HERMIT_MAX_COMPLEXITY=100
 ```
 npm install
 npm run build
+```
+
+## Setup the database(via MySQL and migration script automatic )
+
+Create the schema automatic if `HERMIT_DATABASE_URL` is set
+
+```
+npm run migrate mysql 001 up 
+```
+
+Also we can drop the database
+
+```
+npm run migrate mysql 001 down
 ```
 
 ## Start server and sync(via pm2)

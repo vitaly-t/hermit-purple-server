@@ -2,8 +2,8 @@ import { knex } from '@hermit/impl/db/mysql';
 import { ASSET, BALANCE, TRANSFER } from '@hermit/impl/db/mysql/constants';
 import { downBuilder, upBuilder } from '@hermit/migration/mysql/001-init';
 
-export const up = async () => {
-  const builder = upBuilder(knex)
+export const up = () => {
+  return upBuilder(knex)
     .createTable(ASSET, table => {
       table.specificType('account', 'varchar(40) NOT NULL');
       table.specificType('assetId', 'varchar(64) NOT NULL');
@@ -47,27 +47,11 @@ export const up = async () => {
       table.bigIncrements('id').primary();
       table.unique(['account', 'asset']);
     });
-
-  await builder;
 };
 
-export const down = async () => {
-  const builder = downBuilder(knex)
+export const down = () => {
+  return downBuilder(knex)
     .dropTableIfExists(ASSET)
     .dropTableIfExists(TRANSFER)
     .dropTableIfExists(BALANCE);
-
-  await builder;
 };
-
-if (process.argv.includes('up')) {
-  up().then(() => {
-    console.log('table are created');
-    process.exit();
-  });
-} else if (process.argv.includes('down')) {
-  down().then(() => {
-    console.log('tables are dropped');
-    process.exit();
-  });
-}

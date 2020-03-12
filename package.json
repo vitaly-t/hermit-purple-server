@@ -11,7 +11,7 @@
     "start": "node -r module-alias/register dist/server",
     "clean": "rm -rf dist",
     "build": "npm -s run clean && npm -s run generate && tsc --skipLibCheck",
-    "generate": "dotenv -- npm -s run generate:schemats && npm -s run generate:nexus && npm -s run generate:docs",
+    "generate": "dotenv -- npm -s run generate:schemats && npm -s run generate:nexus",
     "generate:docs": "graphql-markdown src/generated/schema.graphql > docs/schema.md",
     "generate:nexus": "ts-node -r tsconfig-paths/register --transpile-only src/server/schema",
     "generate:schemats": "dotenv -- ts-node -r tsconfig-paths/register scripts/schemaToTS.ts",
@@ -22,8 +22,7 @@
     "dev:sync": "cross-env DEBUG=sync:* ts-node --transpile-only -r tsconfig-paths/register src/impl/sync.ts",
     "sync": "node -r module-alias/register dist/impl/sync",
     "release:alpha": "standard-version --prerelease alpha",
-    "migrate:up": "ts-node --transpile-only -r tsconfig-paths/register src/impl/db/mysql/migration/001.ts up",
-    "migrate:down": "ts-node --transpile-only -r tsconfig-paths/register src/impl/db/mysql/migration/001.ts down"
+    "migrate": "ts-node --transpile-only -r tsconfig-paths/register scripts/migrate.ts"
   },
   "_moduleAliases": {
     "@hermit": "dist"
