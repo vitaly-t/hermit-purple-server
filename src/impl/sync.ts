@@ -17,7 +17,7 @@ import { knex } from './db/mysql';
 
 const syncAdapter: Synchronizer = {
   async getLocalBlockHeight(): Promise<number> {
-    const block = await knex<Block>('block')
+    const block = await knex<Block>(BLOCK)
       .select('height')
       .orderBy('height', 'desc')
       .limit(1);
@@ -26,7 +26,7 @@ const syncAdapter: Synchronizer = {
   },
 
   async getLocalBlockExecHeight(): Promise<number> {
-    const block = await knex<Block>('block')
+    const block = await knex<Block>(BLOCK)
       .select('execHeight')
       .orderBy('height', 'desc')
       .limit(1);
