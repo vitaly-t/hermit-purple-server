@@ -38,6 +38,15 @@ export const Transfer = objectType({
     t.field('to', { type: 'Address' });
 
     t.string('amount');
+
+    t.field('asset', {
+      type: 'Asset',
+      // TODO
+      //  Redundant asset to improve performance
+      resolve(parent, args, ctx) {
+        return ctx.dao.asset.assetById({ id: parent.asset });
+      },
+    });
   },
 });
 
