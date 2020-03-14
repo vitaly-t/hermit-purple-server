@@ -8,6 +8,7 @@ import {
 import {
   BLOCK,
   BLOCK_VALIDATOR,
+  RECEIPT,
   TRANSACTION,
 } from '@hermit/impl/db/mysql/constants';
 import { findMany, findOne } from '@hermit/plugins/knex';
@@ -40,7 +41,7 @@ export const MySQLDAO: DAO = {
   },
   receipt: {
     async receiptByTxHash({ txHash }) {
-      return findOne<Receipt>(knex, TRANSACTION, { txHash });
+      return findOne<Receipt>(knex, RECEIPT, { txHash });
     },
   },
   transaction: {
