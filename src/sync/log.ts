@@ -1,4 +1,6 @@
-import { debug as log } from 'debug';
+import { debug as log, enable } from 'debug';
+
+enable('sync:*');
 
 export const debug = log('sync:debug');
 export const info = log('sync:info');

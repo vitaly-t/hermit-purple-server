@@ -1,8 +1,13 @@
+import { pageArgs } from '@hermit/server/common/pagination';
 import { arg, objectType, queryField } from 'nexus';
 
 export const Transaction = objectType({
   name: 'Transaction',
   definition(t) {
+    t.int('order');
+
+    t.int('block');
+
     t.field('txHash', {
       type: 'Hash',
       description: 'The transaction hash',
@@ -48,12 +53,11 @@ export const Transaction = objectType({
 
     t.field('from', { type: 'Address' });
 
-    // TODO
     t.field('receipt', {
       type: 'Receipt',
       nullable: true,
-      resolve() {
-        return null;
+      resolve(parent, args, ctx) {
+        return ctx.dao.receipt.receiptByTxHash({ txHash: parent.txHash });
       },
     });
   },
@@ -76,19 +80,20 @@ export const transactionQuery = queryField(t => {
   });
 });
 
-// TODO
-// export const transactionPagination = queryField(t => {
-//   t.list.field('transactions', {
-//     type: 'Transaction',
-//     args: {
-//       ...pageArgs,
-//       block: arg({
-//         type: 'Int',
-//       }),
-//     },
-//
-//     async resolve(parent, args, ctx) {
-//       return ctx.dao.transaction.byBlockHeight({})
-//     },
-//   });
-// });
+export const transactionPagination = queryField(t => {
+  t.list.field('transactions', {
+    type: 'Transaction',
+    args: {
+      ...pageArgs,
+      blockHeight: arg({
+        type: 'Int',
+      }),
+    },
+
+    async resolve(parent, args, ctx) {
+      return ctx.dao.transaction.byBlockHeight({
+        blockHeight: args.blockHeight ?? 0,
+      });
+    },
+  });
+});

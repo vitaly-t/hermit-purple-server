@@ -1,3 +1,4 @@
+import { helper, toAmount } from '@hermit/impl/helpers/AssetHelper';
 import { pageArgs } from '@hermit/server/common/pagination';
 import { arg, objectType, queryField } from 'nexus';
 
@@ -16,6 +17,8 @@ export const Balance = objectType({
     t.field('asset', {
       type: 'Hash',
     });
+
+    t.string('amount');
   },
 });
 
@@ -25,12 +28,30 @@ export const balancePagination = queryField(t => {
     args: {
       ...pageArgs,
       // assetId: arg({ type: 'Hash' }),
-      address: arg({ type: 'Address' }),
+      address: arg({ type: 'Address', required: true }),
     },
-    resolve(parent, args, ctx) {
-      return ctx.dao.balance.balances({
+    async resolve(parent, args, ctx) {
+      const address = args.address;
+      if (!address) return [];
+      const balances = await ctx.dao.balance.balances({
         pageArgs: args,
-        where: { address: args.address! },
+        where: { address: address! },
+      });
+
+      return balances.map(async item => {
+        const { value, amount } = await helper.getBalance(
+          item.asset,
+          item.account,
+          true,
+        );
+
+        return {
+          id: item.id,
+          balance: value,
+          account: item.account,
+          asset: item.asset,
+          amount: amount,
+        };
       });
     },
   });

@@ -13,6 +13,11 @@ export const MUTA_CHAINID =
   '0xb6a4d7da21443f5e816e8700eea87610e6d769657d6b8ec73028457bf2ca4036';
 
 /**
+ * Muta timeout gap
+ */
+export const MUTA_TIMEOUT_GAP = Number(process.env.MUTA_TIMEOUT_GAP ?? 20);
+
+/**
  * max concurrency num for sync data from chain
  */
 export const SYNC_CONCURRENCY: number = Number(

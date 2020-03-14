@@ -1,3 +1,4 @@
+import { client } from "@hermit/muta";
 import {
   GetBlockQuery,
   GetReceiptQuery,
@@ -7,7 +8,6 @@ import { Synchronizer } from './';
 import { fetchRemoteBlockHeight, fetchWholeBlock } from './fetch';
 import { error, info } from './log';
 import { Executed } from './model/Executed';
-import { client } from './muta';
 
 export class BlockSynchronizer {
   /**
@@ -33,6 +33,11 @@ export class BlockSynchronizer {
     while (1) {
       try {
         const localHeight = await this.refreshLocalHeight();
+
+        if (localHeight === 1) {
+          await this.synchronizer.onGenesis();
+        }
+
         const remoteHeight = await this.refreshRemoteHeight();
 
         if (localHeight >= remoteHeight) {

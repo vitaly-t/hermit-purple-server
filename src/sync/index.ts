@@ -10,6 +10,8 @@ export interface Synchronizer {
 
   getLocalBlockExecHeight(): Promise<number>;
 
+  onGenesis(): Promise<void>;
+
   onBlockPacked(packed: Packed): Promise<void>;
 
   onBlockExecuted(executed: Executed): Promise<void>;

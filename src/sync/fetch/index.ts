@@ -1,3 +1,4 @@
+import { rawClient } from "@hermit/muta";
 import { hex, hexAddress, hexHash, hexUint64 } from '@hermit/sync/clean/hex';
 import { info } from '@hermit/sync/log';
 import { hexToNum, toHex } from '@hermit/utils';
@@ -9,7 +10,6 @@ import {
 } from 'muta-sdk/build/main/client/codegen/sdk';
 import { SYNC_CONCURRENCY } from '../../config';
 import { chunkAndBatch } from '../fetch/batch';
-import { rawClient } from '../muta';
 
 export async function fetchRemoteBlockHeight() {
   const remoteBlock = await rawClient.getBlock();

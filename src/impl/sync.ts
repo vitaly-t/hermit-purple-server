@@ -1,3 +1,4 @@
+import { Asset, Balance } from '@hermit/generated/schema';
 import {
   BLOCK,
   EVENT,
@@ -9,10 +10,12 @@ import {
   BALANCE,
   ACCOUNT,
 } from '@hermit/impl/db/mysql/constants';
+import { receiptAssetToDBAsset } from '@hermit/impl/helpers/AssetHelper';
 import { TransactionResolver } from '@hermit/impl/sync/TransactionResolver';
+import { readonlyAssetService } from '@hermit/muta';
 import { Synchronizer, BlockSynchronizer } from '@hermit/sync';
+import { hexAddress } from '@hermit/sync/clean/hex';
 import { Block } from '@hermit/types/model';
-import { execute } from 'graphql';
 import { knex } from './db/mysql';
 
 const syncAdapter: Synchronizer = {
@@ -32,6 +35,23 @@ const syncAdapter: Synchronizer = {
       .limit(1);
 
     return block[0].execHeight ?? 0;
+  },
+
+  async onGenesis() {
+    const receipt = await readonlyAssetService.get_native_asset();
+
+    const asset = receiptAssetToDBAsset(
+      receipt.ret,
+      // There is no txHash in the genesis block, this is a virtual txHash
+      '0000000000000000000000000000000000000000000000000000000000000000',
+    );
+    await knex<Asset>(ASSET).insert(asset);
+    await knex<Balance>(BALANCE).insert({
+      account: hexAddress(receipt.ret.issuer),
+      balance: asset.supply,
+      asset: asset.assetId,
+      id: 1,
+    });
   },
 
   async onBlockPacked(): Promise<void> {},

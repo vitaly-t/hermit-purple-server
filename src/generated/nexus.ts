@@ -72,6 +72,7 @@ export interface NexusGenFieldTypes {
   }
   Balance: { // field return type
     account: string; // Address!
+    amount: string; // String!
     asset: string; // Hash!
     balance: string; // Uint64!
   }
@@ -100,6 +101,7 @@ export interface NexusGenFieldTypes {
     block: NexusGenRootTypes['Block'] | null; // Block
     blocks: NexusGenRootTypes['Block'][]; // [Block!]!
     transaction: NexusGenRootTypes['Transaction'] | null; // Transaction
+    transactions: NexusGenRootTypes['Transaction'][]; // [Transaction!]!
     transfer: NexusGenRootTypes['Transfer'] | null; // Transfer
     transfers: NexusGenRootTypes['Transfer'][]; // [Transfer!]!
   }
@@ -109,11 +111,13 @@ export interface NexusGenFieldTypes {
     ret: string | null; // String
   }
   Transaction: { // field return type
+    block: number; // Int!
     cyclesLimit: string; // Uint64!
     cyclesPrice: string; // Uint64!
     from: string; // Address!
     method: string; // String!
     nonce: string; // Hash!
+    order: number; // Int!
     payload: string; // String!
     pubkey: string; // Bytes!
     receipt: NexusGenRootTypes['Receipt'] | null; // Receipt
@@ -146,7 +150,7 @@ export interface NexusGenArgTypes {
       skip?: number | null; // Int
     }
     balances: { // args
-      address?: string | null; // Address
+      address: string; // Address!
       first?: number | null; // Int
       last?: number | null; // Int
       skip?: number | null; // Int
@@ -162,6 +166,12 @@ export interface NexusGenArgTypes {
     }
     transaction: { // args
       txHash?: string | null; // Hash
+    }
+    transactions: { // args
+      blockHeight?: number | null; // Int
+      first?: number | null; // Int
+      last?: number | null; // Int
+      skip?: number | null; // Int
     }
     transfer: { // args
       txHash?: string | null; // Hash

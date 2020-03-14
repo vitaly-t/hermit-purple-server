@@ -23,6 +23,7 @@ type Asset {
 
 type Balance {
   account: Address!
+  amount: String!
   asset: Hash!
 
   """Uint64 balance"""
@@ -89,10 +90,11 @@ enum OrderByEnum {
 
 type Query {
   assets(first: Int, last: Int, skip: Int): [Asset!]!
-  balances(address: Address, first: Int, last: Int, skip: Int): [Balance!]!
+  balances(address: Address!, first: Int, last: Int, skip: Int): [Balance!]!
   block(hash: Hash, height: Int): Block
   blocks(first: Int, last: Int, skip: Int): [Block!]!
   transaction(txHash: Hash): Transaction
+  transactions(blockHeight: Int, first: Int, last: Int, skip: Int): [Transaction!]!
   transfer(txHash: Hash): Transfer
   transfers(asset: Hash, blockHeight: Int, first: Int, fromOrTo: Address, last: Int, skip: Int): [Transfer!]!
 }
@@ -112,6 +114,8 @@ type Receipt {
 scalar Timestamp
 
 type Transaction {
+  block: Int!
+
   """Cycles price, similar to the `gasLimit` in eth"""
   cyclesLimit: Uint64!
 
@@ -124,6 +128,7 @@ type Transaction {
 
   """A random 32 bytes, the `nonce` in Muta is difference with Ethereum"""
   nonce: Hash!
+  order: Int!
 
   """Represents what `payload` of the transaction called method"""
   payload: String!

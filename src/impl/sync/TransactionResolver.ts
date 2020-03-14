@@ -4,10 +4,10 @@ import {
   Balance as DBBalance,
   Transfer as DBTransfer,
 } from '@hermit/generated/schema';
+import { helper, toAmount } from '@hermit/impl/helpers/AssetHelper';
 import { hexJSONParse, hexU64, SourceDataType } from '@hermit/sync/clean/hex';
-import { readonlyAssetService } from '@hermit/sync/muta';
 import { Receipt, Transaction } from '@hermit/types/model';
-import { toHex } from '@hermit/utils';
+import BigNumber from 'bignumber.js';
 import { utils } from 'muta-sdk';
 import { Uint64 } from 'muta-sdk/build/main/types/scalar';
 
@@ -82,6 +82,7 @@ export class TransactionResolver {
   }
 
   private enqueueAsset(asset: DBAsset) {
+    helper.cacheAsset(asset);
     this.assets.push(asset);
   }
 
@@ -92,15 +93,12 @@ export class TransactionResolver {
     }
     this.balanceTask.add(address + assetId);
 
-    const res = await readonlyAssetService.get_balance({
-      user: toHex(address),
-      asset_id: toHex(assetId),
-    });
-
     this.balances.push({
       account: address,
       asset: assetId,
-      balance: hexU64(res.ret.balance),
+      // Since the balance will be affected by complex calculations such as fees,
+      // the balance will be directly obtained on the chain
+      balance: hexU64(0),
     });
   }
 
@@ -136,6 +134,7 @@ export class TransactionResolver {
           value: payload.value,
           block: this.height,
           timestamp: this.timestamp,
+          amount: await helper.amountByAssetIdAndValue(payload.asset_id, payload.value),
         });
 
         this.enqueueBalance(from, payload.asset_id);
@@ -158,6 +157,7 @@ export class TransactionResolver {
           value: payload.value,
           block: this.height,
           timestamp: this.timestamp,
+          amount: await helper.amountByAssetIdAndValue(payload.asset_id, payload.value),
         });
 
         this.enqueueBalance(from, payload.asset_id);
@@ -171,15 +171,20 @@ export class TransactionResolver {
           symbol: SourceDataType.String,
           name: SourceDataType.String,
           id: SourceDataType.Hash,
+          precision: SourceDataType.u64,
         });
 
+        const precision = new BigNumber(payload.precision, 16).toNumber();
+        const supply = payload.supply;
         this.enqueueAsset({
           assetId: payload.id,
           name: payload.name,
           symbol: payload.symbol,
-          supply: payload.supply,
+          supply: supply,
           account: from,
           txHash,
+          precision,
+          amount: toAmount(supply, precision),
         });
 
         this.enqueueBalance(from, payload.id);

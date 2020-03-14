@@ -502,6 +502,11 @@
   resolved "https://registry.npmjs.org/@types/lossless-json/-/lossless-json-1.0.0.tgz#6493f813b9421f45bfef9b30e99242652cbd025e"
   integrity sha512-knKgXT5I1x87nKLuwCKWi7nfwwYrmyi51ss7O8kAnbj8c116wBm86Laj9yguoN+Ju1S8jkjasam/OdearnQKRw==
 
+"@types/lru-cache@^5.1.0":
+  version "5.1.0"
+  resolved "https://registry.npmjs.org/@types/lru-cache/-/lru-cache-5.1.0.tgz#57f228f2b80c046b4a1bd5cac031f81f207f4f03"
+  integrity sha512-RaE0B+14ToE4l6UqdarKPnXwVDuigfFv+5j9Dze/Nqr23yyuqdNvzcZi3xB+3Agvi5R4EOgAksfv3lXX4vBt9w==
+
 "@types/mime@*":
   version "2.0.1"
   resolved "https://registry.npm.taobao.org/@types/mime/download/@types/mime-2.0.1.tgz#dc488842312a7f075149312905b5e3c0b054c79d"
@@ -4062,6 +4067,13 @@ lru-cache@^4.0.1, lru-cache@^4.1.5:
     pseudomap "^1.0.2"
     yallist "^2.1.2"
 
+lru-cache@^5.1.1:
+  version "5.1.1"
+  resolved "https://registry.npmjs.org/lru-cache/-/lru-cache-5.1.1.tgz#1da27e6710271947695daf6848e847f01d84b920"
+  integrity sha512-KpNARQA3Iwv+jTA0utUVVbrh+Jlrr1Fv0e56GGzAFOXN7dk/FviaDW8LHmK52DlcH4WP2n6gI8vN1aesBFgo9w==
+  dependencies:
+    yallist "^3.0.2"
+
 make-dir@^3.0.0:
   version "3.0.2"
   resolved "https://registry.npmjs.org/make-dir/-/make-dir-3.0.2.tgz#04a1acbf22221e1d6ef43559f43e05a90dbb4392"
@@ -4336,10 +4348,10 @@ ms@^2.1.1:
   resolved "https://registry.npm.taobao.org/ms/download/ms-2.1.2.tgz#d09d1f357b443f493382a8eb3ccd183872ae6009"
   integrity sha1-0J0fNXtEP0kzgqjrPM0YOHKuYAk=
 
-muta-sdk@^0.7.0-alpha.6:
-  version "0.7.0-alpha.6"
-  resolved "https://registry.npmjs.org/muta-sdk/-/muta-sdk-0.7.0-alpha.6.tgz#06f805927f69c351829e027fc0ed14286e789894"
-  integrity sha512-mJFudBRKF54DpOG5KD2qOB4mqQ5TS9jlKJueVh5c/L7CBn04M5rP6ym3OEWm2H2Qp5V7z6pzwh9AFrDxlaQJjQ==
+muta-sdk@^0.8.0-alpha.0:
+  version "0.8.0-alpha.0"
+  resolved "https://registry.npmjs.org/muta-sdk/-/muta-sdk-0.8.0-alpha.0.tgz#9f8d85ed13da28a36314c8fd1ce26e782d82a6ff"
+  integrity sha512-D9vpObirTDlbbwZLj6ZaFf/lY9T98NZ4yFIQ2XaC5L4Hf59MqrWZn17U9alN70rRdmVSVlli777YDojJQ3+uyQ==
   dependencies:
     "@types/debug" "^4.1.5"
     "@types/randombytes" "^2.0.0"
@@ -6571,6 +6583,11 @@ yallist@^2.1.2:
   version "2.1.2"
   resolved "https://registry.npmjs.org/yallist/-/yallist-2.1.2.tgz#1c11f9218f076089a47dd512f93c6699a6a81d52"
   integrity sha1-HBH5IY8HYImkfdUS+TxmmaaoHVI=
+
+yallist@^3.0.2:
+  version "3.1.1"
+  resolved "https://registry.npmjs.org/yallist/-/yallist-3.1.1.tgz#dbb7daf9bfd8bac9ab45ebf602b8cbad0d5d08fd"
+  integrity sha512-a4UGQaWPH59mOXUYnAG2ewncQS4i4F43Tv3JoAM+s2VDAmS9NsK8GpDMLrCHPksFT7h3K6TOoUNn2pb7RoXx4g==
 
 yargs-parser@^10.0.0:
   version "10.1.0"
