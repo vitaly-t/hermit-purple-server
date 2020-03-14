@@ -10,6 +10,7 @@ type Account {
 scalar Address
 
 type Asset {
+  amount: String!
   assetId: Hash!
   issuer: Address!
 
@@ -22,9 +23,9 @@ type Asset {
 }
 
 type Balance {
-  account: Address!
+  address: Address!
   amount: String!
-  asset: Hash!
+  asset: Asset!
 
   """Uint64 balance"""
   balance: Uint64!
@@ -89,6 +90,7 @@ enum OrderByEnum {
 }
 
 type Query {
+  asset(assetId: String!): Asset
   assets(first: Int, last: Int, skip: Int): [Asset!]!
   balances(address: Address!, first: Int, last: Int, skip: Int): [Balance!]!
   block(hash: Hash, height: Int): Block
@@ -149,6 +151,7 @@ type Transaction {
 
 type Transfer {
   amount: String!
+  asset: Asset!
   block: Int!
   from: Address!
   id: Int!

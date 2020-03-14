@@ -10,15 +10,22 @@ export const Balance = objectType({
       description: 'Uint64 balance',
     });
 
-    t.field('account', {
+    t.field('address', {
       type: 'Address',
     });
 
     t.field('asset', {
-      type: 'Hash',
+      type: 'Asset',
+      async resolve(parent, args, ctx) {
+        return (await ctx.dao.asset.assetById({ id: parent.assetId }))!;
+      },
     });
 
-    t.string('amount');
+    t.string('amount', {
+      resolve(parent, args, ctx) {
+        return helper.amountByAssetIdAndValue(parent.assetId, parent.balance);
+      },
+    });
   },
 });
 
@@ -33,25 +40,9 @@ export const balancePagination = queryField(t => {
     async resolve(parent, args, ctx) {
       const address = args.address;
       if (!address) return [];
-      const balances = await ctx.dao.balance.balances({
+      return await ctx.dao.balance.balances({
         pageArgs: args,
         where: { address: address! },
-      });
-
-      return balances.map(async item => {
-        const { value, amount } = await helper.getBalance(
-          item.asset,
-          item.account,
-          true,
-        );
-
-        return {
-          id: item.id,
-          balance: value,
-          account: item.account,
-          asset: item.asset,
-          amount: amount!,
-        };
       });
     },
   });

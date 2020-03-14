@@ -64,6 +64,7 @@ export interface NexusGenFieldTypes {
     address: string; // Address!
   }
   Asset: { // field return type
+    amount: string; // String!
     assetId: string; // Hash!
     issuer: string; // Address!
     name: string; // String!
@@ -71,9 +72,9 @@ export interface NexusGenFieldTypes {
     symbol: string; // String!
   }
   Balance: { // field return type
-    account: string; // Address!
+    address: string; // Address!
     amount: string; // String!
-    asset: string; // Hash!
+    asset: NexusGenRootTypes['Asset']; // Asset!
     balance: string; // Uint64!
   }
   Block: { // field return type
@@ -96,6 +97,7 @@ export interface NexusGenFieldTypes {
     service: string; // String!
   }
   Query: { // field return type
+    asset: NexusGenRootTypes['Asset'] | null; // Asset
     assets: NexusGenRootTypes['Asset'][]; // [Asset!]!
     balances: NexusGenRootTypes['Balance'][]; // [Balance!]!
     block: NexusGenRootTypes['Block'] | null; // Block
@@ -127,6 +129,7 @@ export interface NexusGenFieldTypes {
   }
   Transfer: { // field return type
     amount: string; // String!
+    asset: NexusGenRootTypes['Asset']; // Asset!
     block: number; // Int!
     from: string; // Address!
     id: number; // Int!
@@ -145,6 +148,9 @@ export interface NexusGenFieldTypes {
 
 export interface NexusGenArgTypes {
   Query: {
+    asset: { // args
+      assetId: string; // String!
+    }
     assets: { // args
       first?: number | null; // Int
       last?: number | null; // Int

@@ -40,7 +40,7 @@ export const up = () => {
 
       table
         .specificType('value', 'varchar(16) NOT NULL')
-        .comment('original transfer amount');
+        .comment('original transfer value in hex');
 
       table
         .text('amount')
@@ -58,17 +58,15 @@ export const up = () => {
         .comment('Block timestamp');
     })
     .createTable(BALANCE, table => {
-      table.specificType('account', 'varchar(40) NOT NULL').index();
+      table.specificType('address', 'varchar(40) NOT NULL').index();
 
-      table.specificType('asset', 'varchar(64) NOT NULL').index();
+      table.specificType('assetId', 'varchar(64) NOT NULL').index();
 
       table.specificType('balance', 'varchar(16) NOT NULL');
 
-      table.text('amount').notNullable();
-
       table.bigIncrements('id').primary();
 
-      table.unique(['account', 'asset']);
+      table.unique(['address', 'assetId']);
     });
 };
 

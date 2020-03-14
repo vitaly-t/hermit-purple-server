@@ -48,9 +48,9 @@ const syncAdapter: Synchronizer = {
     );
     await knex<Asset>(ASSET).insert(asset);
     await knex<Balance>(BALANCE).insert({
-      account: hexAddress(receipt.ret.issuer),
+      address: hexAddress(receipt.ret.issuer),
       balance: asset.supply,
-      asset: asset.assetId,
+      assetId: asset.assetId,
       id: 1,
     });
   },
@@ -113,7 +113,7 @@ const syncAdapter: Synchronizer = {
         await knex
           .insert(balance)
           .into(BALANCE)
-          .onDuplicateUpdate('account', 'asset')
+          .onDuplicateUpdate('address', 'assetId')
           .transacting(trx);
       }
 

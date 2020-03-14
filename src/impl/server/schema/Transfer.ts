@@ -43,8 +43,8 @@ export const Transfer = objectType({
       type: 'Asset',
       // TODO
       //  Redundant asset to improve performance
-      resolve(parent, args, ctx) {
-        return ctx.dao.asset.assetById({ id: parent.asset });
+      async resolve(parent, args, ctx) {
+        return (await ctx.dao.asset.assetById({ id: parent.asset }))!;
       },
     });
   },

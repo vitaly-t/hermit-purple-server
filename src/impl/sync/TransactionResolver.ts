@@ -94,12 +94,11 @@ export class TransactionResolver {
     this.balanceTask.add(address + assetId);
 
     this.balances.push({
-      account: address,
-      asset: assetId,
+      address,
+      assetId,
       // Since the balance will be affected by complex calculations such as fees,
       // the balance will be directly obtained on the chain
       balance: hexU64(0),
-      amount: '0',
     });
   }
 

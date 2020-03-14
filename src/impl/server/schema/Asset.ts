@@ -1,5 +1,5 @@
 import { pageArgs } from '@hermit/server/common/pagination';
-import { objectType, queryField } from 'nexus';
+import { objectType, queryField, stringArg } from 'nexus';
 
 export const Asset = objectType({
   name: 'Asset',
@@ -12,6 +12,8 @@ export const Asset = objectType({
 
     t.field('supply', { type: 'Uint64' });
 
+    t.string('amount');
+
     t.field('issuer', {
       type: 'Address',
       resolve(parent) {
@@ -19,6 +21,19 @@ export const Asset = objectType({
       },
     });
   },
+});
+
+export const assetQuery = queryField(t => {
+  t.field('asset', {
+    type: 'Asset',
+    nullable: true,
+    args: {
+      assetId: stringArg({ required: true }),
+    },
+    resolve(parent, args, ctx) {
+      return ctx.dao.asset.assetById({ id: args.assetId });
+    },
+  });
 });
 
 export const assetsPagination = queryField(t => {

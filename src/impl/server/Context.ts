@@ -76,7 +76,7 @@ export const dao: ExtraDAO = {
   balance: {
     balances({ where, pageArgs }) {
       return findMany<Balance>(knex, BALANCE, {
-        where: { account: where.address },
+        where: { address: where.address },
         orderBy: ['id', 'desc'],
         page: pageArgs,
       });

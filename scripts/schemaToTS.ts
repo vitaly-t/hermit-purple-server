@@ -5,7 +5,10 @@ import { HERMIT_DATABASE_URL } from '../src/config';
 
 async function main() {
   const schema = await typescriptOfSchema(HERMIT_DATABASE_URL);
-  writeFileSync(join(__dirname, '../src/generated/schema.ts'), schema);
+  writeFileSync(
+    join(__dirname, '../src/generated/schema.ts'),
+    `// @ts-nocheck \n${schema}`,
+  );
   process.exit(0);
 }
 
