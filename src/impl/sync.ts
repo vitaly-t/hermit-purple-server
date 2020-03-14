@@ -1,20 +1,21 @@
 import { Asset, Balance } from '@hermit/generated/schema';
 import {
+  ACCOUNT,
+  ASSET,
+  BALANCE,
   BLOCK,
+  BLOCK_VALIDATOR,
   EVENT,
   RECEIPT,
   TRANSACTION,
-  BLOCK_VALIDATOR,
-  ASSET,
   TRANSFER,
-  BALANCE,
-  ACCOUNT,
 } from '@hermit/impl/db/mysql/constants';
 import { receiptAssetToDBAsset } from '@hermit/impl/helpers/AssetHelper';
 import { TransactionResolver } from '@hermit/impl/sync/TransactionResolver';
 import { readonlyAssetService } from '@hermit/muta';
-import { Synchronizer, BlockSynchronizer } from '@hermit/sync';
+import { BlockSynchronizer, Synchronizer } from '@hermit/sync';
 import { hexAddress } from '@hermit/sync/clean/hex';
+import { debug } from '@hermit/sync/log';
 import { Block } from '@hermit/types/model';
 import { knex } from './db/mysql';
 
@@ -63,8 +64,14 @@ const syncAdapter: Synchronizer = {
       const receipts = executed.getReceipts();
 
       await knex.batchInsert(TRANSACTION, transactions).transacting(trx);
+      debug(`${transactions.length} transactions prepared`);
+
       await knex.batchInsert(RECEIPT, receipts).transacting(trx);
-      await knex.batchInsert(EVENT, executed.getEvents()).transacting(trx);
+      debug(`${receipts.length} receipts prepared`);
+
+      const events = executed.getEvents();
+      await knex.batchInsert(EVENT, events).transacting(trx);
+      debug(`${events.length} events prepared`);
 
       for (let validator of executed.getValidators()) {
         await knex
@@ -83,6 +90,7 @@ const syncAdapter: Synchronizer = {
         timestamp: executed.getBlock().timestamp,
       });
       await resolver.resolve();
+      debug(`transaction resolved to exact operation`);
 
       const createdAssets = resolver.getCreatedAssets();
 
@@ -98,6 +106,7 @@ const syncAdapter: Synchronizer = {
       if (transfers.length) {
         await knex.batchInsert(TRANSFER, transfers).transacting(trx);
       }
+      debug(`${transfers.length} transfers prepared`);
 
       const balances = resolver.getBalances();
       for (let balance of balances) {

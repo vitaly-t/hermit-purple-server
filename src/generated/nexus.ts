@@ -126,14 +126,15 @@ export interface NexusGenFieldTypes {
     txHash: string; // Hash!
   }
   Transfer: { // field return type
+    amount: string; // String!
     block: number; // Int!
-    from: string; // String!
+    from: string; // Address!
     id: number; // Int!
     timestamp: any; // Timestamp!
-    to: string; // String!
+    to: string; // Address!
     transaction: NexusGenRootTypes['Transaction'] | null; // Transaction
-    txHash: string; // String!
-    value: string; // String!
+    txHash: string; // Hash!
+    value: string; // Uint64!
   }
   Validator: { // field return type
     address: string; // Address!

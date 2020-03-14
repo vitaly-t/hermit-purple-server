@@ -1,4 +1,4 @@
-import { helper, toAmount } from '@hermit/impl/helpers/AssetHelper';
+import { helper } from '@hermit/impl/helpers/AssetHelper';
 import { pageArgs } from '@hermit/server/common/pagination';
 import { arg, objectType, queryField } from 'nexus';
 
@@ -50,7 +50,7 @@ export const balancePagination = queryField(t => {
           balance: value,
           account: item.account,
           asset: item.asset,
-          amount: amount,
+          amount: amount!,
         };
       });
     },

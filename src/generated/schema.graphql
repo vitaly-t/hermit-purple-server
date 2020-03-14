@@ -148,16 +148,17 @@ type Transaction {
 }
 
 type Transfer {
+  amount: String!
   block: Int!
-  from: String!
+  from: Address!
   id: Int!
 
   """A datetime string format as UTC string"""
   timestamp: Timestamp!
-  to: String!
+  to: Address!
   transaction: Transaction
-  txHash: String!
-  value: String!
+  txHash: Hash!
+  value: Uint64!
 }
 
 """Uint64，encoded to a hex string """

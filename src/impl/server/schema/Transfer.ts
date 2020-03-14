@@ -29,12 +29,15 @@ export const Transfer = objectType({
       },
     });
 
-    t.string('value');
+    t.field('value', { type: 'Uint64' });
 
-    t.string('txHash');
+    t.field('txHash', { type: 'Hash' });
 
-    t.string('from');
-    t.string('to');
+    t.field('from', { type: 'Address' });
+
+    t.field('to', { type: 'Address' });
+
+    t.string('amount');
   },
 });
 

@@ -99,6 +99,7 @@ export class TransactionResolver {
       // Since the balance will be affected by complex calculations such as fees,
       // the balance will be directly obtained on the chain
       balance: hexU64(0),
+      amount: '0',
     });
   }
 
@@ -134,7 +135,10 @@ export class TransactionResolver {
           value: payload.value,
           block: this.height,
           timestamp: this.timestamp,
-          amount: await helper.amountByAssetIdAndValue(payload.asset_id, payload.value),
+          amount: await helper.amountByAssetIdAndValue(
+            payload.asset_id,
+            payload.value,
+          ),
         });
 
         this.enqueueBalance(from, payload.asset_id);
@@ -157,7 +161,10 @@ export class TransactionResolver {
           value: payload.value,
           block: this.height,
           timestamp: this.timestamp,
-          amount: await helper.amountByAssetIdAndValue(payload.asset_id, payload.value),
+          amount: await helper.amountByAssetIdAndValue(
+            payload.asset_id,
+            payload.value,
+          ),
         });
 
         this.enqueueBalance(from, payload.asset_id);

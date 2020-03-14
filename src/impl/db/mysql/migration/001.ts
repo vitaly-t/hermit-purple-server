@@ -20,7 +20,7 @@ export const up = () => {
 
       table.text('symbol').notNullable();
 
-      table.specificType('amount', 'varchar(17) NOT NULL');
+      table.text('amount').notNullable();
 
       table.specificType('txHash', 'varchar(64) NOT NULL');
     })
@@ -43,7 +43,8 @@ export const up = () => {
         .comment('original transfer amount');
 
       table
-        .specificType('amount', 'varchar(17) NOT NULL')
+        .text('amount')
+        .notNullable()
         .comment('transfer amount with precision');
 
       table
@@ -63,7 +64,7 @@ export const up = () => {
 
       table.specificType('balance', 'varchar(16) NOT NULL');
 
-      table.text('amount');
+      table.text('amount').notNullable();
 
       table.bigIncrements('id').primary();
 
