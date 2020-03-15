@@ -24,11 +24,13 @@ const chain_proxy = proxy({
   pathRewrite: {
     '^/chain': '',
   },
-  onProxyReq: (proxyReq, req, res, options) => {
+  onProxyReq: (proxyReq, req, res) => {
     try {
       const transferQuery = `mutation sendTransaction($inputRaw: InputRawTransaction!, $inputEncryption: InputTransactionEncryption!) {\n  sendTransaction(inputRaw: $inputRaw, inputEncryption: $inputEncryption)\n}\n`;
+      // @ts-ignore
       const inputRaw = req.body.variables.inputRaw;
       if (
+        // @ts-ignore
         req.body.query !== transferQuery ||
         inputRaw.serviceName !== 'asset' ||
         inputRaw.method !== 'transfer'
@@ -36,10 +38,13 @@ const chain_proxy = proxy({
         throw 'only transfer method supported';
       }
     } catch (err) {
+      // @ts-ignore
       res.status(400).end(`invalid query. err: ${err}`);
       return;
     }
+    // @ts-ignore
     if (req.body) {
+      // @ts-ignore
       const bodyData = JSON.stringify(req.body);
       proxyReq.setHeader('Content-Type', 'application/json');
       proxyReq.setHeader('Content-Length', Buffer.byteLength(bodyData));
