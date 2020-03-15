@@ -15,14 +15,6 @@ All notable changes to this project will be documented in this file. See [standa
 * remove prisma dependency ([62fed1a](https://github.com/homura/hermit-purple-server/commit/62fed1a0b42cf71499ea616f844e9deeb5ab456f))
 * supported custom HERMIT_MAX_SKIP_SIZE ([e1b2ce0](https://github.com/homura/hermit-purple-server/commit/e1b2ce0d448d6461e9e669312f253be3110bd9f0))
 * supported genesis and native asset ([91a8441](https://github.com/homura/hermit-purple-server/commit/91a8441945960c6c0bd149d212ee79076de1cfc4))
-* tips for setup the database ([0edf482](https://github.com/homura/hermit-purple-server/commit/0edf482b6e8a651a9f2f562ff790f3fe853529e8))
-* update Balance field to make API more clear ([e0fe590](https://github.com/homura/hermit-purple-server/commit/e0fe590adec861a497f9c72631c178460fb519aa))
-
-
-### Bug Fixes
-
-* fix receipt cannot found error ([9d22624](https://github.com/homura/hermit-purple-server/commit/9d22624e476e67fcd425f6725f9f84b289c07082))
-* fix table dose'n exists error ([eab4ee8](https://github.com/homura/hermit-purple-server/commit/eab4ee89dc7f6fd0469bffd056651cb62e07289d))
 
 ### [0.1.1-alpha.0](https://github.com/homura/hermit-purple-server/compare/v0.0.2-alpha.5...v0.1.1-alpha.0) (2020-03-03)
 
