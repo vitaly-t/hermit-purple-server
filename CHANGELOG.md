@@ -2,6 +2,28 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [0.2.0-alpha.0](https://github.com/homura/hermit-purple-server/compare/v0.1.1-alpha.0...v0.2.0-alpha.0) (2020-03-15)
+
+
+### Features
+
+* available amount in transfer ([0d59a4c](https://github.com/homura/hermit-purple-server/commit/0d59a4c41c1ddcd7a79ec71609dab35de969f2d4))
+* chain proxy filter ([#2](https://github.com/homura/hermit-purple-server/issues/2)) ([7402fcc](https://github.com/homura/hermit-purple-server/commit/7402fcc90694b15023d8e2581e1747c61ea2cc08))
+* impl the DAO and new version GraphQL ([cd27a04](https://github.com/homura/hermit-purple-server/commit/cd27a041d60a2f45737327ebe22d039f2665350b))
+* link asset to transfer ([e10b530](https://github.com/homura/hermit-purple-server/commit/e10b5304f12301933837f424e2c3c4b6fdd18a5d))
+* migrate sync to MySQL ([e2aba54](https://github.com/homura/hermit-purple-server/commit/e2aba5473bb8f88e5ea2d14a0a0650c39b08f699))
+* remove prisma dependency ([62fed1a](https://github.com/homura/hermit-purple-server/commit/62fed1a0b42cf71499ea616f844e9deeb5ab456f))
+* supported custom HERMIT_MAX_SKIP_SIZE ([e1b2ce0](https://github.com/homura/hermit-purple-server/commit/e1b2ce0d448d6461e9e669312f253be3110bd9f0))
+* supported genesis and native asset ([91a8441](https://github.com/homura/hermit-purple-server/commit/91a8441945960c6c0bd149d212ee79076de1cfc4))
+* tips for setup the database ([0edf482](https://github.com/homura/hermit-purple-server/commit/0edf482b6e8a651a9f2f562ff790f3fe853529e8))
+* update Balance field to make API more clear ([e0fe590](https://github.com/homura/hermit-purple-server/commit/e0fe590adec861a497f9c72631c178460fb519aa))
+
+
+### Bug Fixes
+
+* fix receipt cannot found error ([9d22624](https://github.com/homura/hermit-purple-server/commit/9d22624e476e67fcd425f6725f9f84b289c07082))
+* fix table dose'n exists error ([eab4ee8](https://github.com/homura/hermit-purple-server/commit/eab4ee89dc7f6fd0469bffd056651cb62e07289d))
+
 ### [0.1.1-alpha.0](https://github.com/homura/hermit-purple-server/compare/v0.0.2-alpha.5...v0.1.1-alpha.0) (2020-03-03)
 
 
