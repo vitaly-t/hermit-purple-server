@@ -40,6 +40,16 @@
 </thead>
 <tbody>
 <tr>
+<td colspan="2" valign="top"><strong>asset</strong></td>
+<td valign="top"><a href="#asset">Asset</a></td>
+<td></td>
+</tr>
+<tr>
+<td colspan="2" align="right" valign="top">assetId</td>
+<td valign="top"><a href="#string">String</a>!</td>
+<td></td>
+</tr>
+<tr>
 <td colspan="2" valign="top"><strong>assets</strong></td>
 <td valign="top">[<a href="#asset">Asset</a>!]!</td>
 <td></td>
@@ -66,7 +76,7 @@
 </tr>
 <tr>
 <td colspan="2" align="right" valign="top">address</td>
-<td valign="top"><a href="#address">Address</a></td>
+<td valign="top"><a href="#address">Address</a>!</td>
 <td></td>
 </tr>
 <tr>
@@ -127,6 +137,31 @@
 <tr>
 <td colspan="2" align="right" valign="top">txHash</td>
 <td valign="top"><a href="#hash">Hash</a></td>
+<td></td>
+</tr>
+<tr>
+<td colspan="2" valign="top"><strong>transactions</strong></td>
+<td valign="top">[<a href="#transaction">Transaction</a>!]!</td>
+<td></td>
+</tr>
+<tr>
+<td colspan="2" align="right" valign="top">blockHeight</td>
+<td valign="top"><a href="#int">Int</a></td>
+<td></td>
+</tr>
+<tr>
+<td colspan="2" align="right" valign="top">first</td>
+<td valign="top"><a href="#int">Int</a></td>
+<td></td>
+</tr>
+<tr>
+<td colspan="2" align="right" valign="top">last</td>
+<td valign="top"><a href="#int">Int</a></td>
+<td></td>
+</tr>
+<tr>
+<td colspan="2" align="right" valign="top">skip</td>
+<td valign="top"><a href="#int">Int</a></td>
 <td></td>
 </tr>
 <tr>
@@ -212,6 +247,11 @@
 </thead>
 <tbody>
 <tr>
+<td colspan="2" valign="top"><strong>amount</strong></td>
+<td valign="top"><a href="#string">String</a>!</td>
+<td></td>
+</tr>
+<tr>
 <td colspan="2" valign="top"><strong>assetId</strong></td>
 <td valign="top"><a href="#hash">Hash</a>!</td>
 <td></td>
@@ -260,13 +300,18 @@ The **short** name of this asset
 </thead>
 <tbody>
 <tr>
-<td colspan="2" valign="top"><strong>account</strong></td>
+<td colspan="2" valign="top"><strong>address</strong></td>
 <td valign="top"><a href="#address">Address</a>!</td>
 <td></td>
 </tr>
 <tr>
+<td colspan="2" valign="top"><strong>amount</strong></td>
+<td valign="top"><a href="#string">String</a>!</td>
+<td></td>
+</tr>
+<tr>
 <td colspan="2" valign="top"><strong>asset</strong></td>
-<td valign="top"><a href="#hash">Hash</a>!</td>
+<td valign="top"><a href="#asset">Asset</a>!</td>
 <td></td>
 </tr>
 <tr>
@@ -493,6 +538,11 @@ Transaction response, is often a string in json format
 </thead>
 <tbody>
 <tr>
+<td colspan="2" valign="top"><strong>block</strong></td>
+<td valign="top"><a href="#int">Int</a>!</td>
+<td></td>
+</tr>
+<tr>
 <td colspan="2" valign="top"><strong>cyclesLimit</strong></td>
 <td valign="top"><a href="#uint64">Uint64</a>!</td>
 <td>
@@ -532,6 +582,11 @@ Represents what `method` does the transaction called
 A random 32 bytes, the `nonce` in Muta is difference with Ethereum
 
 </td>
+</tr>
+<tr>
+<td colspan="2" valign="top"><strong>order</strong></td>
+<td valign="top"><a href="#int">Int</a>!</td>
+<td></td>
 </tr>
 <tr>
 <td colspan="2" valign="top"><strong>payload</strong></td>
@@ -599,13 +654,23 @@ The transaction hash
 </thead>
 <tbody>
 <tr>
+<td colspan="2" valign="top"><strong>amount</strong></td>
+<td valign="top"><a href="#string">String</a>!</td>
+<td></td>
+</tr>
+<tr>
+<td colspan="2" valign="top"><strong>asset</strong></td>
+<td valign="top"><a href="#asset">Asset</a>!</td>
+<td></td>
+</tr>
+<tr>
 <td colspan="2" valign="top"><strong>block</strong></td>
 <td valign="top"><a href="#int">Int</a>!</td>
 <td></td>
 </tr>
 <tr>
 <td colspan="2" valign="top"><strong>from</strong></td>
-<td valign="top"><a href="#string">String</a>!</td>
+<td valign="top"><a href="#address">Address</a>!</td>
 <td></td>
 </tr>
 <tr>
@@ -624,7 +689,7 @@ A datetime string format as UTC string
 </tr>
 <tr>
 <td colspan="2" valign="top"><strong>to</strong></td>
-<td valign="top"><a href="#string">String</a>!</td>
+<td valign="top"><a href="#address">Address</a>!</td>
 <td></td>
 </tr>
 <tr>
@@ -634,12 +699,12 @@ A datetime string format as UTC string
 </tr>
 <tr>
 <td colspan="2" valign="top"><strong>txHash</strong></td>
-<td valign="top"><a href="#string">String</a>!</td>
+<td valign="top"><a href="#hash">Hash</a>!</td>
 <td></td>
 </tr>
 <tr>
 <td colspan="2" valign="top"><strong>value</strong></td>
-<td valign="top"><a href="#string">String</a>!</td>
+<td valign="top"><a href="#uint64">Uint64</a>!</td>
 <td></td>
 </tr>
 </tbody>

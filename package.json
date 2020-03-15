@@ -15,7 +15,6 @@
     "generate:docs": "graphql-markdown src/generated/schema.graphql > docs/schema.md",
     "generate:nexus": "ts-node -r tsconfig-paths/register --transpile-only src/server/schema",
     "generate:schemats": "dotenv -- ts-node -r tsconfig-paths/register scripts/schemaToTS.ts",
-    "postinstall": "npm -s run generate",
     "test": "jest",
     "test:watch": "jest --watch",
     "dev:server": "ts-node-dev -r tsconfig-paths/register --no-notify --respawn --transpileOnly src/server/index.ts",
