@@ -40,6 +40,9 @@ MUTA_ENDPOINT=http://127.0.0.1:8000/graphql
 
 HERMIT_DATABASE_URL=mysql://user:password@localhost:3306/muta
 
+# The maximum skip size of page turning during list query
+HERMIT_MAX_SKIP_SIZE=10000
+
 # ChainID of the running Muta instance
 MUTA_CHAINID=0xb6a4d7da21443f5e816e8700eea87610e6d769657d6b8ec73028457bf2ca4036
 
@@ -81,7 +84,7 @@ npm run build
 Create the schema automatic if `HERMIT_DATABASE_URL` is set
 
 ```
-npm run migrate mysql 001 up 
+npm run migrate mysql 001 up
 ```
 
 Also we can drop the database
