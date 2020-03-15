@@ -1,10 +1,10 @@
 // calc the complexity of an query request
 // error when the complexity great than `HERMIT_MAX_COMPLEXITY`
 
-import { getComplexity } from 'graphql-query-complexity';
-import { ValidationContext, GraphQLError } from 'graphql';
-import { HERMIT_MAX_COMPLEXITY } from '../../config';
 import { Request } from 'express';
+import { GraphQLError, ValidationContext } from 'graphql';
+import { getComplexity } from 'graphql-query-complexity';
+import { HERMIT_MAX_COMPLEXITY, HERMIT_MAX_SKIP_SIZE } from '../../config';
 
 const MUST_LIMIT_TYPE = new Set([
   'blocks',
@@ -24,6 +24,16 @@ export function complexity(context: ValidationContext, request?: Request) {
       options => {
         const fieldName = options.field.name;
         const limit = options.args.first || options.args.last;
+        const skip = options.args.skip ?? 0;
+
+        if (skip > HERMIT_MAX_SKIP_SIZE) {
+          context.reportError(
+            new GraphQLError(
+              `The maximum skip size is ${HERMIT_MAX_SKIP_SIZE}, ` +
+                `skip ${skip} "${fieldName}" is not allowed`,
+            ),
+          );
+        }
 
         if (MUST_LIMIT_TYPE.has(fieldName) && !limit) {
           context.reportError(

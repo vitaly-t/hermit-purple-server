@@ -41,6 +41,10 @@ export const HERMIT_MAX_COMPLEXITY: number = Number(
   process.env.HERMIT_MAX_COMPLEXITY ?? 100,
 );
 
+export const HERMIT_MAX_SKIP_SIZE: number = Number(
+  process.env.HERMIT_MAX_SKIP_SIZE ?? 10000,
+);
+
 /**
  * Path to forward requests to Muta, for example if set to `chain`
  * now `sendTransaction` to http://localhost:4040/chain would forward
