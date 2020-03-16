@@ -68,6 +68,7 @@ export interface NexusGenFieldTypes {
     assetId: string; // Hash!
     issuer: string; // Address!
     name: string; // String!
+    precision: number; // Int!
     supply: string; // Uint64!
     symbol: string; // String!
   }

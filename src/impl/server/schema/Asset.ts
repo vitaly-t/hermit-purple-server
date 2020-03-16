@@ -12,6 +12,8 @@ export const Asset = objectType({
 
     t.field('supply', { type: 'Uint64' });
 
+    t.int('precision');
+
     t.string('amount');
 
     t.field('issuer', {

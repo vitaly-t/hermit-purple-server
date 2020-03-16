@@ -16,6 +16,7 @@ type Asset {
 
   """The **full** name of this asset"""
   name: String!
+  precision: Int!
   supply: Uint64!
 
   """The **short** name of this asset"""
