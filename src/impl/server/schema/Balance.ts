@@ -8,6 +8,12 @@ export const Balance = objectType({
     t.field('balance', {
       type: 'Uint64',
       description: 'Uint64 balance',
+      async resolve(parent, args, ctx) {
+        return (
+          (await helper.getBalance(parent.assetId, parent.address, true))
+            ?.value! ?? '0'
+        );
+      },
     });
 
     t.field('address', {
@@ -22,8 +28,11 @@ export const Balance = objectType({
     });
 
     t.string('amount', {
-      resolve(parent, args, ctx) {
-        return helper.amountByAssetIdAndValue(parent.assetId, parent.balance);
+      async resolve(parent, args, ctx) {
+        return (
+          (await helper.getBalance(parent.assetId, parent.address, true))
+            ?.amount! ?? '0'
+        );
       },
     });
   },
