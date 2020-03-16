@@ -73,7 +73,9 @@ create table `Asset` (
     `assetId` varchar(64) NOT NULL,
     `name` text not null,
     `supply` varchar(16) NOT NULL,
+    `precision` int not null default '0',
     `symbol` text not null,
+    `amount` text not null,
     `txHash` varchar(64) NOT NULL
   );
 create table `Transfer` (
@@ -82,7 +84,8 @@ create table `Transfer` (
     `id` bigint unsigned not null auto_increment primary key,
     `to` varchar(40) NOT NULL,
     `txHash` varchar(64) NOT NULL,
-    `value` varchar(16) NOT NULL comment 'transfer amount',
+    `value` varchar(16) NOT NULL comment 'original transfer value in hex',
+    `amount` text not null comment 'transfer amount with precision',
     `block` int not null comment 'The block height',
     `timestamp` varchar(16) NOT NULL comment 'Block timestamp'
   );
@@ -105,17 +108,17 @@ alter table `Transfer`
 add
   index `transfer_block_index`(`block`);
 create table `Balance` (
-    `account` varchar(40) NOT NULL,
-    `asset` varchar(64) NOT NULL,
+    `address` varchar(40) NOT NULL,
+    `assetId` varchar(64) NOT NULL,
     `balance` varchar(16) NOT NULL,
     `id` bigint unsigned not null auto_increment primary key
   );
 alter table `Balance`
 add
-  index `balance_account_index`(`account`);
+  index `balance_address_index`(`address`);
 alter table `Balance`
 add
-  index `balance_asset_index`(`asset`);
+  index `balance_assetid_index`(`assetId`);
 alter table `Balance`
 add
-  unique `balance_account_asset_unique`(`account`, `asset`)
+  unique `balance_address_assetid_unique`(`address`, `assetId`)
