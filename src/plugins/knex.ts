@@ -22,7 +22,7 @@ export interface FindManyOption<TRecord extends {} = any> {
   orderBy?: [keyof TRecord, ('asc' | 'desc')?];
 }
 
-export async function findMany<TRecord extends {} = any>(
+export function buildManyQuery<TRecord extends {} = any>(
   knex: Knex,
   tableName: string,
   options: FindManyOption<TRecord>,
@@ -55,7 +55,20 @@ export async function findMany<TRecord extends {} = any>(
   } else {
     builder = builder.orderBy(orderKey, orderOfKey);
   }
-  const data = await builder;
 
+  return builder;
+}
+
+export async function findMany<TRecord extends {} = any>(
+  knex: Knex,
+  tableName: string,
+  options: FindManyOption<TRecord>,
+) {
+  const data = await buildManyQuery(knex, tableName, options);
+
+  const orderBy = options.orderBy;
+  const [orderKey, orderOfKey] = orderBy || [];
+
+  if (!orderKey) return data;
   return _orderBy(data, orderKey, orderOfKey ?? 'desc');
 }

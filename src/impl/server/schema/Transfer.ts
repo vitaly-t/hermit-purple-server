@@ -1,4 +1,5 @@
 import { pageArgs } from '@hermit/server/common/pagination';
+import { GraphQLError } from 'graphql';
 import { arg, objectType, queryField } from 'nexus';
 
 export const Transfer = objectType({
@@ -79,10 +80,24 @@ export const transferPagination = queryField(t => {
       }),
     },
     resolve(parent, args, ctx) {
+      const { fromOrTo, asset, blockHeight } = args;
+
+      if (fromOrTo && (asset || blockHeight)) {
+        throw new GraphQLError(
+          `The use of "fromOrTo" with other filtering arguments is not currently supported`,
+        );
+      }
+
+      if (args.fromOrTo) {
+        return ctx.dao.transfer.transfersByFromOrTo({
+          pageArgs: args,
+          fromOrTo: args.fromOrTo,
+        });
+      }
+
       return ctx.dao.transfer.transfers({
         pageArgs: args,
         where: {
-          fromOrTo: args.fromOrTo!,
           blockHeight: args.blockHeight!,
           assetId: args.asset!,
         },

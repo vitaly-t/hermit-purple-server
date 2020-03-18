@@ -1,13 +1,23 @@
 import { Asset, Balance, Transfer } from '@hermit/generated/schema';
 import { ASSET, BALANCE, TRANSFER } from '@hermit/impl/db/mysql/constants';
-import { findMany, FindManyOption, findOne } from '@hermit/plugins/knex';
+import {
+  buildManyQuery,
+  findMany,
+  FindManyOption,
+  findOne,
+} from '@hermit/plugins/knex';
 import { DAO, MaybeAsync, PageArgs } from '@hermit/types/server';
 import { knex, MySQLDAO } from '../db/mysql';
 
 interface TransferDAO {
   transferByTxHash(args: { txHash: string }): MaybeAsync<Transfer>;
   transfers(args: {
-    where: { assetId?: string; fromOrTo?: string; blockHeight?: number };
+    where: { assetId?: string; blockHeight?: number };
+    pageArgs: PageArgs;
+  }): Promise<Transfer[]>;
+
+  transfersByFromOrTo(args: {
+    fromOrTo: string;
     pageArgs: PageArgs;
   }): Promise<Transfer[]>;
 }
@@ -41,14 +51,36 @@ export const dao: ExtraDAO = {
     async transferByTxHash({ txHash }) {
       return findOne<Transfer>(knex, TRANSFER, { txHash });
     },
+    async transfersByFromOrTo({ pageArgs, fromOrTo }) {
+      const fromBuilder = buildManyQuery<Transfer>(knex, TRANSFER, {
+        orderBy: ['id', 'desc'],
+        where: { from: fromOrTo },
+        page: pageArgs,
+      });
+
+      const toBuilder = buildManyQuery<Transfer>(knex, TRANSFER, {
+        orderBy: ['id', 'desc'],
+        where: { to: fromOrTo },
+        page: pageArgs,
+      });
+
+      const { first, last, skip } = pageArgs;
+      const limit = first || last || 10;
+      const offset = skip || 0;
+
+      const data = await knex.raw(
+        `select * from (
+(${fromBuilder.toQuery()}) 
+union all 
+(${toBuilder.toQuery()})) as t order by t.id desc limit ${limit} offset ${offset}`,
+      );
+      return data[0] ?? [];
+    },
     async transfers(args) {
-      const fromOrTo = args.where.fromOrTo;
       const assetId = args.where.assetId;
       const blockHeight = args.where.blockHeight;
 
-      const where: FindManyOption<Transfer>['where'] = fromOrTo
-        ? builder => builder.where('from', fromOrTo).orWhere('to', fromOrTo)
-        : assetId
+      const where: FindManyOption<Transfer>['where'] = assetId
         ? { asset: assetId }
         : blockHeight === undefined
         ? {}

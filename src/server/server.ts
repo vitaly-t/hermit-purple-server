@@ -67,7 +67,7 @@ if (process.env.NODE_ENV !== 'development') {
 
 const options: Options = {
   formatError(error: GraphQLError) {
-    if (error.originalError) {
+    if (error.originalError && !(error.originalError instanceof GraphQLError)) {
       return 'Unknown error';
     }
     return defaultErrorFormatter(error);
