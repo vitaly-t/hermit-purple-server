@@ -6,16 +6,11 @@
   * [Query](#query)
   * [Objects](#objects)
     * [Account](#account)
-    * [Asset](#asset)
-    * [Balance](#balance)
     * [Block](#block)
     * [Event](#event)
     * [Receipt](#receipt)
     * [Transaction](#transaction)
-    * [Transfer](#transfer)
     * [Validator](#validator)
-  * [Enums](#enums)
-    * [OrderByEnum](#orderbyenum)
   * [Scalars](#scalars)
     * [Address](#address)
     * [Boolean](#boolean)
@@ -39,61 +34,6 @@
 </tr>
 </thead>
 <tbody>
-<tr>
-<td colspan="2" valign="top"><strong>asset</strong></td>
-<td valign="top"><a href="#asset">Asset</a></td>
-<td></td>
-</tr>
-<tr>
-<td colspan="2" align="right" valign="top">assetId</td>
-<td valign="top"><a href="#string">String</a>!</td>
-<td></td>
-</tr>
-<tr>
-<td colspan="2" valign="top"><strong>assets</strong></td>
-<td valign="top">[<a href="#asset">Asset</a>!]!</td>
-<td></td>
-</tr>
-<tr>
-<td colspan="2" align="right" valign="top">first</td>
-<td valign="top"><a href="#int">Int</a></td>
-<td></td>
-</tr>
-<tr>
-<td colspan="2" align="right" valign="top">last</td>
-<td valign="top"><a href="#int">Int</a></td>
-<td></td>
-</tr>
-<tr>
-<td colspan="2" align="right" valign="top">skip</td>
-<td valign="top"><a href="#int">Int</a></td>
-<td></td>
-</tr>
-<tr>
-<td colspan="2" valign="top"><strong>balances</strong></td>
-<td valign="top">[<a href="#balance">Balance</a>!]!</td>
-<td></td>
-</tr>
-<tr>
-<td colspan="2" align="right" valign="top">address</td>
-<td valign="top"><a href="#address">Address</a>!</td>
-<td></td>
-</tr>
-<tr>
-<td colspan="2" align="right" valign="top">first</td>
-<td valign="top"><a href="#int">Int</a></td>
-<td></td>
-</tr>
-<tr>
-<td colspan="2" align="right" valign="top">last</td>
-<td valign="top"><a href="#int">Int</a></td>
-<td></td>
-</tr>
-<tr>
-<td colspan="2" align="right" valign="top">skip</td>
-<td valign="top"><a href="#int">Int</a></td>
-<td></td>
-</tr>
 <tr>
 <td colspan="2" valign="top"><strong>block</strong></td>
 <td valign="top"><a href="#block">Block</a></td>
@@ -164,51 +104,6 @@
 <td valign="top"><a href="#int">Int</a></td>
 <td></td>
 </tr>
-<tr>
-<td colspan="2" valign="top"><strong>transfer</strong></td>
-<td valign="top"><a href="#transfer">Transfer</a></td>
-<td></td>
-</tr>
-<tr>
-<td colspan="2" align="right" valign="top">txHash</td>
-<td valign="top"><a href="#hash">Hash</a></td>
-<td></td>
-</tr>
-<tr>
-<td colspan="2" valign="top"><strong>transfers</strong></td>
-<td valign="top">[<a href="#transfer">Transfer</a>!]!</td>
-<td></td>
-</tr>
-<tr>
-<td colspan="2" align="right" valign="top">asset</td>
-<td valign="top"><a href="#hash">Hash</a></td>
-<td></td>
-</tr>
-<tr>
-<td colspan="2" align="right" valign="top">blockHeight</td>
-<td valign="top"><a href="#int">Int</a></td>
-<td></td>
-</tr>
-<tr>
-<td colspan="2" align="right" valign="top">first</td>
-<td valign="top"><a href="#int">Int</a></td>
-<td></td>
-</tr>
-<tr>
-<td colspan="2" align="right" valign="top">fromOrTo</td>
-<td valign="top"><a href="#address">Address</a></td>
-<td></td>
-</tr>
-<tr>
-<td colspan="2" align="right" valign="top">last</td>
-<td valign="top"><a href="#int">Int</a></td>
-<td></td>
-</tr>
-<tr>
-<td colspan="2" align="right" valign="top">skip</td>
-<td valign="top"><a href="#int">Int</a></td>
-<td></td>
-</tr>
 </tbody>
 </table>
 
@@ -230,98 +125,6 @@
 <td colspan="2" valign="top"><strong>address</strong></td>
 <td valign="top"><a href="#address">Address</a>!</td>
 <td></td>
-</tr>
-</tbody>
-</table>
-
-### Asset
-
-<table>
-<thead>
-<tr>
-<th align="left">Field</th>
-<th align="right">Argument</th>
-<th align="left">Type</th>
-<th align="left">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td colspan="2" valign="top"><strong>amount</strong></td>
-<td valign="top"><a href="#string">String</a>!</td>
-<td></td>
-</tr>
-<tr>
-<td colspan="2" valign="top"><strong>assetId</strong></td>
-<td valign="top"><a href="#hash">Hash</a>!</td>
-<td></td>
-</tr>
-<tr>
-<td colspan="2" valign="top"><strong>issuer</strong></td>
-<td valign="top"><a href="#address">Address</a>!</td>
-<td></td>
-</tr>
-<tr>
-<td colspan="2" valign="top"><strong>name</strong></td>
-<td valign="top"><a href="#string">String</a>!</td>
-<td>
-
-The **full** name of this asset
-
-</td>
-</tr>
-<tr>
-<td colspan="2" valign="top"><strong>supply</strong></td>
-<td valign="top"><a href="#uint64">Uint64</a>!</td>
-<td></td>
-</tr>
-<tr>
-<td colspan="2" valign="top"><strong>symbol</strong></td>
-<td valign="top"><a href="#string">String</a>!</td>
-<td>
-
-The **short** name of this asset
-
-</td>
-</tr>
-</tbody>
-</table>
-
-### Balance
-
-<table>
-<thead>
-<tr>
-<th align="left">Field</th>
-<th align="right">Argument</th>
-<th align="left">Type</th>
-<th align="left">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td colspan="2" valign="top"><strong>address</strong></td>
-<td valign="top"><a href="#address">Address</a>!</td>
-<td></td>
-</tr>
-<tr>
-<td colspan="2" valign="top"><strong>amount</strong></td>
-<td valign="top"><a href="#string">String</a>!</td>
-<td></td>
-</tr>
-<tr>
-<td colspan="2" valign="top"><strong>asset</strong></td>
-<td valign="top"><a href="#asset">Asset</a>!</td>
-<td></td>
-</tr>
-<tr>
-<td colspan="2" valign="top"><strong>balance</strong></td>
-<td valign="top"><a href="#uint64">Uint64</a>!</td>
-<td>
-
-Uint64 balance
-
-</td>
 </tr>
 </tbody>
 </table>
@@ -641,75 +444,6 @@ The transaction hash
 </tbody>
 </table>
 
-### Transfer
-
-<table>
-<thead>
-<tr>
-<th align="left">Field</th>
-<th align="right">Argument</th>
-<th align="left">Type</th>
-<th align="left">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td colspan="2" valign="top"><strong>amount</strong></td>
-<td valign="top"><a href="#string">String</a>!</td>
-<td></td>
-</tr>
-<tr>
-<td colspan="2" valign="top"><strong>asset</strong></td>
-<td valign="top"><a href="#asset">Asset</a>!</td>
-<td></td>
-</tr>
-<tr>
-<td colspan="2" valign="top"><strong>block</strong></td>
-<td valign="top"><a href="#int">Int</a>!</td>
-<td></td>
-</tr>
-<tr>
-<td colspan="2" valign="top"><strong>from</strong></td>
-<td valign="top"><a href="#address">Address</a>!</td>
-<td></td>
-</tr>
-<tr>
-<td colspan="2" valign="top"><strong>id</strong></td>
-<td valign="top"><a href="#int">Int</a>!</td>
-<td></td>
-</tr>
-<tr>
-<td colspan="2" valign="top"><strong>timestamp</strong></td>
-<td valign="top"><a href="#timestamp">Timestamp</a>!</td>
-<td>
-
-A datetime string format as UTC string
-
-</td>
-</tr>
-<tr>
-<td colspan="2" valign="top"><strong>to</strong></td>
-<td valign="top"><a href="#address">Address</a>!</td>
-<td></td>
-</tr>
-<tr>
-<td colspan="2" valign="top"><strong>transaction</strong></td>
-<td valign="top"><a href="#transaction">Transaction</a></td>
-<td></td>
-</tr>
-<tr>
-<td colspan="2" valign="top"><strong>txHash</strong></td>
-<td valign="top"><a href="#hash">Hash</a>!</td>
-<td></td>
-</tr>
-<tr>
-<td colspan="2" valign="top"><strong>value</strong></td>
-<td valign="top"><a href="#uint64">Uint64</a>!</td>
-<td></td>
-</tr>
-</tbody>
-</table>
-
 ### Validator
 
 <table>
@@ -748,27 +482,6 @@ Propose weight of a validator
 Vote weight of a validator
 
 </td>
-</tr>
-</tbody>
-</table>
-
-## Enums
-
-### OrderByEnum
-
-<table>
-<thead>
-<th align="left">Value</th>
-<th align="left">Description</th>
-</thead>
-<tbody>
-<tr>
-<td valign="top"><strong>asc</strong></td>
-<td></td>
-</tr>
-<tr>
-<td valign="top"><strong>desc</strong></td>
-<td></td>
 </tr>
 </tbody>
 </table>

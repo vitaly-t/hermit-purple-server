@@ -1,12 +1,5 @@
-prisma/*
-!prisma/schema.prisma
-!prisma/schema.sql
-
-dist
+lib
 node_modules
 .idea
 
-# Environment variables
 .env
-# generated
-#src/generated

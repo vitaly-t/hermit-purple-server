@@ -1,8 +1,10 @@
 {
   "compilerOptions": {
-    "outDir": "dist",
+    "outDir": "lib",
     "rootDir": "src",
     "lib": ["esnext", "dom"],
+    "declaration": true,
+    "inlineSourceMap": true,
     "strict": true,
     "baseUrl": "./src",
     "paths": {
