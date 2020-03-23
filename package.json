@@ -8,7 +8,7 @@
   "keywords": [
     "muta"
   ],
-  "version": "0.2.0-alpha.0",
+  "version": "0.3.0-alpha.0",
   "scripts": {
     "start": "node lib/app/server",
     "clean": "rm -rf lib",
