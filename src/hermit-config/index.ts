@@ -62,14 +62,4 @@ export const HERMIT_MAX_SKIP_SIZE: number = envNumber(
   10000,
 );
 
-/**
- * Path to forward requests to Muta, for example if set to `chain`
- * now `sendTransaction` to http://localhost:4040/chain would forward
- * the request to Muta
- */
-export const HERMIT_BYPASS_CHAIN = process.env.HERMIT_BYPASS_CHAIN ?? 'chain';
-
-/**
- *
- */
 export const HERMIT_DATABASE_URL = env('HERMIT_DATABASE_URL');
