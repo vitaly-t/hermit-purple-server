@@ -5,8 +5,8 @@ import {
   TRANSACTION,
 } from '@hermit/db-mysql/constants';
 import { knex } from '@hermit/db-mysql/index';
-import { findMany, findOne } from '@hermit/db-mysql/knex-helper';
-import { DAO } from '@hermit/hermit-types/server';
+import { findMany, findOne } from '../db-mysql/knex-helper';
+import { DAO } from '../hermit-types/server';
 import { Block, BlockValidator, Receipt, Transaction } from './types';
 
 export const MySQLDAO: DAO = {

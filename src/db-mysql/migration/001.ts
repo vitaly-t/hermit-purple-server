@@ -1,5 +1,3 @@
-import Knex = require('knex');
-import { knex as defaultKnex } from '../';
 import {
   ACCOUNT,
   BLOCK,
@@ -8,6 +6,8 @@ import {
   RECEIPT,
   TRANSACTION,
 } from '@hermit/db-mysql/constants';
+import Knex from 'knex';
+import { knex as defaultKnex } from '../';
 
 export const upBuilder = (knex: Knex = defaultKnex) => {
   return knex.schema

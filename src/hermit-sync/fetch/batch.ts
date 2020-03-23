@@ -1,6 +1,6 @@
 import Axios from 'axios';
+import Bluebird from 'bluebird';
 import { chunk, reduce } from 'lodash';
-import Bluebird = require('bluebird');
 
 const axios = Axios.create({ baseURL: process.env.MUTA_ENDPOINT });
 

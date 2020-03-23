@@ -1,5 +1,5 @@
 import { MySQLDAO } from '@hermit/db-mysql';
-import { DAO } from '@hermit/hermit-types/server';
+import { DAO } from '../../hermit-types/server';
 
 export interface ServerContext {
   dao: DAO;

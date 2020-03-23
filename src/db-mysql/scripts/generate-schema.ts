@@ -1,7 +1,7 @@
+import { HERMIT_DATABASE_URL } from '@hermit/hermit-config';
 import { writeFileSync } from 'fs';
 import { join } from 'path';
 import { typescriptOfSchema } from 'schemats';
-import { HERMIT_DATABASE_URL } from '@hermit/hermit-config';
 
 async function main() {
   const schema = await typescriptOfSchema(HERMIT_DATABASE_URL);

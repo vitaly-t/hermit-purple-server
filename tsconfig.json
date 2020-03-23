@@ -5,6 +5,7 @@
     "lib": ["esnext", "dom"],
     "declaration": true,
     "inlineSourceMap": true,
+    "allowSyntheticDefaultImports": true,
     "strict": true,
     "baseUrl": "./src",
     "paths": {

@@ -10,9 +10,11 @@
   ],
   "version": "0.2.0-alpha.0",
   "scripts": {
-    "start": "node -r module-alias/register lib/app/server",
+    "start": "node lib/app/server",
     "clean": "rm -rf lib",
-    "build": "npm -s run clean && npm -s run generate && tsc --skipLibCheck",
+    "build": "npm -s run clean && npm -s run generate && npm run build:js && npm run build:js && npm run build:types",
+    "build:js": "babel src --out-dir lib --extensions .ts --source-maps inline",
+    "build:types": "tsc --skipLibCheck --emitDeclarationOnly",
     "generate": "dotenv -- npm -s run generate:nexus",
     "generate:docs": "graphql-markdown src/app/generated/schema.graphql > docs/schema.md",
     "generate:nexus": "ts-node -r tsconfig-paths/register --transpile-only src/app/server/make-schema.ts",
@@ -24,9 +26,6 @@
     "sync": "node -r module-alias/register lib/app/sync",
     "release:alpha": "standard-version --prerelease alpha",
     "migrate": "node -r module-alias/register lib/app/scripts/migrate.ts"
-  },
-  "_moduleAliases": {
-    "@hermit": "lib"
   },
   "dependencies": {
     "@types/app-root-path": "^1.2.4",
@@ -59,8 +58,16 @@
     "nexus": "0.12.0-rc.13"
   },
   "devDependencies": {
+    "@babel/cli": "^7.8.4",
+    "@babel/core": "^7.9.0",
+    "@babel/plugin-transform-modules-commonjs": "^7.9.0",
+    "@babel/plugin-transform-typescript": "^7.9.0",
+    "@babel/preset-env": "^7.9.0",
+    "@babel/preset-typescript": "^7.9.0",
     "@types/jest": "^25.1.3",
     "@types/ws": "6.0.4",
+    "babel-plugin-module-resolver": "^4.0.0",
+    "babel-plugin-transform-runtime": "^6.23.0",
     "cross-env": "^6.0.3",
     "dotenv-cli": "^3.1.0",
     "graphql-markdown": "^5.2.0",

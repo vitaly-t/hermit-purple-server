@@ -1,17 +1,17 @@
-import {
-  Block,
-  Event,
-  Receipt,
-  Transaction,
-  Validator,
-} from '@hermit/hermit-types/model';
-import { hexToNum } from '@hermit/hermit-utils/bytes';
+import { hexToNum } from '@hermit/hermit-utils';
 import { utils } from 'muta-sdk';
 import {
   GetBlockQuery as RawBlock,
   GetReceiptQuery as RawReceipt,
   GetTransactionQuery as RawTransaction,
 } from 'muta-sdk/build/main/client/codegen/sdk';
+import {
+  Block,
+  Event,
+  Receipt,
+  Transaction,
+  Validator,
+} from '../../hermit-types/model';
 
 interface ExecutedOption {
   readonly rawBlock: RawBlock;

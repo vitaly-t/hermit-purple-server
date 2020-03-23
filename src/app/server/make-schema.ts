@@ -1,6 +1,6 @@
-import { makeSchema } from 'nexus';
 import { nexusTypes } from '@hermit/hermit-graphql';
-import { resolveGenerated, resolveSrc } from '../utils';
+import { makeSchema } from 'nexus';
+import { resolveGenerated } from '../utils';
 
 export const schema = makeSchema({
   types: {
@@ -8,7 +8,7 @@ export const schema = makeSchema({
   },
   outputs: {
     schema: resolveGenerated('schema.graphql'),
-    typegen: resolveGenerated('nexus.ts'),
+    typegen: resolveGenerated('nexus.d.ts'),
   },
   typegenAutoConfig: {
     contextType: 'ctx.ServerContext',
@@ -20,12 +20,12 @@ export const schema = makeSchema({
     },
     sources: [
       {
-        source: require.resolve(__dirname + '/context.ts'),
+        source: require.resolve('./context'),
         alias: 'ctx',
       },
       {
         // resolve sql types to typescript types
-        source: resolveSrc('db-mysql/types.ts'),
+        source: require.resolve('../../db-mysql/types'),
         alias: 'db',
       },
     ],
