@@ -104,6 +104,8 @@ export const upBuilder = (knex: Knex = defaultKnex) => {
       table.specificType('txHash', 'varchar(64) NOT NULL').index();
     })
     .createTable(RECEIPT, table => {
+      table.bigIncrements('id').primary();
+
       table.integer('block').notNullable();
 
       table.specificType('cyclesUsed', 'varchar(16) NOT NULL');
@@ -112,7 +114,7 @@ export const upBuilder = (knex: Knex = defaultKnex) => {
 
       table.text('ret').notNullable();
 
-      table.specificType('txHash', 'varchar(64) NOT NULL').primary();
+      table.specificType('txHash', 'varchar(64) NOT NULL').unique();
     })
     .createTable(EVENT, table => {
       table.text('data').notNullable();

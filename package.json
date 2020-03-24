@@ -15,9 +15,9 @@
     "build": "npm -s run clean && npm -s run generate && npm run build:js && npm run build:js && npm run build:types",
     "build:js": "babel src --out-dir lib --extensions .ts --source-maps inline",
     "build:types": "tsc --skipLibCheck --emitDeclarationOnly",
-    "generate": "dotenv -- npm -s run generate:nexus",
+    "generate": "dotenv -- npm run generate:mysql-schemats && npm -s run generate:nexus && npm run generate:docs",
     "generate:docs": "graphql-markdown src/app/generated/schema.graphql > docs/schema.md",
-    "generate:nexus": "ts-node -r tsconfig-paths/register --transpile-only src/app/server/make-schema.ts",
+    "generate:nexus": "ts-node -r tsconfig-paths/register --transpile-only src/app/server/make-schema",
     "generate:mysql-schemats": "dotenv -- ts-node -r tsconfig-paths/register src/db-mysql/scripts/generate-schema.ts",
     "test": "jest",
     "test:watch": "jest --watch",
@@ -25,7 +25,7 @@
     "dev:sync": "cross-env DEBUG=sync:* ts-node --transpile-only -r tsconfig-paths/register src/app/sync",
     "sync": "node -r module-alias/register lib/app/sync",
     "release:alpha": "standard-version --prerelease alpha",
-    "migrate": "node -r module-alias/register lib/app/scripts/migrate.ts"
+    "migrate": "node -r module-alias/register lib/app/scripts/migrate"
   },
   "dependencies": {
     "@types/app-root-path": "^1.2.4",
