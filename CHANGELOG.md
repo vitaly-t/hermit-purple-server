@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [0.3.0-alpha.1](https://github.com/homura/hermit-purple-server/compare/v0.3.0-alpha.0...v0.3.0-alpha.1) (2020-03-24)
+
+
+### Features
+
+* switch `Receipt` primary key to an autoincrement id for improving performance ([27d841c](https://github.com/homura/hermit-purple-server/commit/27d841c2864ffc1c7e3ad1e8524b2eb23d23cfef))
+
 ## [0.2.0-alpha.0](https://github.com/homura/hermit-purple-server/compare/v0.1.1-alpha.0...v0.2.0-alpha.0) (2020-03-15)
 
 
