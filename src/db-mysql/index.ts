@@ -1,5 +1,5 @@
 import { HERMIT_DATABASE_URL } from '@hermit/hermit-config';
-import Knex from 'knex';
+import  Knex from 'knex';
 import { attachOnDuplicateUpdate } from 'knex-on-duplicate-update';
 
 attachOnDuplicateUpdate();

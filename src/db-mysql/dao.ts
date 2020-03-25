@@ -31,10 +31,18 @@ export const MySQLDAO: DAO = {
     },
   },
   transaction: {
-    async transactionsByBlockHeight({ blockHeight }) {
+    async transactions({ pageArgs }) {
+      return findMany<Transaction>(knex, TRANSACTION, {
+        orderBy: ['order', 'desc'],
+        page: pageArgs,
+      });
+    },
+
+    async transactionsByBlockHeight({ blockHeight, pageArgs }) {
       return findMany<Transaction>(knex, TRANSACTION, {
         where: { block: blockHeight },
         orderBy: ['order', 'desc'],
+        page: pageArgs,
       });
     },
     async transactionByTxHash({ txHash }) {

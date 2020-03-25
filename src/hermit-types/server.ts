@@ -5,6 +5,8 @@ export type Maybe<T> = T | null;
 
 export type MaybeAsync<T> = Promise<Maybe<T>> | Maybe<T>;
 
+type DBReceipt = Receipt & { id: number };
+
 export interface PageArgs {
   first?: number | undefined | null;
   last?: number | undefined | null;
@@ -22,13 +24,16 @@ export interface BlockDAO {
 export interface TransactionDAO {
   transactionByTxHash(args: { txHash: Hash }): MaybeAsync<Transaction>;
 
+  transactions(args: { pageArgs: PageArgs }): Promise<Transaction[]>;
+
   transactionsByBlockHeight(args: {
     blockHeight: number;
+    pageArgs: PageArgs;
   }): Promise<Transaction[]>;
 }
 
 export interface ReceiptDAO {
-  receiptByTxHash(args: { txHash: Hash }): MaybeAsync<Receipt>;
+  receiptByTxHash(args: { txHash: Hash }): MaybeAsync<DBReceipt>;
 }
 
 interface ValidatorDAO {

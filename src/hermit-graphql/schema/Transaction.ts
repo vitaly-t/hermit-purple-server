@@ -91,9 +91,17 @@ export const transactionPagination = queryField(t => {
     },
 
     async resolve(parent, args, ctx) {
-      return ctx.dao.transaction.transactionsByBlockHeight({
-        blockHeight: args.blockHeight ?? 0,
-      });
+      const blockHeight = args.blockHeight;
+
+      if (blockHeight !== null && blockHeight !== undefined) {
+        return ctx.dao.transaction.transactionsByBlockHeight({
+          blockHeight,
+          pageArgs: args,
+        });
+      }
+
+
+      return ctx.dao.transaction.transactions({ pageArgs: args });
     },
   });
 });
