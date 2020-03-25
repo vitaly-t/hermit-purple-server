@@ -25,7 +25,8 @@
     "dev:sync": "cross-env DEBUG=sync:* ts-node --transpile-only -r tsconfig-paths/register src/app/sync",
     "sync": "node -r module-alias/register lib/app/sync",
     "release:alpha": "standard-version --prerelease alpha",
-    "migrate": "node -r module-alias/register lib/app/scripts/migrate"
+    "migrate": "node -r module-alias/register lib/app/scripts/migrate",
+    "prepublishOnly": "npm run test && npm run build"
   },
   "dependencies": {
     "@types/app-root-path": "^1.2.4",
