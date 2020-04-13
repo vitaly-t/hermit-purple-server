@@ -11,7 +11,7 @@
   "files": [
     "lib"
   ],
-  "version": "0.3.0-alpha.3",
+  "version": "0.3.0",
   "scripts": {
     "start": "node lib/app/server",
     "clean": "rm -rf lib",
