@@ -4,7 +4,7 @@ import {
   GetBlockQuery as RawBlock,
   GetReceiptQuery as RawReceipt,
   GetTransactionQuery as RawTransaction,
-} from 'muta-sdk/build/main/client/codegen/sdk';
+} from '@mutajs/client-raw';
 import {
   Block,
   Event,
@@ -80,24 +80,23 @@ export class Executed {
       block: block,
       txHash: receipt.getReceipt.txHash,
       cyclesUsed: receipt.getReceipt.cyclesUsed,
-      isError: receipt.getReceipt.response.isError,
-      ret: receipt.getReceipt.response.ret,
+      isError: Number(receipt.getReceipt.response.response.code) !== 0,
+      ret: receipt.getReceipt.response.response.succeedData,
     }));
   }
 
   getEvents(): Event[] {
-    return this.executed.rawReceipts.flatMap<Event>(
-      ({ getReceipt: receipt }) => {
-        const events = receipt.events;
-        if (!events || events.length === 0) return [];
+    return this.executed.rawReceipts.flatMap<Event>(raw => {
+      const receipt = raw.getReceipt;
+      const events = receipt.events;
+      if (!events || events.length === 0) return [];
 
-        return events.map(e => ({
-          service: e.service,
-          data: e.data,
-          txHash: receipt.txHash,
-        }));
-      },
-    );
+      return events.map(e => ({
+        service: e.service,
+        data: e.data,
+        txHash: receipt.txHash,
+      }));
+    });
   }
 
   getValidators(): Validator[] {

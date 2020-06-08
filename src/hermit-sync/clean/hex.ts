@@ -4,8 +4,8 @@
 
 import { parse } from 'lossless-json';
 import { BigNumber } from 'bignumber.js';
-import { Address, Hash, Uint64 } from 'muta-sdk/build/main/types';
-import { rm0x } from 'muta-sdk/build/main/utils';
+import { Address, Hash, Uint64 } from '@mutajs/types';
+import { rm0x } from '@mutajs/utils';
 
 export function hexWithout0x(
   x: string | BigNumber | number,

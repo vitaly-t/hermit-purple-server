@@ -23,6 +23,7 @@ export function createListLimitationValidator(options: Option) {
     const complexity = getComplexity({
       query: context.getDocument(),
       schema: context.getSchema(),
+      //@ts-ignore
       variables: request?.body.variables,
       estimators: [
         options => {

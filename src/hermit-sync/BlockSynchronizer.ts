@@ -3,7 +3,7 @@ import {
   GetBlockQuery,
   GetReceiptQuery,
   GetTransactionQuery,
-} from 'muta-sdk/build/main/client/codegen/sdk';
+} from '@mutajs/client-raw';
 import { Synchronizer } from './';
 import { fetchRemoteBlockHeight, fetchWholeBlock } from './fetch';
 import { error, info } from './log';

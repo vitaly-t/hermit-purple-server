@@ -7,9 +7,9 @@ import {
   GetBlockQuery,
   GetReceiptQuery,
   GetTransactionQuery,
-} from 'muta-sdk/build/main/client/codegen/sdk';
+} from '@mutajs/client-raw';
 import { HERMIT_FETCH_CONCURRENCY } from '../../hermit-config';
-import { chunkAndBatch } from '../fetch/batch';
+import { chunkAndBatch } from './batch';
 
 export async function fetchRemoteBlockHeight() {
   const remoteBlock = await rawClient.getBlock();
@@ -93,8 +93,11 @@ fragment receiptKeys on Receipt {
     response {
       serviceName
       method
-      ret
-      isError
+      response {
+        code
+        succeedData
+        errorMessage
+      }
     }
 }
 `;

@@ -1,4 +1,4 @@
-import { Hash, Uint64 } from 'muta-sdk/build/main/types/scalar';
+import { Hash, Uint64 } from '@mutajs/types';
 import { Block, Receipt, Transaction, Validator } from './model';
 
 export type Maybe<T> = T | null;
