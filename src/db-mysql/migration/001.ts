@@ -31,7 +31,7 @@ export const upBuilder = (knex: Knex = defaultKnex) => {
         .comment('Merkle root of ordered transactions');
 
       table
-        .specificType('preHash', 'varchar(64) NOT NULL')
+        .specificType('prevHash', 'varchar(64) NOT NULL')
         .comment('Prev block hash');
 
       table
@@ -91,7 +91,7 @@ export const upBuilder = (knex: Knex = defaultKnex) => {
 
       table.bigIncrements('order').primary();
 
-      table.text('payload').notNullable();
+      table.specificType('payload', 'LONGTEXT NOT NULL');
 
       table.specificType('pubkey', 'varchar(66) NOT NULL');
 

@@ -1,11 +1,11 @@
-import { Address, Bytes, Hash, Uint64 } from 'muta-sdk/build/main/types/scalar';
+import { Address, Bytes, Hash, Uint64 } from '@mutajs/types';
 
 export interface Block {
   height: number;
   blockHash: Hash;
   execHeight: number;
   transactionsCount: number;
-  preHash: Hash;
+  prevHash: Hash;
   timestamp: string;
   orderRoot: Hash;
   stateRoot: Hash;

@@ -17,7 +17,7 @@ export namespace BlockFields {
     export type execHeight = number;
     export type blockHash = string;
     export type orderRoot = string;
-    export type preHash = string;
+    export type prevHash = string;
     export type proofBitmap = string;
     export type proofRound = string;
     export type proofSignature = string;
@@ -34,7 +34,7 @@ export interface Block {
     execHeight: BlockFields.execHeight;
     blockHash: BlockFields.blockHash;
     orderRoot: BlockFields.orderRoot;
-    preHash: BlockFields.preHash;
+    prevHash: BlockFields.prevHash;
     proofBitmap: BlockFields.proofBitmap;
     proofRound: BlockFields.proofRound;
     proofSignature: BlockFields.proofSignature;

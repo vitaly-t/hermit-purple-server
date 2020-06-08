@@ -169,7 +169,7 @@ The ordered transactions Merkle root of a block
 </td>
 </tr>
 <tr>
-<td colspan="2" valign="top"><strong>preHash</strong></td>
+<td colspan="2" valign="top"><strong>prevHash</strong></td>
 <td valign="top"><a href="#hash">Hash</a>!</td>
 <td>
 

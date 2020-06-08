@@ -15,7 +15,7 @@ export const Block = objectType({
       description: 'Show how many transactions in the block',
     });
 
-    t.field('preHash', { type: 'Hash', description: 'The prev block hash' });
+    t.field('prevHash', { type: 'Hash', description: 'The prev block hash' });
 
     t.field('timestamp', { type: 'Timestamp' });
 

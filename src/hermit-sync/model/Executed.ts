@@ -58,7 +58,7 @@ export class Executed {
       proofBitmap: header.proof.bitmap,
       proofRound: header.proof.round,
       proofSignature: header.proof.signature,
-      preHash: header.preHash,
+      prevHash: header.prevHash,
       validatorVersion: header.validatorVersion,
     };
   }

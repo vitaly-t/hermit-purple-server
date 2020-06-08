@@ -124,7 +124,7 @@ export async function fetchWholeBlock(
   const header = block.getBlock.header;
   block.getBlock.header = {
     ...header,
-    preHash: hexHash(header.preHash),
+    prevHash: hexHash(header.prevHash),
     validators: header.validators.map(validator => ({
       ...validator,
       address: hexAddress(validator.address),
