@@ -1,5 +1,5 @@
+import { arg, objectType, queryField } from '@nexus/schema';
 import { pageArgs } from './pagination';
-import { arg, objectType, queryField } from 'nexus';
 
 export const Transaction = objectType({
   name: 'Transaction',
@@ -51,13 +51,13 @@ export const Transaction = objectType({
       description: 'Signature of a transaction',
     });
 
-    t.field('from', { type: 'Address' });
+    t.field('from', {type: 'Address'});
 
     t.field('receipt', {
       type: 'Receipt',
       nullable: true,
       resolve(parent, args, ctx) {
-        return ctx.dao.receipt.receiptByTxHash({ txHash: parent.txHash });
+        return ctx.receiptService.findByTxHash(parent.txHash);
       },
     });
   },
@@ -73,8 +73,8 @@ export const transactionQuery = queryField(t => {
     },
     nullable: true,
     resolve(parent, args, ctx) {
-      return ctx.dao.transaction.transactionByTxHash({
-        txHash: args.txHash!,
+      return ctx.transactionService.findByTxHash({
+        txHash: args.txHash,
       });
     },
   });
@@ -94,14 +94,13 @@ export const transactionPagination = queryField(t => {
       const blockHeight = args.blockHeight;
 
       if (blockHeight !== null && blockHeight !== undefined) {
-        return ctx.dao.transaction.transactionsByBlockHeight({
+        return ctx.transactionService.filterByBlockHeight({
           blockHeight,
           pageArgs: args,
         });
       }
 
-
-      return ctx.dao.transaction.transactions({ pageArgs: args });
+      return ctx.transactionService.filter({pageArgs: args});
     },
   });
 });

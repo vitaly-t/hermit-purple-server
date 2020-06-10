@@ -1,15 +1,10 @@
-import { client } from "@hermit/muta";
-import {
-  GetBlockQuery,
-  GetReceiptQuery,
-  GetTransactionQuery,
-} from '@mutajs/client-raw';
-import { Synchronizer } from './';
-import { fetchRemoteBlockHeight, fetchWholeBlock } from './fetch';
-import { error, info } from './log';
-import { Executed } from './model/Executed';
+import { Client } from '@mutajs/client';
+import { error, info } from '../logger';
+import { Executed } from '../models/Executed';
+import { RawBlock, RawReceipt, RawTransaction } from "../models/types";
+import { ISynchronizerAdapter } from './';
 
-export class BlockSynchronizer {
+export class PollingSynchronizer {
   /**
    * current local block height
    */
@@ -20,13 +15,16 @@ export class BlockSynchronizer {
    */
   private remoteHeight: number;
 
-  private synchronizer: Synchronizer;
+  private adapter: ISynchronizerAdapter;
 
-  constructor(synchronizer: Synchronizer) {
+  constructor(
+    adapter: ISynchronizerAdapter,
+    private client: Client = new Client(),
+  ) {
     this.localHeight = 0;
     this.remoteHeight = 0;
 
-    this.synchronizer = synchronizer;
+    this.adapter = adapter;
   }
 
   async run() {
@@ -35,7 +33,7 @@ export class BlockSynchronizer {
         const localHeight = await this.refreshLocalHeight();
 
         if (localHeight === 1) {
-          await this.synchronizer.onGenesis();
+          await this.adapter.onGenesis();
         }
 
         const remoteHeight = await this.refreshRemoteHeight();
@@ -44,13 +42,15 @@ export class BlockSynchronizer {
           info(
             `local height: ${localHeight}, remote height: ${remoteHeight}, waiting for remote new block`,
           );
-          await client.waitForNextNBlock(1);
+          await this.client.waitForNextNBlock(1);
           continue;
         }
 
         info(`start: ${localHeight}, end: ${remoteHeight} `);
 
-        const { block, txs, receipts } = await fetchWholeBlock(localHeight);
+        const { block, txs, receipts } = await this.adapter.getWholeBlock(
+          localHeight,
+        );
         await this.onBlockExecuted(block, txs, receipts);
       } catch (e) {
         error(e);
@@ -59,21 +59,21 @@ export class BlockSynchronizer {
   }
 
   private async refreshRemoteHeight(): Promise<number> {
-    this.remoteHeight = await fetchRemoteBlockHeight();
+    this.remoteHeight = await this.adapter.getRemoteBlockHeight();
     return this.remoteHeight;
   }
 
   private async refreshLocalHeight(): Promise<number> {
-    this.localHeight = (await this.synchronizer.getLocalBlockHeight()) + 1;
+    this.localHeight = (await this.adapter.getLocalBlockHeight()) + 1;
     return this.localHeight;
   }
 
   private async onBlockExecuted(
-    rawBlock: GetBlockQuery,
-    transactions: GetTransactionQuery[],
-    receipts: GetReceiptQuery[],
+    rawBlock: RawBlock,
+    transactions: RawTransaction[],
+    receipts: RawReceipt[],
   ) {
-    await this.synchronizer.onBlockExecuted(
+    await this.adapter.onBlockExecuted(
       new Executed({
         rawBlock,
         rawTransactions: transactions,

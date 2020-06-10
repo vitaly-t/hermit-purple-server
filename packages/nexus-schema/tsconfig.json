@@ -1,0 +1,15 @@
+{
+  "extends": "../../tsconfig.json",
+  "exclude": ["**/*.test.ts", "**/*.e2e.ts"],
+  "include": ["src"],
+  "compilerOptions": {
+    "rootDir": "src",
+    "outDir": "lib",
+    "typeRoots": ["./src/generated/typings.ts"]
+  },
+  "references": [
+    {
+      "path": "../common"
+    }
+  ]
+}

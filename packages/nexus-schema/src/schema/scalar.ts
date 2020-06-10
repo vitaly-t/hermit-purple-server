@@ -1,4 +1,4 @@
-import { scalarType } from 'nexus';
+import { scalarType } from '@nexus/schema';
 
 function id(x: any) {
   return x;

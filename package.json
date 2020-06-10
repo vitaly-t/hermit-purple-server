@@ -1,10 +1,11 @@
 {
-  "name": "hermit-purple-server",
+  "private": true,
   "author": "homura.dev@gmail.com",
   "license": "MIT",
   "description": "A Muta GraphQL APIs server",
-  "main": "lib/index.js",
-  "typings": "lib/index.d.ts",
+  "workspaces": [
+    "packages/*"
+  ],
   "keywords": [
     "muta"
   ],
@@ -14,10 +15,8 @@
   "version": "0.3.0",
   "scripts": {
     "start": "node lib/app/server",
-    "clean": "rm -rf lib",
-    "build": "npm -s run clean && npm -s run generate && npm run build:js && npm run build:js && npm run build:types",
-    "build:js": "babel src --out-dir lib --extensions .ts --source-maps inline",
-    "build:types": "tsc --skipLibCheck --emitDeclarationOnly",
+    "clean": "rimraf packages/**/node_modules packages/**/lib packages/**/*.tsbuildinfo",
+    "build": "tsc --build",
     "generate": "dotenv -- npm run generate:mysql-schemats && npm -s run generate:nexus && npm run generate:docs",
     "generate:docs": "graphql-markdown src/app/generated/schema.graphql > docs/schema.md",
     "generate:nexus": "ts-node -r tsconfig-paths/register --transpile-only src/app/server/make-schema",
@@ -32,58 +31,20 @@
     "prepublishOnly": "npm run test && npm run build"
   },
   "dependencies": {
-    "@mutajs/client": "^0.11.0-dev.1",
-    "@types/app-root-path": "^1.2.4",
     "@types/bluebird": "^3.5.29",
     "@types/debug": "^4.1.5",
-    "@types/graphql-relay": "^0.4.11",
-    "@types/http-proxy-middleware": "^0.19.3",
     "@types/lodash": "^4.14.149",
-    "@types/lossless-json": "^1.0.0",
-    "@types/lru-cache": "^5.1.0",
-    "app-root-path": "^3.0.0",
-    "axios": "^0.19.2",
-    "bignumber.js": "^9.0.0",
-    "bluebird": "^3.7.2",
-    "cors": "^2.8.5",
-    "debug": "^4.1.1",
-    "dotenv": "^8.2.0",
-    "graphql": "^14.6.0",
-    "graphql-query-complexity": "^0.4.1",
-    "graphql-yoga": "1.18.3",
-    "http-proxy-middleware": "^0.20.0",
-    "is-hex": "^1.1.3",
-    "knex": "^0.20.10",
-    "knex-on-duplicate-update": "^1.1.3",
-    "lodash": "^4.17.15",
-    "lossless-json": "^1.0.3",
-    "lru-cache": "^5.1.1",
-    "module-alias": "^2.2.2",
-    "muta-sdk": "^0.11.0-dev.1",
-    "mysql": "^2.18.1",
-    "nexus": "0.12.0-rc.13"
+    "@types/lossless-json": "^1.0.0"
   },
   "devDependencies": {
-    "@babel/cli": "^7.8.4",
-    "@babel/core": "^7.9.0",
-    "@babel/plugin-transform-modules-commonjs": "^7.9.0",
-    "@babel/plugin-transform-typescript": "^7.9.0",
-    "@babel/preset-env": "^7.9.0",
-    "@babel/preset-typescript": "^7.9.0",
-    "@types/jest": "^25.1.3",
-    "@types/ws": "6.0.4",
-    "babel-plugin-module-resolver": "^4.0.0",
-    "babel-plugin-transform-runtime": "^6.23.0",
+    "@types/jest": "^26.0.0",
+    "@types/node": "^14.0.12",
     "cross-env": "^6.0.3",
-    "dotenv-cli": "^3.1.0",
     "graphql-markdown": "^5.2.0",
-    "jest": "^25.1.0",
+    "jest": "^26.0.1",
     "schemats": "^3.0.3",
     "standard-version": "^7.1.0",
-    "ts-jest": "^25.2.1",
-    "ts-node": "8.6.2",
-    "ts-node-dev": "1.0.0-pre.44",
-    "tsconfig-paths": "^3.9.0",
-    "typescript": "^3.8.2"
+    "ts-jest": "^26.1.0",
+    "typescript": "^3.9.5"
   }
 }

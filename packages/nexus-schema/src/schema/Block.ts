@@ -1,5 +1,5 @@
+import { arg, objectType, queryField } from '@nexus/schema';
 import { pageArgs } from './pagination';
-import { arg, objectType, queryField } from 'nexus';
 
 export const Block = objectType({
   name: 'Block',
@@ -15,7 +15,13 @@ export const Block = objectType({
       description: 'Show how many transactions in the block',
     });
 
-    t.field('prevHash', { type: 'Hash', description: 'The prev block hash' });
+    t.field('prevHash', {
+      type: 'Hash',
+      description: 'The prev block hash',
+      resolve(p) {
+        return p.prevHash;
+      },
+    });
 
     t.field('timestamp', { type: 'Timestamp' });
 
@@ -57,9 +63,7 @@ export const Block = objectType({
     t.list.field('validators', {
       type: 'Validator',
       resolve(parent, args, ctx) {
-        return ctx.dao.validator.validatorsByVersion({
-          version: parent.validatorVersion,
-        });
+        return ctx.validatorService.filterByVersion(parent.validatorVersion);
       },
     });
   },
@@ -75,12 +79,12 @@ export const blockQuery = queryField(t => {
     nullable: true,
     async resolve(parent, args, ctx) {
       const { hash, height } = args;
-      const block = ctx.dao.block;
+      const block = ctx.blockService;
 
       if (hash) {
-        return (await block.blockByHash({ txHash: hash })) ?? null;
+        return block.findByHash(hash);
       } else if (height) {
-        return (await block.blockByHeight({ height })) ?? null;
+        return block.findByHeight(height);
       }
       return null;
     },
@@ -94,7 +98,7 @@ export const blocksPagination = queryField(t => {
       ...pageArgs,
     },
     resolve(parent, args, ctx) {
-      return ctx.dao.block.blocks({ pageArgs: args });
+      return ctx.blockService.filter({ pageArgs: args });
     },
   });
 });

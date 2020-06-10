@@ -1,4 +1,4 @@
-import { intArg } from 'nexus';
+import { intArg } from '@nexus/schema';
 
 export const pageArgs = {
   first: intArg(),

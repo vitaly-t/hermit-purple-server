@@ -1,6 +1,6 @@
+import { PageArgs } from '@muta-extra/nexus-schema';
 import Knex, { QueryBuilder } from 'knex';
 import { identity, orderBy as _orderBy, pickBy } from 'lodash';
-import { PageArgs } from '../hermit-types/server';
 
 export async function findOne<TRecord extends {} = any>(
   knex: Knex,

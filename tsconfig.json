@@ -1,17 +1,32 @@
 {
   "compilerOptions": {
-    "outDir": "lib",
-    "rootDir": "src",
-    "lib": ["esnext", "dom"],
+    "lib": ["ESNext"],
+    "types": ["node", "jest"],
     "declaration": true,
     "inlineSourceMap": true,
     "esModuleInterop": true,
-    "strict": true,
-    "baseUrl": "./src",
+    "skipLibCheck": true,
+    "composite": true,
+    "baseUrl": "./packages",
     "paths": {
-      "@hermit/*": ["./*"]
+      "@muta-extra/*": ["./*/src"]
     }
   },
-
-  "include": ["src/**/*"]
+  "references": [
+    {
+      "path": "./packages/common"
+    },
+    {
+      "path": "./packages/nexus-schema"
+    },
+    {
+      "path": "./packages/synchronizer"
+    },
+    {
+      "path": "./packages/knex-mysql"
+    },
+    {
+      "path": "./packages/app-sync"
+    }
+  ]
 }
