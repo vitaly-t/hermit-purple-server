@@ -4,6 +4,9 @@
   "main": "./lib",
   "dependencies": {
     "@mutajs/types": "^0.11.0-dev.1",
-    "debug": "^4.1.1"
+    "commander": "^5.1.0",
+    "debug": "^4.1.1",
+    "dotenv": "^8.2.0",
+    "read-pkg-up": "^7.0.1"
   }
 }
