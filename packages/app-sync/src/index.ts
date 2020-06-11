@@ -1,3 +1,6 @@
+#!/usr/bin/env node
+require('@muta-extra/common').loadEnvFile();
+
 import {
   DefaultLocalFetcher,
   DefaultSyncEventHandler,

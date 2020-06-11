@@ -1,7 +1,7 @@
 import { Client } from '@mutajs/client';
 import { error, info } from '../logger';
 import { Executed } from '../models/Executed';
-import { RawBlock, RawReceipt, RawTransaction } from "../models/types";
+import { RawBlock, RawReceipt, RawTransaction } from '../models/types';
 import { ISynchronizerAdapter } from './';
 
 export class PollingSynchronizer {
