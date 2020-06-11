@@ -137,17 +137,17 @@ export class DefaultRemoteFetcher implements IFetchRemoteAdapter {
     });
   }
 
-  async getRemoteBlockHeight(): Promise<number> {
+  getRemoteBlockHeight = async (): Promise<number> => {
     const block = await this.rawClient.getBlock();
     return Number(block.getBlock.header.height);
-  }
+  };
 
-  async getRemoteBlockExecHeight(): Promise<number> {
+  getRemoteBlockExecHeight = async (): Promise<number> => {
     const block = await this.rawClient.getBlock();
     return Number(block.getBlock.header.execHeight);
-  }
+  };
 
-  async getWholeBlock(height: number): Promise<WholeBlock> {
+  getWholeBlock = async (height: number): Promise<WholeBlock> => {
     const block = await this.rawClient.getBlock({
       height: utils.toHex(height),
     });
@@ -239,5 +239,5 @@ export class DefaultRemoteFetcher implements IFetchRemoteAdapter {
       txs: txs.map(tx => tx.getTransaction),
       receipts: receipts.map(receipt => receipt.getReceipt),
     };
-  }
+  };
 }

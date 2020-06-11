@@ -1,6 +1,7 @@
 {
   "name": "@muta-extra/synchronizer",
   "version": "0.0.0",
+  "main": "lib/index.js",
   "dependencies": {
     "@mutajs/utils": "^0.11.0-dev.1",
     "axios": "^0.19.2",

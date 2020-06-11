@@ -1,5 +1,5 @@
 import { Executed } from '../models/Executed';
-import { Packed } from '../models/Packed';
+import { Packaged } from '../models/Packaged';
 import { RawBlock, RawReceipt, RawTransaction } from '../models/types';
 
 export interface WholeBlock {
@@ -46,7 +46,7 @@ export interface ISyncEventHandlerAdapter {
   /**
    * callback when block packaged
    */
-  onBlockPackaged(packed: Packed): Promise<void>;
+  onBlockPackaged(packed: Packaged): Promise<void>;
 
   /**
    * callback when block executed
