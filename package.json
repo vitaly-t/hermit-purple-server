@@ -16,7 +16,7 @@
   "scripts": {
     "start": "node lib/app/server",
     "clean": "rimraf packages/**/node_modules packages/**/lib packages/**/*.tsbuildinfo",
-    "build": "tsc --build",
+    "build": "tsc -b",
     "generate": "dotenv -- npm run generate:mysql-schemats && npm -s run generate:nexus && npm run generate:docs",
     "generate:docs": "graphql-markdown src/app/generated/schema.graphql > docs/schema.md",
     "generate:nexus": "ts-node -r tsconfig-paths/register --transpile-only src/app/server/make-schema",
@@ -45,6 +45,7 @@
     "schemats": "^3.0.3",
     "standard-version": "^7.1.0",
     "ts-jest": "^26.1.0",
+    "ts-node": "^8.10.2",
     "typescript": "^3.9.5"
   }
 }

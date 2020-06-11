@@ -2,6 +2,7 @@
   "compilerOptions": {
     "lib": ["ESNext"],
     "types": ["node", "jest"],
+    "strict": true,
     "declaration": true,
     "inlineSourceMap": true,
     "esModuleInterop": true,

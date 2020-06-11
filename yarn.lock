@@ -475,7 +475,7 @@
   resolved "https://registry.npmjs.org/@mutajs/defaults/-/defaults-0.11.0-dev.1.tgz#56036ce822e3cbb47e9dc8781368cb8c4c101c41"
   integrity sha512-FQGk9Bfveb3L6/osDbfamYxwwAsZi6RDJdmz9SVyOHKlJ6wblbGxM/dSdRz8UnhADWOkX+EmZnNyoe9DunT9Pw==
 
-"@mutajs/shared@^0.11.0-dev.1":
+"@mutajs/shared@0.11.0-dev.1", "@mutajs/shared@^0.11.0-dev.1":
   version "0.11.0-dev.1"
   resolved "https://registry.npmjs.org/@mutajs/shared/-/shared-0.11.0-dev.1.tgz#0fe6f4312043712a2cbc351b3bfcb31177dd020a"
   integrity sha512-okvwLFruMgQ0yFa73atosnbh33Mux0+jYAxypA8kZu2GT9hwuX/iHowRt5Bco5mkUfCFDEQFFmNvr9PugE6F4Q==
@@ -1717,6 +1717,11 @@ dot-prop@^3.0.0:
   dependencies:
     is-obj "^1.0.0"
 
+dotenv@^8.2.0:
+  version "8.2.0"
+  resolved "https://registry.npmjs.org/dotenv/-/dotenv-8.2.0.tgz#97e619259ada750eea3e4ea3e26bceea5424b16a"
+  integrity sha512-8sJ78ElpbDJBHNeBzUbUVLsqKdccaa/BXF1uPTw3GrvQTBgrQrtObr2mUrE38vzYd8cEv+m/JBfDLioYcfXoaw==
+
 dotgitignore@2.1.0:
   version "2.1.0"
   resolved "https://registry.npmjs.org/dotgitignore/-/dotgitignore-2.1.0.tgz#a4b15a4e4ef3cf383598aaf1dfa4a04bcc089b7b"
@@ -2289,11 +2294,6 @@ graphql@^14.0.2, graphql@^14.5.8:
   integrity sha512-VKzfvHEKybTKjQVpTFrA5yUq2S9ihcZvfJAtsDBBCuV6wauPu1xl/f9ehgVf0FcEJJs4vz6ysb/ZMkGigQZseg==
   dependencies:
     iterall "^1.2.2"
-
-graphql@^15.1.0:
-  version "15.1.0"
-  resolved "https://registry.npmjs.org/graphql/-/graphql-15.1.0.tgz#b93e28de805294ec08e1630d901db550cb8960a1"
-  integrity sha512-0TVyfOlCGhv/DBczQkJmwXOK6fjWkjzY3Pt7wY8i0gcYXq8aogG3weCsg48m72lywKSeOqedEHvVPOvZvSD51Q==
 
 growly@^1.3.0:
   version "1.3.0"

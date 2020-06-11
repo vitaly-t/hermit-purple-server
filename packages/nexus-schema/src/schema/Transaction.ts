@@ -51,13 +51,13 @@ export const Transaction = objectType({
       description: 'Signature of a transaction',
     });
 
-    t.field('from', {type: 'Address'});
+    t.field('from', { type: 'Address' });
 
     t.field('receipt', {
       type: 'Receipt',
       nullable: true,
       resolve(parent, args, ctx) {
-        return ctx.receiptService.findByTxHash(parent.txHash);
+        return ctx.receiptService.findByTxHash(parent.txHash)!;
       },
     });
   },
@@ -74,8 +74,8 @@ export const transactionQuery = queryField(t => {
     nullable: true,
     resolve(parent, args, ctx) {
       return ctx.transactionService.findByTxHash({
-        txHash: args.txHash,
-      });
+        txHash: args.txHash!,
+      })!;
     },
   });
 });
@@ -100,7 +100,7 @@ export const transactionPagination = queryField(t => {
         });
       }
 
-      return ctx.transactionService.filter({pageArgs: args});
+      return ctx.transactionService.filter({ pageArgs: args });
     },
   });
 });

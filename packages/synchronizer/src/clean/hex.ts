@@ -2,10 +2,10 @@
 // It is used to ensure the uniformity of hexadecimal
 // data presented in the form of strings.
 
-import { parse } from 'lossless-json';
-import { BigNumber } from 'bignumber.js';
+import { BigNumber } from '@mutajs/shared';
 import { Address, Hash, Uint64 } from '@mutajs/types';
 import { rm0x } from '@mutajs/utils';
+import { parse } from 'lossless-json';
 
 export function hexWithout0x(
   x: string | BigNumber | number,
