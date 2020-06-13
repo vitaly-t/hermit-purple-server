@@ -9,3 +9,10 @@ export interface IService {
   receiptService: IReceiptService;
   validatorService: IValidatorService;
 }
+
+export {
+  IBlockService,
+  IReceiptService,
+  ITransactionService,
+  IValidatorService,
+};

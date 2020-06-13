@@ -1,5 +1,3 @@
-export type Maybe<T> = undefined | null | T;
+export type Maybe<T> = null | T;
 
-export type Async<T> = T | Promise<T>;
-
-export type MaybeAsync<T> = Maybe<Async<T>>;
+export type NullablePromise<T> = Promise<Maybe<T>>;

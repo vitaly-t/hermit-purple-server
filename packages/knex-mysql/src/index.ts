@@ -1,19 +1,28 @@
+import { envStr } from '@muta-extra/common';
 import Knex, { Config } from 'knex';
 import { attachOnDuplicateUpdate } from 'knex-on-duplicate-update';
 
 attachOnDuplicateUpdate();
 
-export const knex = Knex({
-  client: 'mysql',
-  connection: process.env.HERMIT_DATABASE_URL,
-});
+let defaultKnex: Knex;
 
-export function getKnexInstance(connection: Config['connection']) {
-  if (connection) return knex;
-  return Knex({
-    client: 'mysql',
-    connection,
-  });
+export function getKnexInstance(
+  connection: Config['connection'] = envStr('HERMIT_DATABASE_URL', ''),
+) {
+  if (!defaultKnex) {
+    defaultKnex = Knex({
+      client: 'mysql',
+      connection,
+    });
+
+    if (!connection) {
+      console.warn(
+        'No HERMIT_DATABASE_URL provided, try connect to mysql://127.0.0.1:3306/muta',
+      );
+    }
+  }
+
+  return defaultKnex;
 }
 
 export enum TableNames {
@@ -27,3 +36,4 @@ export enum TableNames {
 
 export * from './helper';
 export * from './adapters';
+export * from './services';
