@@ -1,12 +1,12 @@
 import { BlockModel, logger } from '@muta-extra/common';
 import { Executed, ISyncEventHandlerAdapter } from '@muta-extra/synchronizer';
 import Knex, { Transaction } from 'knex';
-import { knex as defaultKnex, TableNames } from '../';
+import { getKnexInstance, TableNames } from '../';
 
 const debug = logger.childLogger('sync:debug');
 
 export class DefaultSyncEventHandler implements ISyncEventHandlerAdapter {
-  constructor(protected knex: Knex = defaultKnex) {}
+  constructor(protected knex: Knex = getKnexInstance()) {}
 
   async saveExecutedBlock(trx: Transaction, executed: Executed) {
     await trx<BlockModel>(TableNames.BLOCK).insert(executed.getBlock());

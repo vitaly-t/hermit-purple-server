@@ -1,10 +1,10 @@
 import { BlockModel } from '@muta-extra/common';
 import { IFetchLocalAdapter } from '@muta-extra/synchronizer';
 import Knex from 'knex';
-import { knex as defaultKnex, TableNames } from '../';
+import { getKnexInstance, TableNames } from '../';
 
 export class DefaultLocalFetcher implements IFetchLocalAdapter {
-  constructor(private knex: Knex = defaultKnex) {}
+  constructor(private knex: Knex = getKnexInstance()) {}
 
   getLocalBlockHeight = async (): Promise<number> => {
     const block = await this.knex<BlockModel>(TableNames.BLOCK)

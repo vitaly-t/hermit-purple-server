@@ -1,16 +1,16 @@
+import { Maybe, NullablePromise } from '@muta-extra/common';
 import { PageArgs } from '@muta-extra/nexus-schema';
 import Knex, { QueryBuilder } from 'knex';
 import { identity, orderBy as _orderBy, pickBy } from 'lodash';
 
-export async function findOne<TRecord extends {} = any>(
+export function findOne<TRecord extends {} = any>(
   knex: Knex,
   tableName: string,
   where: Partial<TRecord>,
-) {
-  const result = await knex<TRecord>(tableName)
+): NullablePromise<TRecord> {
+  return knex<TRecord>(tableName)
     .where(where)
-    .first();
-  return result ?? null;
+    .first() as Promise<Maybe<TRecord>>;
 }
 
 export interface FindManyOption<TRecord extends {} = any> {
@@ -25,7 +25,7 @@ export function buildManyQuery<TRecord extends {} = any>(
   knex: Knex,
   tableName: string,
   options: FindManyOption<TRecord>,
-) {
+): QueryBuilder<TRecord> {
   const { where, page, orderBy } = options;
   const { first, last, skip } = page || {};
 
@@ -62,7 +62,7 @@ export async function findMany<TRecord extends {} = any>(
   knex: Knex,
   tableName: string,
   options: FindManyOption<TRecord>,
-) {
+): Promise<TRecord[]> {
   const data = await buildManyQuery(knex, tableName, options);
 
   const orderBy = options.orderBy;

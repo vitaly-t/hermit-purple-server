@@ -1,7 +1,7 @@
 {
   "name": "@muta-extra/knex-mysql",
   "version": "0.0.0",
-  "main": "lib/index.js",
+  "main": "./lib/index.js",
   "bin": {
     "muta-extra-knex-mysql": "lib/bin"
   },

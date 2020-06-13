@@ -1,8 +1,8 @@
 import Knex from 'knex';
-import { knex as defaultKnex, TableNames } from '../';
+import { getKnexInstance, TableNames } from '../';
 
 export class Migration1591797537928 {
-  constructor(private knex: Knex = defaultKnex) {}
+  constructor(private knex: Knex = getKnexInstance()) {}
 
   up() {
     return this.knex.schema
