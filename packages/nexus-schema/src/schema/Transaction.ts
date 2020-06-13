@@ -73,9 +73,8 @@ export const transactionQuery = queryField(t => {
     },
     nullable: true,
     resolve(parent, args, ctx) {
-      return ctx.transactionService.findByTxHash({
-        txHash: args.txHash!,
-      })!;
+      if (!args.txHash) return null;
+      return ctx.transactionService.findByTxHash(args.txHash);
     },
   });
 });

@@ -1,4 +1,4 @@
-import { MaybeAsync } from '@muta-extra/common';
+import { NullablePromise } from '@muta-extra/common';
 
 export interface PageArgs {
   first?: number | undefined | null;
@@ -11,8 +11,8 @@ export interface Pageable {
 }
 
 export type QueryOneFn<Ret, Param = void> = Param extends void
-  ? () => MaybeAsync<Ret>
-  : (args: Param) => MaybeAsync<Ret>;
+  ? () => NullablePromise<Ret>
+  : (args: Param) => NullablePromise<Ret>;
 
 export type QueryManyFn<Ret, Param = void> = Param extends void
   ? (args?: Partial<Pageable>) => Promise<Ret[]>

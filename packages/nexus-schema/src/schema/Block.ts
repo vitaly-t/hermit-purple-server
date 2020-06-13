@@ -18,9 +18,6 @@ export const Block = objectType({
     t.field('prevHash', {
       type: 'Hash',
       description: 'The prev block hash',
-      resolve(p) {
-        return p.prevHash;
-      },
     });
 
     t.field('timestamp', { type: 'Timestamp' });
@@ -82,9 +79,9 @@ export const blockQuery = queryField(t => {
       const block = ctx.blockService;
 
       if (hash) {
-        return block.findByHash(hash)!;
+        return block.findByHash(hash);
       } else if (height) {
-        return block.findByHeight(height)!;
+        return block.findByHeight(height);
       }
       return null;
     },
