@@ -23,7 +23,7 @@ export function createVersionedCommander(
   loadEnvFile();
   const program = new Command(name);
   program.version(readPkgUp.sync({ cwd })?.packageJson.version ?? 'unknown');
-  return program;
+  return program as Command;
 }
 
-export { loadEnvFile };
+export { loadEnvFile, Command };
