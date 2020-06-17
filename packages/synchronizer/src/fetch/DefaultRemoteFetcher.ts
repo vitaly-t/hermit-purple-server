@@ -127,7 +127,7 @@ export class DefaultRemoteFetcher implements IFetchRemoteAdapter {
   private options: FetcherOptions;
 
   constructor(
-    private client: Client = new Client(),
+    client: Client = new Client(),
     options?: Partial<FetcherOptions>,
   ) {
     this.rawClient = client.getRawClient();
