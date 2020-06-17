@@ -1,5 +1,6 @@
 import { envStr } from '@muta-extra/common';
-import Knex, { Config } from 'knex';
+import Knex from 'knex';
+import 'knex-on-duplicate-update';
 import { attachOnDuplicateUpdate } from 'knex-on-duplicate-update';
 
 attachOnDuplicateUpdate();
@@ -7,7 +8,7 @@ attachOnDuplicateUpdate();
 let defaultKnex: Knex;
 
 export function getKnexInstance(
-  connection: Config['connection'] = envStr('HERMIT_DATABASE_URL', ''),
+  connection: Knex.Config['connection'] = envStr('HERMIT_DATABASE_URL', ''),
 ) {
   if (!defaultKnex) {
     defaultKnex = Knex({
@@ -37,3 +38,4 @@ export enum TableNames {
 export * from './helper';
 export * from './adapters';
 export * from './services';
+export { Knex };
