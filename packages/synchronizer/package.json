@@ -1,10 +1,10 @@
 {
   "name": "@muta-extra/synchronizer",
-  "version": "0.0.0",
+  "version": "0.0.1-dev.0",
   "main": "lib/index.js",
   "typings": "lib/index.d.ts",
   "dependencies": {
-    "@muta-extra/common": "^0.0.0",
+    "@muta-extra/common": "^0.0.1-dev.0",
     "@mutajs/client": "^0.11.0-dev.1",
     "@mutajs/client-raw": "^0.11.0-dev.1",
     "@mutajs/shared": "0.11.0-dev.1",
