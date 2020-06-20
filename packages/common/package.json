@@ -2,13 +2,17 @@
   "name": "@muta-extra/common",
   "version": "0.4.0-dev.0",
   "main": "./lib/index.js",
-  "files": ["lib"],
+  "files": [
+    "lib"
+  ],
   "typings": "./lib/index.d.ts",
   "dependencies": {
-    "@mutajs/types": "^0.11.0-dev.1",
     "commander": "^5.1.0",
     "debug": "^4.1.1",
     "dotenv": "^8.2.0",
     "read-pkg-up": "^7.0.1"
+  },
+  "peerDependencies": {
+    "@mutajs/types": "^0.11.0-dev.3"
   }
 }

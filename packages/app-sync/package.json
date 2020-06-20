@@ -3,9 +3,12 @@
   "version": "0.4.0-dev.0",
   "files": ["lib"],
   "bin": {
-    "muta-extra-sync": "lib"
+    "muta-extra-sync": "lib/index.js"
   },
-  "scripts": {},
+  "scripts": {
+    "start": "node lib/index",
+    "dev": "ts-node src"
+  },
   "dependencies": {
     "@muta-extra/knex-mysql": "^0.4.0-dev.0",
     "@muta-extra/synchronizer": "^0.4.0-dev.0"

@@ -24,4 +24,8 @@ const syncAdapter: ISynchronizerAdapter = {
   ...eventHandler,
 };
 
-new PollingSynchronizer(syncAdapter).run();
+export function sync() {
+  return new PollingSynchronizer(syncAdapter).run();
+}
+
+sync();
