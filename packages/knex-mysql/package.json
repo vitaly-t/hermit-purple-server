@@ -1,13 +1,17 @@
 {
   "name": "@muta-extra/knex-mysql",
-  "version": "0.0.0",
+  "version": "0.4.0-dev.1",
   "main": "./lib/index.js",
+  "typings": "lib/index.d.ts",
+  "files": [
+    "lib"
+  ],
   "bin": {
-    "muta-extra-knex-mysql": "lib/bin"
+    "muta-extra-knex-mysql": "lib/bin/index.js"
   },
   "scripts": {},
   "dependencies": {
-    "@muta-extra/synchronizer": "^0.0.0",
+    "@muta-extra/synchronizer": "^0.4.0-dev.1",
     "knex": "^0.21.1",
     "knex-on-duplicate-update": "^1.1.3",
     "lodash": "^4.17.15",

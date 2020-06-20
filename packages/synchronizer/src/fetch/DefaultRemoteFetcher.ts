@@ -127,7 +127,7 @@ export class DefaultRemoteFetcher implements IFetchRemoteAdapter {
   private options: FetcherOptions;
 
   constructor(
-    private client: Client = new Client(),
+    client: Client = new Client(),
     options?: Partial<FetcherOptions>,
   ) {
     this.rawClient = client.getRawClient();
@@ -206,8 +206,9 @@ export class DefaultRemoteFetcher implements IFetchRemoteAdapter {
           signature: hex(tx.signature),
           timeout: hex(tx.timeout),
           txHash: hex(tx.txHash),
+          // TODO save sender
         },
-      };
+      } as GetTransactionQuery;
     });
     info(`parsed ${orderedTxHashes.length} txs`);
 

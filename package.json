@@ -16,7 +16,7 @@
   "scripts": {
     "start": "node lib/app/server",
     "clean": "rimraf packages/**/lib ./**/*.tsbuildinfo",
-    "clean:build": "rimraf packages/*/src/**/*.js packages/*/src/**/*.d.ts",
+    "clean:build": "rimraf packages/**/node_modules packages/**/*.js packages/**/*.d.ts",
     "build": "tsc -b",
     "generate": "dotenv -- npm run generate:mysql-schemats && npm -s run generate:nexus && npm run generate:docs",
     "generate:docs": "graphql-markdown src/app/generated/schema.graphql > docs/schema.md",

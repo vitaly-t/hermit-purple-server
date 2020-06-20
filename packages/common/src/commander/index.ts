@@ -19,11 +19,11 @@ function callerDir(depth: number = 1): string {
 export function createVersionedCommander(
   cwd: string = callerDir(2),
   name?: string,
-) {
+): Command {
   loadEnvFile();
   const program = new Command(name);
   program.version(readPkgUp.sync({ cwd })?.packageJson.version ?? 'unknown');
-  return program;
+  return program as Command;
 }
 
-export { loadEnvFile };
+export { loadEnvFile, Command };

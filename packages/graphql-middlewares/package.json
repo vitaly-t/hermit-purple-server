@@ -1,5 +1,5 @@
 {
-  "name": "@muta-extra/common",
+  "name": "@muta-extra/graphql-middlewares",
   "version": "0.4.0-dev.1",
   "main": "./lib/index.js",
   "files": [
@@ -7,12 +7,9 @@
   ],
   "typings": "./lib/index.d.ts",
   "dependencies": {
-    "commander": "^5.1.0",
-    "debug": "^4.1.1",
-    "dotenv": "^8.2.0",
-    "read-pkg-up": "^7.0.1"
+    "graphql-query-complexity": "^0.6.0"
   },
   "peerDependencies": {
-    "@mutajs/types": "^0.11.0-dev.3"
+    "graphql": "^0.13.0 || ^14.0.0 || ^15.0.0"
   }
 }

@@ -10,9 +10,10 @@
     "composite": true,
     "baseUrl": "./packages",
     "paths": {
-      "@muta-extra/*": ["./*/src"]
+      "@muta-extra/*": ["*/src"]
     }
   },
+  "files": [],
   "references": [
     {
       "path": "./packages/common"
@@ -25,6 +26,9 @@
     },
     {
       "path": "./packages/knex-mysql"
+    },
+    {
+      "path": "./packages/graphql-middlewares"
     },
     {
       "path": "./packages/app-sync"
