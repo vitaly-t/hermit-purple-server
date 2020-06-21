@@ -59,7 +59,8 @@ export class PollingSynchronizer {
   }
 
   private async refreshRemoteHeight(): Promise<number> {
-    this.remoteHeight = await this.adapter.getRemoteBlockHeight();
+    // TODO split block height and exec height
+    this.remoteHeight = await this.adapter.getRemoteBlockExecHeight();
     return this.remoteHeight;
   }
 

@@ -14,10 +14,10 @@
     "lossless-json": "^1.0.4"
   },
   "peerDependencies": {
-    "@mutajs/client": "^0.11.0-dev.3",
-    "@mutajs/client-raw": "^0.11.0-dev.3",
+    "@mutajs/client": "^0.11.1-dev.1",
+    "@mutajs/client-raw": "^0.11.1-dev.1",
     "@mutajs/shared": "0.11.0-dev.3",
-    "@mutajs/types": "^0.11.0-dev.3",
-    "@mutajs/utils": "^0.11.0-dev.3"
+    "@mutajs/types": "^0.11.1-dev.1",
+    "@mutajs/utils": "^0.11.1-dev.1"
   }
 }

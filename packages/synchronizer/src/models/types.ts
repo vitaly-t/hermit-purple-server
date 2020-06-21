@@ -1,5 +1,8 @@
 import { Block, Receipt, SignedTransaction } from '@mutajs/client-raw';
 
-export type RawBlock = Omit<Block, '__typename'>;
-export type RawTransaction = Omit<SignedTransaction, '__typename'>;
-export type RawReceipt = Omit<Receipt, '__typename'>;
+export type RawBlock = Pick<Block, 'hash' | 'orderedTxHashes'> & {
+  header: Omit<Block['header'], 'orderSignedTransactionsHash'>;
+};
+
+export type RawTransaction = SignedTransaction;
+export type RawReceipt = Receipt;

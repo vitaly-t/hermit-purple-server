@@ -157,7 +157,7 @@ export class DefaultRemoteFetcher implements IFetchRemoteAdapter {
     block.getBlock.header = {
       ...header,
       prevHash: hexHash(header.prevHash),
-      validators: header.validators.map(validator => ({
+      validators: header.validators.map((validator) => ({
         ...validator,
         address: hexAddress(validator.address),
       })),
@@ -189,9 +189,7 @@ export class DefaultRemoteFetcher implements IFetchRemoteAdapter {
     );
     info(`fetched ${orderedTxHashes.length} txs`);
 
-    const txs: GetTransactionQuery[] = range(orderedTxHashes.length).map<
-      GetTransactionQuery
-    >((i: number) => {
+    const txs: GetTransactionQuery[] = range(orderedTxHashes.length).map<GetTransactionQuery>((i: number) => {
       const tx = indexedTransaction[`_${i}`];
       return {
         getTransaction: {
@@ -218,9 +216,7 @@ export class DefaultRemoteFetcher implements IFetchRemoteAdapter {
     );
     info(`fetched ${orderedTxHashes.length} receipts`);
 
-    const receipts: GetReceiptQuery[] = range(orderedTxHashes.length).map<
-      GetReceiptQuery
-    >((i: number) => {
+    const receipts: GetReceiptQuery[] = range(orderedTxHashes.length).map<GetReceiptQuery>((i: number) => {
       const receipt = indexedReceipt[`_${i}`];
 
       return {
@@ -237,8 +233,8 @@ export class DefaultRemoteFetcher implements IFetchRemoteAdapter {
 
     return {
       block: block.getBlock,
-      txs: txs.map(tx => tx.getTransaction),
-      receipts: receipts.map(receipt => receipt.getReceipt),
+      txs: txs.map((tx) => tx.getTransaction),
+      receipts: receipts.map((receipt) => receipt.getReceipt),
     };
   };
 }
