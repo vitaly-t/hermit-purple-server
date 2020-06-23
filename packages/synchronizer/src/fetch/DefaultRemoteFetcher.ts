@@ -6,7 +6,6 @@ import {
   GetTransactionQuery,
 } from '@mutajs/client-raw';
 import { defaults, range } from 'lodash';
-import { hex, hexAddress, hexHash, hexUint64 } from '../clean/hex';
 import {
   IFetchRemoteAdapter,
   WholeBlock,
@@ -152,31 +151,6 @@ export class DefaultRemoteFetcher implements IFetchRemoteAdapter {
       height: utils.toHex(height),
     });
 
-    block.getBlock.hash = hexHash(block.getBlock.hash);
-    const header = block.getBlock.header;
-    block.getBlock.header = {
-      ...header,
-      prevHash: hexHash(header.prevHash),
-      validators: header.validators.map((validator) => ({
-        ...validator,
-        address: hexAddress(validator.address),
-      })),
-      chainId: hexHash(header.chainId),
-      proof: {
-        ...header.proof,
-        blockHash: hexHash(header.proof.blockHash),
-        height: hexUint64(header.proof.height),
-        round: hexUint64(header.proof.round),
-        signature: hex(header.proof.signature),
-      },
-      validatorVersion: hexUint64(header.validatorVersion),
-      execHeight: hexUint64(header.execHeight),
-      orderRoot: hexUint64(header.orderRoot),
-      proposer: hexAddress(header.proposer),
-      stateRoot: hexHash(header.stateRoot),
-      timestamp: hex(header.timestamp),
-    };
-
     const orderedTxHashes = block.getBlock.orderedTxHashes;
 
     if (orderedTxHashes.length === 0) {
@@ -191,22 +165,7 @@ export class DefaultRemoteFetcher implements IFetchRemoteAdapter {
 
     const txs: GetTransactionQuery[] = range(orderedTxHashes.length).map<GetTransactionQuery>((i: number) => {
       const tx = indexedTransaction[`_${i}`];
-      return {
-        getTransaction: {
-          pubkey: hex(tx.pubkey),
-          payload: tx.payload,
-          serviceName: tx.serviceName,
-          chainId: hex(tx.chainId),
-          cyclesLimit: hex(tx.cyclesLimit),
-          cyclesPrice: hex(tx.cyclesPrice),
-          method: tx.method,
-          nonce: hex(tx.nonce),
-          signature: hex(tx.signature),
-          timeout: hex(tx.timeout),
-          txHash: hex(tx.txHash),
-          // TODO save sender
-        },
-      } as GetTransactionQuery;
+      return { getTransaction: tx } as GetTransactionQuery;
     });
     info(`parsed ${orderedTxHashes.length} txs`);
 
@@ -218,16 +177,7 @@ export class DefaultRemoteFetcher implements IFetchRemoteAdapter {
 
     const receipts: GetReceiptQuery[] = range(orderedTxHashes.length).map<GetReceiptQuery>((i: number) => {
       const receipt = indexedReceipt[`_${i}`];
-
-      return {
-        getReceipt: {
-          ...receipt,
-          txHash: hex(receipt.txHash),
-          cyclesUsed: hex(receipt.cyclesUsed),
-          height: hex(receipt.height),
-          stateRoot: hex(receipt.stateRoot),
-        },
-      };
+      return { getReceipt: receipt };
     });
     info(`parsed ${orderedTxHashes.length} receipts`);
 
