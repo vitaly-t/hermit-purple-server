@@ -87,13 +87,14 @@ export class Migration1591797537928 implements IMigration {
 
         table.bigIncrements('order').primary();
 
-        table.specificType('payload', 'LONGTEXT NOT NULL');
+        table
+          .specificType('payload', 'LONGTEXT NOT NULL');
 
-        table.specificType('pubkey', 'varchar(68) NOT NULL');
+        table.specificType('pubkey', 'varchar(72) NOT NULL');
 
         table.specificType('serviceName', 'varchar(255) NOT NULL');
 
-        table.specificType('signature', 'varchar(130) NOT NULL');
+        table.specificType('signature', 'text NOT NULL');
 
         table.specificType('timeout', 'varchar(18) NOT NULL');
 
