@@ -3,7 +3,7 @@ import { Executed, ISyncEventHandlerAdapter } from '@muta-extra/synchronizer';
 import Knex, { Transaction } from 'knex';
 import { getKnexInstance, TableNames } from '../';
 
-const debug = logger.childLogger('sync:debug');
+const info = logger.childLogger('sync:info');
 
 export class DefaultSyncEventHandler implements ISyncEventHandlerAdapter {
   constructor(protected knex: Knex = getKnexInstance()) {}
@@ -16,14 +16,14 @@ export class DefaultSyncEventHandler implements ISyncEventHandlerAdapter {
     await this.knex
       .batchInsert(TableNames.TRANSACTION, transactions)
       .transacting(trx);
-    debug(`${transactions.length} transactions prepared`);
+    info(`${transactions.length} transactions prepared`);
 
     await this.knex.batchInsert(TableNames.RECEIPT, receipts).transacting(trx);
-    debug(`${receipts.length} receipts prepared`);
+    info(`${receipts.length} receipts prepared`);
 
     const events = executed.getEvents();
     await this.knex.batchInsert(TableNames.EVENT, events).transacting(trx);
-    debug(`${events.length} events prepared`);
+    info(`${events.length} events prepared`);
 
     for (let validator of executed.getValidators()) {
       await this.knex
@@ -40,7 +40,7 @@ export class DefaultSyncEventHandler implements ISyncEventHandlerAdapter {
   onBlockPackaged = async (): Promise<void> => {};
 
   onBlockExecuted = async (executed: Executed): Promise<void> => {
-    await this.knex.transaction(async trx =>
+    await this.knex.transaction(async (trx) =>
       this.saveExecutedBlock(trx, executed),
     );
   };

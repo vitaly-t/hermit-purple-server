@@ -3,15 +3,13 @@ import { getKnexInstance, TableNames } from '../';
 import { IMigration } from './run';
 
 export class Migration1591797537928 implements IMigration {
-  constructor(private knex: Knex = getKnexInstance()) {}
+  constructor(private knex: Knex = getKnexInstance()) {
+  }
 
   up() {
     return this.knex.schema
-      .createTable(TableNames.BLOCK, table => {
-        table
-          .integer('height')
-          .primary()
-          .comment('The block height');
+      .createTable(TableNames.BLOCK, (table) => {
+        table.integer('height').primary().comment('The block height');
 
         table
           .integer('execHeight')
@@ -30,10 +28,7 @@ export class Migration1591797537928 implements IMigration {
           .specificType('prevHash', 'varchar(66) NOT NULL')
           .comment('Prev block hash');
 
-        table
-          .text('proofBitmap')
-          .comment('Proofed bitmap')
-          .notNullable();
+        table.text('proofBitmap').comment('Proofed bitmap').notNullable();
 
         table
           .specificType('proofRound', 'varchar(18) NOT NULL')
@@ -64,14 +59,11 @@ export class Migration1591797537928 implements IMigration {
           .specificType('validatorVersion', 'varchar(18) NOT NULL')
           .comment(
             'When the attributes of the validator set or the validator set change, ' +
-              'the validatorVersion will change together',
+            'the validatorVersion will change together',
           );
       })
-      .createTable(TableNames.TRANSACTION, table => {
-        table
-          .integer('block')
-          .index()
-          .notNullable();
+      .createTable(TableNames.TRANSACTION, (table) => {
+        table.integer('block').index().notNullable();
 
         table.specificType('chainId', 'varchar(66) NOT NULL');
 
@@ -89,17 +81,28 @@ export class Migration1591797537928 implements IMigration {
 
         table.specificType('payload', 'LONGTEXT NOT NULL');
 
-        table.specificType('pubkey', 'varchar(68) NOT NULL');
+        table
+          .specificType('pubkey', 'varchar(552) NOT NULL')
+          .comment(
+            'Signature public keys, ' +
+            'it is an RPL-encoded array of public keys, ' +
+            'up to 8 public keys in a transaction',
+          );
 
-        table.specificType('serviceName', 'varchar(255) NOT NULL');
+        table.specificType('serviceName', 'varchar(1024) NOT NULL');
 
-        table.specificType('signature', 'varchar(130) NOT NULL');
+        table
+          .specificType('signature', 'varchar(1128) NOT NULL')
+          .comment(
+            'it is an RPL-encoded array of SECP256k1 signature, ' +
+            'up to 8 signatures in a transaction',
+          );
 
         table.specificType('timeout', 'varchar(18) NOT NULL');
 
         table.specificType('txHash', 'varchar(66) NOT NULL').index();
       })
-      .createTable(TableNames.RECEIPT, table => {
+      .createTable(TableNames.RECEIPT, (table) => {
         table.bigIncrements('id').primary();
 
         table.integer('block').notNullable();
@@ -112,7 +115,7 @@ export class Migration1591797537928 implements IMigration {
 
         table.specificType('txHash', 'varchar(66) NOT NULL').unique();
       })
-      .createTable(TableNames.EVENT, table => {
+      .createTable(TableNames.EVENT, (table) => {
         table.text('data').notNullable();
 
         table.bigIncrements('id').primary();
@@ -121,7 +124,7 @@ export class Migration1591797537928 implements IMigration {
 
         table.specificType('service', 'varchar(255) NOT NULL');
       })
-      .createTable(TableNames.BLOCK_VALIDATOR, table => {
+      .createTable(TableNames.BLOCK_VALIDATOR, (table) => {
         table.increments('id');
 
         table.specificType('address', 'varchar(42) NOT NULL');
@@ -136,7 +139,7 @@ export class Migration1591797537928 implements IMigration {
 
         table.unique(['address', 'version']);
       })
-      .createTable(TableNames.ACCOUNT, table => {
+      .createTable(TableNames.ACCOUNT, (table) => {
         table.specificType('address', 'varchar(42) NOT NULL').primary();
       });
   }
