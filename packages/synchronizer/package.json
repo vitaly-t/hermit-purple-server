@@ -11,7 +11,8 @@
     "axios": "^0.19.2",
     "bluebird": "^3.7.2",
     "lodash": "^4.17.15",
-    "lossless-json": "^1.0.4"
+    "lossless-json": "^1.0.4",
+    "threads": "^1.6.2"
   },
   "peerDependencies": {
     "@mutajs/client": "^0.11.1-dev.2",

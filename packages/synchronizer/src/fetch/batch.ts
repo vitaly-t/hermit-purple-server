@@ -1,8 +1,11 @@
 import Axios from 'axios';
 import Bluebird from 'bluebird';
 import { chunk, reduce } from 'lodash';
+import { envStr } from '@muta-extra/common';
 
-const axios = Axios.create({ baseURL: process.env.MUTA_ENDPOINT });
+const axios = Axios.create({
+  baseURL: envStr('MUTA_ENDPOINT', 'http://127.0.0.1:8000/graphql'),
+});
 
 export type Batched<T> = {
   [key: string]: T;
@@ -44,12 +47,12 @@ export async function chunkAndBatch<Result, Source = string>(
   } = options;
 
   const queries = taskSource.map(generateQuerySegment);
-  const chunkedQueries = chunk(queries, chunkSize).map(chunkedQueryString =>
+  const chunkedQueries = chunk(queries, chunkSize).map((chunkedQueryString) =>
     chunkedQueryString.join('\n'),
   );
 
   const chunkedAndBatched = await Bluebird.all(chunkedQueries).map(
-    queries => batchWithSameFragment<Result>(queries, fragment),
+    (queries) => batchWithSameFragment<Result>(queries, fragment),
     { concurrency },
   );
 

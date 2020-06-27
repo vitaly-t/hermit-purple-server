@@ -1,129 +1,26 @@
-import { logger, utils } from '@muta-extra/common';
 import { Client } from '@mutajs/client';
-import {
-  GetReceiptQuery,
-  getSdk,
-  GetTransactionQuery,
-} from '@mutajs/client-raw';
-import { defaults, range } from 'lodash';
+import { getSdk } from '@mutajs/client-raw';
+import { defaults } from 'lodash';
 import {
   IFetchRemoteAdapter,
   WholeBlock,
 } from '../synchronizer/ISynchronizerAdapter';
-import { chunkAndBatch } from './batch';
-
-const info = logger.childLogger('sync');
-
-/**
- * ```
- * _${index}: getTransaction(txHash: "${txHash}") {
- *    ...transactionKeys
- *  }
- * ```
- * @param txHash
- * @param index
- */
-const generateTransactionQuerySegment = (txHash: string, index: number) => `
-_${index}: getTransaction(txHash: "${txHash}") {
-  ...transactionKeys
-}
-`;
-
-/**
- * a GraphQL fragment for transaction keys
- * ```graphql
- * fragment transactionKeys on SignedTransaction {
- *    chainId
- *    cyclesLimit
- *    cyclesPrice
- *    method
- *    nonce
- *    payload
- *    pubkey
- *    serviceName
- *    signature
- *    timeout
- *    txHash
- * }
- * ```
- */
-export const txFragment = /*GraphQL*/ `
-fragment transactionKeys on SignedTransaction {
-    chainId
-    cyclesLimit
-    cyclesPrice
-    method
-    nonce
-    payload
-    pubkey
-    serviceName
-    signature
-    timeout
-    txHash
-}
-`;
-
-function fetchIndexedTransaction(
-  orderedTransactionHashes: string[],
-  concurrency: number,
-) {
-  return chunkAndBatch<GetTransactionQuery['getTransaction']>({
-    taskSource: orderedTransactionHashes,
-    fragment: txFragment,
-    generateQuerySegment: generateTransactionQuerySegment,
-    chunkSize: 200,
-    concurrency,
-  });
-}
-
-const generateReceiptQuerySegment = (txHash: string, index: number) => `
-_${index}: getReceipt(txHash: "${txHash}") {
-  ...receiptKeys
-}
-`;
-const receiptFragment = `
-fragment receiptKeys on Receipt {
-    txHash
-    height
-    cyclesUsed
-    events {
-      data
-      service
-    }
-    stateRoot
-    response {
-      serviceName
-      method
-      response {
-        code
-        succeedData
-        errorMessage
-      }
-    }
-}
-`;
-
-async function fetchIndexedReceipt(
-  orderedTxHashes: Array<string>,
-  concurrency: number,
-) {
-  return chunkAndBatch<GetReceiptQuery['getReceipt']>({
-    generateQuerySegment: generateReceiptQuerySegment,
-    fragment: receiptFragment,
-    taskSource: orderedTxHashes,
-    chunkSize: 200,
-    concurrency,
-  });
-}
+import { Pool, spawn, Worker } from 'threads';
+import { fetchWholeBlock } from './fetch';
+import { envNum } from '@muta-extra/common';
 
 interface FetcherOptions {
   concurrency: number;
+  maxPreFetchBlocks: number;
 }
 
 export class DefaultRemoteFetcher implements IFetchRemoteAdapter {
   private rawClient: ReturnType<typeof getSdk>;
 
   private options: FetcherOptions;
+
+  private taskPool: Pool<any>;
+  private blockTasks: Map<number, Promise<WholeBlock>> = new Map();
 
   constructor(
     client: Client = new Client(),
@@ -132,8 +29,14 @@ export class DefaultRemoteFetcher implements IFetchRemoteAdapter {
     this.rawClient = client.getRawClient();
 
     this.options = defaults<any, FetcherOptions>(options, {
-      concurrency: Number(process.env.HERMIT_FETCH_CONCURRENCY ?? 20),
+      concurrency: envNum('HERMIT_FETCH_CONCURRENCY', 20),
+      maxPreFetchBlocks: envNum('HERMIT_MAX_PREFETCH_SIZE', 5),
     });
+
+    this.taskPool = Pool(
+      () => spawn(new Worker('./fetch.worker')),
+      this.options.maxPreFetchBlocks,
+    );
   }
 
   getRemoteBlockHeight = async (): Promise<number> => {
@@ -146,45 +49,40 @@ export class DefaultRemoteFetcher implements IFetchRemoteAdapter {
     return Number(block.getBlock.header.execHeight);
   };
 
+  private async preFetchRemoteBlocks(fromHeight: number) {
+    const remoteHeight = await this.getRemoteBlockExecHeight();
+
+    for (
+      let currentPreFetchHeight = fromHeight;
+      this.blockTasks.size <= this.options.maxPreFetchBlocks &&
+      currentPreFetchHeight <= remoteHeight;
+      currentPreFetchHeight++
+    ) {
+      if (this.blockTasks.has(currentPreFetchHeight)) {
+        continue;
+      }
+      this.blockTasks.set(
+        currentPreFetchHeight,
+        Promise.resolve(
+          this.taskPool.queue<WholeBlock>(function(
+            fetchWholeBlock: IFetchRemoteAdapter['getWholeBlock'],
+          ): Promise<WholeBlock> {
+            return fetchWholeBlock(currentPreFetchHeight);
+          }),
+        ),
+      );
+    }
+  }
+
   getWholeBlock = async (height: number): Promise<WholeBlock> => {
-    const block = await this.rawClient.getBlock({
-      height: utils.toHex(height),
-    });
+    this.preFetchRemoteBlocks(height + 1);
 
-    const orderedTxHashes = block.getBlock.orderedTxHashes;
-
-    if (orderedTxHashes.length === 0) {
-      return { block: block.getBlock, txs: [], receipts: [] };
+    if (this.blockTasks.has(height)) {
+      const task = this.blockTasks.get(height)!;
+      this.blockTasks.delete(height);
+      return task;
     }
 
-    const indexedTransaction = await fetchIndexedTransaction(
-      orderedTxHashes,
-      this.options.concurrency,
-    );
-    info(`fetched ${orderedTxHashes.length} txs`);
-
-    const txs: GetTransactionQuery[] = range(orderedTxHashes.length).map<GetTransactionQuery>((i: number) => {
-      const tx = indexedTransaction[`_${i}`];
-      return { getTransaction: tx } as GetTransactionQuery;
-    });
-    info(`parsed ${orderedTxHashes.length} txs`);
-
-    const indexedReceipt = await fetchIndexedReceipt(
-      orderedTxHashes,
-      this.options.concurrency,
-    );
-    info(`fetched ${orderedTxHashes.length} receipts`);
-
-    const receipts: GetReceiptQuery[] = range(orderedTxHashes.length).map<GetReceiptQuery>((i: number) => {
-      const receipt = indexedReceipt[`_${i}`];
-      return { getReceipt: receipt };
-    });
-    info(`parsed ${orderedTxHashes.length} receipts`);
-
-    return {
-      block: block.getBlock,
-      txs: txs.map((tx) => tx.getTransaction),
-      receipts: receipts.map((receipt) => receipt.getReceipt),
-    };
+    return fetchWholeBlock(height);
   };
 }
