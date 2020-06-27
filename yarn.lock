@@ -1899,6 +1899,11 @@ concat-stream@^2.0.0:
     readable-stream "^3.0.2"
     typedarray "^0.0.6"
 
+connection-string@^3.4.1:
+  version "3.4.1"
+  resolved "https://registry.npmjs.org/connection-string/-/connection-string-3.4.1.tgz#50338dd8f7e00a0ea753c6291c68de70411997c4"
+  integrity sha512-nhlxI2/H1159ZoCCG7j+3cxOFmBUSxiBn7rvwWhdhwXkBakyZbLdYHSfQ57wGJPHOOse0irpreNzBQg7ELXilA==
+
 content-disposition@0.5.3:
   version "0.5.3"
   resolved "https://registry.npmjs.org/content-disposition/-/content-disposition-0.5.3.tgz#e130caf7e7279087c5616c2007d0485698984fbd"
