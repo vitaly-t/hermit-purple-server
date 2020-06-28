@@ -4,6 +4,8 @@ import Knex, { MySqlConnectionConfig } from 'knex';
 import 'knex-on-duplicate-update';
 import { attachOnDuplicateUpdate } from 'knex-on-duplicate-update';
 
+const knexStringcase = require('knex-stringcase');
+
 attachOnDuplicateUpdate();
 
 let defaultKnex: Knex;
@@ -21,7 +23,12 @@ export function getKnexInstance(
       ...(conn.params ?? {}),
     };
 
-    defaultKnex = Knex({ client: 'mysql', connection: mySqlConfig });
+    defaultKnex = Knex(
+      knexStringcase({
+        client: 'mysql',
+        connection: mySqlConfig,
+      }),
+    );
 
     if (!connection) {
       console.warn(
@@ -34,12 +41,12 @@ export function getKnexInstance(
 }
 
 export enum TableNames {
-  BLOCK = 'Block',
-  TRANSACTION = 'Transaction',
-  RECEIPT = 'Receipt',
-  EVENT = 'Event',
-  ACCOUNT = 'Account',
-  BLOCK_VALIDATOR = 'BlockValidator',
+  BLOCK = 'block',
+  TRANSACTION = 'transaction',
+  RECEIPT = 'receipt',
+  EVENT = 'event',
+  ACCOUNT = 'account',
+  BLOCK_VALIDATOR = 'block_validator',
 }
 
 export * from './helper';

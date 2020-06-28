@@ -3,39 +3,43 @@ import { getKnexInstance, TableNames } from '../';
 import { IMigration } from './run';
 
 export class Migration1591797537928 implements IMigration {
-  constructor(private knex: Knex = getKnexInstance()) {
-  }
+  constructor(private knex: Knex = getKnexInstance()) {}
 
   up() {
     return this.knex.schema
       .createTable(TableNames.BLOCK, (table) => {
-        table.integer('height').primary().comment('The block height');
+        table.increments('id');
 
         table
-          .integer('execHeight')
+          .integer('height')
+          .unique('uniq_block_height')
+          .comment('The block height');
+
+        table
+          .integer('exec_height')
           .notNullable()
           .comment('The executed block height');
 
         table
-          .specificType('blockHash', 'varchar(66) NOT NULL UNIQUE')
+          .specificType('block_hash', 'varchar(66) NOT NULL UNIQUE')
           .comment('The block hash');
 
         table
-          .specificType('orderRoot', 'varchar(66) NOT NULL')
+          .specificType('order_root', 'varchar(66) NOT NULL')
           .comment('Merkle root of ordered transactions');
 
         table
-          .specificType('prevHash', 'varchar(66) NOT NULL')
+          .specificType('prev_hash', 'varchar(66) NOT NULL')
           .comment('Prev block hash');
 
-        table.text('proofBitmap').comment('Proofed bitmap').notNullable();
+        table.text('proof_bitmap').comment('Proofed bitmap').notNullable();
 
         table
-          .specificType('proofRound', 'varchar(18) NOT NULL')
+          .specificType('proof_round', 'varchar(18) NOT NULL')
           .comment('Round usage');
 
         table
-          .specificType('proofSignature', 'varchar(2050) NOT NULL')
+          .specificType('proof_signature', 'varchar(2050) NOT NULL')
           .comment('Aggregated signature of validator set');
 
         table
@@ -43,7 +47,7 @@ export class Migration1591797537928 implements IMigration {
           .comment('Address of the proposer');
 
         table
-          .specificType('stateRoot', 'varchar(66) NOT NULL')
+          .specificType('state_root', 'varchar(66) NOT NULL')
           .comment('State merkle root of the block');
 
         table
@@ -51,25 +55,31 @@ export class Migration1591797537928 implements IMigration {
           .comment('Block timestamp');
 
         table
-          .integer('transactionsCount')
+          .integer('transactions_count')
           .notNullable()
           .comment('Number of transactions in the block');
 
         table
-          .specificType('validatorVersion', 'varchar(18) NOT NULL')
+          .specificType('validator_version', 'varchar(18) NOT NULL')
           .comment(
             'When the attributes of the validator set or the validator set change, ' +
-            'the validatorVersion will change together',
+              'the validatorVersion will change together',
           );
       })
       .createTable(TableNames.TRANSACTION, (table) => {
-        table.integer('block').index().notNullable();
+        table.bigIncrements('id');
 
-        table.specificType('chainId', 'varchar(66) NOT NULL');
+        table
+          .integer('block')
+          .index('idx_transaction_block')
+          .comment('The block height')
+          .notNullable();
 
-        table.specificType('cyclesLimit', 'varchar(18) NOT NULL');
+        table.specificType('chain_id', 'varchar(66) NOT NULL');
 
-        table.specificType('cyclesPrice', 'varchar(18) NOT NULL');
+        table.specificType('cycles_limit', 'varchar(18) NOT NULL');
+
+        table.specificType('cycles_price', 'varchar(18) NOT NULL');
 
         table.specificType('from', 'varchar(42) NOT NULL');
 
@@ -77,7 +87,7 @@ export class Migration1591797537928 implements IMigration {
 
         table.specificType('nonce', 'varchar(66) NOT NULL');
 
-        table.bigIncrements('order').primary();
+        table.bigInteger('order').unique('uniq_transaction_order');
 
         table.specificType('payload', 'LONGTEXT NOT NULL');
 
@@ -85,42 +95,48 @@ export class Migration1591797537928 implements IMigration {
           .specificType('pubkey', 'varchar(552) NOT NULL')
           .comment(
             'Signature public keys, ' +
-            'it is an RPL-encoded array of public keys, ' +
-            'up to 8 public keys in a transaction',
+              'it is an RPL-encoded array of public keys, ' +
+              'up to 8 public keys in a transaction',
           );
 
-        table.specificType('serviceName', 'varchar(1024) NOT NULL');
+        table.specificType('service_name', 'varchar(1024) NOT NULL');
 
         table
           .specificType('signature', 'varchar(1128) NOT NULL')
           .comment(
-            'it is an RPL-encoded array of SECP256k1 signature, ' +
-            'up to 8 signatures in a transaction',
+            'it is an RPL-encoded array of Secp256k1 signature, ' +
+              'up to 8 signatures in a transaction',
           );
 
         table.specificType('timeout', 'varchar(18) NOT NULL');
 
-        table.specificType('txHash', 'varchar(66) NOT NULL').index();
+        table
+          .specificType('tx_hash', 'varchar(66) NOT NULL')
+          .unique('uniq_transaction_tx_hash');
       })
       .createTable(TableNames.RECEIPT, (table) => {
-        table.bigIncrements('id').primary();
+        table.bigIncrements('id');
 
         table.integer('block').notNullable();
 
-        table.specificType('cyclesUsed', 'varchar(18) NOT NULL');
+        table.specificType('cycles_used', 'varchar(18) NOT NULL');
 
-        table.boolean('isError').notNullable();
+        table.boolean('is_error').notNullable();
 
         table.text('ret').notNullable();
 
-        table.specificType('txHash', 'varchar(66) NOT NULL').unique();
+        table
+          .specificType('tx_hash', 'varchar(66) NOT NULL')
+          .unique('uniq_receipt_tx_hash');
       })
       .createTable(TableNames.EVENT, (table) => {
+        table.bigIncrements('id');
+
         table.text('data').notNullable();
 
-        table.bigIncrements('id').primary();
-
-        table.specificType('txHash', 'varchar(66) NOT NULL');
+        table
+          .specificType('tx_hash', 'varchar(66) NOT NULL')
+          .index('idx_event_tx_hash');
 
         table.specificType('service', 'varchar(255) NOT NULL');
       })
@@ -129,18 +145,25 @@ export class Migration1591797537928 implements IMigration {
 
         table.specificType('address', 'varchar(42) NOT NULL');
 
-        table.integer('proposeWeight').notNullable();
+        table.integer('propose_weight').notNullable();
 
         table
           .specificType('version', 'varchar(18) NOT NULL')
           .comment('This field will change when the validator changes');
 
-        table.integer('voteWeight').notNullable();
+        table.integer('vote_weight').notNullable();
 
-        table.unique(['address', 'version']);
+        table.unique(
+          ['address', 'version'],
+          'uniq_block_validator_address_version',
+        );
       })
       .createTable(TableNames.ACCOUNT, (table) => {
-        table.specificType('address', 'varchar(42) NOT NULL').primary();
+        table.bigIncrements('id');
+
+        table
+          .specificType('address', 'varchar(42) NOT NULL')
+          .unique('uniq_account_address');
       });
   }
 

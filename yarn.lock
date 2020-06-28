@@ -4381,6 +4381,13 @@ knex-on-duplicate-update@^1.1.3:
   resolved "https://registry.npmjs.org/knex-on-duplicate-update/-/knex-on-duplicate-update-1.1.3.tgz#eea5c70b1e301a274b84565a9b065d8a724cc2de"
   integrity sha512-LXqONZRhJ4aFnASb/AXuOS2pY4tQh3n2dYMr5kSeKE30ytk91z3MqFBKqO8qe+KS95W0c9DkPS7eVFKH63VxRg==
 
+knex-stringcase@^1.4.1:
+  version "1.4.1"
+  resolved "https://registry.yarnpkg.com/knex-stringcase/-/knex-stringcase-1.4.1.tgz#350db680722cc4b913372dd1eb42debaebb3f46d"
+  integrity sha512-fOMSZP38NxbduKYeOSNeCHch/IjsLtvzRVNeXVfmzmCgW3mMNFdS+UFQJU0jNj1PunmO1M5/chSWJIljV/HD7Q==
+  dependencies:
+    stringcase "^4.3.1"
+
 knex@^0.21.1:
   version "0.21.1"
   resolved "https://registry.npmjs.org/knex/-/knex-0.21.1.tgz#4fba7e6c58c9f459846c3090be157a732fc75e41"
@@ -6550,6 +6557,11 @@ string_decoder@~1.1.1:
   dependencies:
     safe-buffer "~5.1.0"
 
+stringcase@^4.3.1:
+  version "4.3.1"
+  resolved "https://registry.yarnpkg.com/stringcase/-/stringcase-4.3.1.tgz#54279c9dd7379ff50f4e47d50d036b2ac888d34b"
+  integrity sha512-Ov7McNX1sFaEX9NWijD1hIOVDDhKdnFzN9tvoa1N8xgrclouhsO4kBPVrTPhjO/zP5mn1Ww03uZ2SThNMXS7zg==
+
 stringify-package@1.0.1:
   version "1.0.1"
   resolved "https://registry.npmjs.org/stringify-package/-/stringify-package-1.0.1.tgz#e5aa3643e7f74d0f28628b72f3dad5cecfc3ba85"
@@ -6706,10 +6718,10 @@ thenify-all@^1.0.0:
   dependencies:
     any-promise "^1.0.0"
 
-threads@^1.6.2:
-  version "1.6.2"
-  resolved "https://registry.yarnpkg.com/threads/-/threads-1.6.2.tgz#ef91053910a084aa99a1f460cb9978f577596d6f"
-  integrity sha512-SB3yJ3WcwGWYYsUg1Wg9IhQ88BUq1JwZlQsaBgmolSqet5wiBaFhg8cyfHFbHGRElZ/sl4bahrrSEz3Odmr1Vg==
+threads@^1.6.3:
+  version "1.6.3"
+  resolved "https://registry.yarnpkg.com/threads/-/threads-1.6.3.tgz#89324a93509403c90a169344023151ae1fe4986b"
+  integrity sha512-tKwFIWRgfAT85KGkrpDt2jWPO8IVH0sLNfB/pXad/VW9eUIY2Zlz+QyeizypXhPHv9IHfqRzvk2t3mPw+imhWw==
   dependencies:
     callsites "^3.1.0"
     debug "^4.1.1"
