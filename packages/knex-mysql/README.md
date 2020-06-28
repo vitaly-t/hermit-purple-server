@@ -41,4 +41,8 @@ A mysql connection url, like `mysql://username:password@localhost:3306/muta`
 - type: string
 - required: true
 
+## Links
+
+- [SQL schema](./docs/schema.sql)
+
 
