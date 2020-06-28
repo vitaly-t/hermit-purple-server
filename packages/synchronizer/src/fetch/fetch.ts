@@ -1,9 +1,8 @@
-import { utils } from "@muta-extra/common";
-import { Client } from "@mutajs/client";
-import { defaults, range } from "lodash";
-import { GetReceiptQuery, GetTransactionQuery } from "@mutajs/client-raw";
-import { info } from "../logger";
-import { chunkAndBatch } from "./batch";
+import { utils } from '@muta-extra/common';
+import { Client } from '@mutajs/client';
+import { defaults, range } from 'lodash';
+import { GetReceiptQuery, GetTransactionQuery } from '@mutajs/client-raw';
+import { chunkAndBatch } from './batch';
 
 const rawClient = new Client().getRawClient();
 
@@ -58,9 +57,9 @@ fragment transactionKeys on SignedTransaction {
 
 function fetchIndexedTransaction(
   orderedTransactionHashes: string[],
-  concurrency: number
+  concurrency: number,
 ) {
-  return chunkAndBatch<GetTransactionQuery["getTransaction"]>({
+  return chunkAndBatch<GetTransactionQuery['getTransaction']>({
     taskSource: orderedTransactionHashes,
     fragment: txFragment,
     generateQuerySegment: generateTransactionQuerySegment,
@@ -99,9 +98,9 @@ fragment receiptKeys on Receipt {
 
 async function fetchIndexedReceipt(
   orderedTxHashes: Array<string>,
-  concurrency: number
+  concurrency: number,
 ) {
-  return chunkAndBatch<GetReceiptQuery["getReceipt"]>({
+  return chunkAndBatch<GetReceiptQuery['getReceipt']>({
     generateQuerySegment: generateReceiptQuerySegment,
     fragment: receiptFragment,
     taskSource: orderedTxHashes,
@@ -116,12 +115,10 @@ interface FetchWholeBlockOptions {
 
 export async function fetchWholeBlock(
   height: number,
-  options: Partial<FetchWholeBlockOptions> = {}
+  options: Partial<FetchWholeBlockOptions> = {},
 ) {
-  const { concurrency } = defaults<
-    Partial<FetchWholeBlockOptions>,
-    FetchWholeBlockOptions
-  >(options, {
+  const { concurrency } = defaults<Partial<FetchWholeBlockOptions>,
+    FetchWholeBlockOptions>(options, {
     concurrency: 20,
   });
 
@@ -137,31 +134,23 @@ export async function fetchWholeBlock(
 
   const indexedTransaction = await fetchIndexedTransaction(
     orderedTxHashes,
-    concurrency
+    concurrency,
   );
-  info(`fetched ${orderedTxHashes.length} txs`);
 
-  const txs: GetTransactionQuery[] = range(orderedTxHashes.length).map<
-    GetTransactionQuery
-  >((i: number) => {
+  const txs: GetTransactionQuery[] = range(orderedTxHashes.length).map<GetTransactionQuery>((i: number) => {
     const tx = indexedTransaction[`_${i}`];
     return { getTransaction: tx } as GetTransactionQuery;
   });
-  info(`parsed ${orderedTxHashes.length} txs`);
 
   const indexedReceipt = await fetchIndexedReceipt(
     orderedTxHashes,
-    concurrency
+    concurrency,
   );
-  info(`fetched ${orderedTxHashes.length} receipts`);
 
-  const receipts: GetReceiptQuery[] = range(orderedTxHashes.length).map<
-    GetReceiptQuery
-  >((i: number) => {
+  const receipts: GetReceiptQuery[] = range(orderedTxHashes.length).map<GetReceiptQuery>((i: number) => {
     const receipt = indexedReceipt[`_${i}`];
     return { getReceipt: receipt };
   });
-  info(`parsed ${orderedTxHashes.length} receipts`);
 
   return {
     block: block.getBlock,
